@@ -1,0 +1,181 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #e6daf0;
+  font-family: Arial, sans-serif;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #2d1e46;
+  padding: 15px 20px;
+  color: #aeb2b8;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.logo img {
+  width: 75px;
+  height: 45px;
+  margin-right: 10px;
+  fill: #aeb2b8;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+}
+
+.nav-links a {
+  color: #aeb2b8;
+  text-decoration: none;
+  margin: 0 15px;
+  font-size: 18px;
+}
+
+.nav-links .signup-btn {
+  color: #2d1e46 !important;
+}
+
+.signup-btn {
+  background-color: #aeb2b8;
+  padding: 8px 15px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: bold;
+  padding-left: 12px;
+  height: 21px;
+  padding-right: 12px;
+  margin-left: 0px;
+  border-radius: 18.5px;
+  margin-right: 0px;
+}
+
+.signup-btn:hover {
+  background-color: #b8a7d6;
+}
+
+.filter-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.filter-option {
+  display: flex;
+  align-items: center;
+  background-color: #6b5a84;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.filter-option input {
+  display: none;
+}
+
+.circle {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background-color: #f8e7d1;
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease, border 0.3s ease;
+  position: relative;
+}
+
+.circle::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: transparent;
+  transition: background-color 0.3s ease;
+}
+
+.filter-option input:checked ~ .circle::after {
+  background-color: black;
+}
+
+.filter-option:hover {
+  background-color: #5a3e85;
+}
+
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 40px;
+  justify-content: center;
+  padding: 20px;
+}
+
+.card {
+  background-color: #6b5a84;
+  color: white;
+  padding: 15px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.card img {
+  width: 90%;
+  height: auto;
+  border-radius: 10px;
+  margin: 10px 0;
+}
+
+.details-btn {
+  background-color: #d3d3d3;
+  color: black;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.details-btn:hover {
+  background-color: #b0b0b0;
+}
+
+.rating {
+  display: block;
+  margin-top: 8px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.add-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #a39bb6;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  border: 2px dashed white;
+  height: 200px;
+  transition: background-color 0.3s ease;
+}
+
+.add-card:hover {
+  background-color: #8f859d;
+}
