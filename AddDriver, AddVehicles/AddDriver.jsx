@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "./AddDriver.css";
-import "./index.css";
 
 const AddDriver = () => {
   const [formData, setFormData] = useState({
