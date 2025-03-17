@@ -5,7 +5,7 @@ import "./index.css";
 const AddDriver = () => {
   const [formData, setFormData] = useState({
     name: "",
-    age: 0,
+    age: "",
     address: "",
     phone: "",
     license: "",
@@ -31,7 +31,7 @@ const AddDriver = () => {
     name: (value) => (!value ? "Name is required." : ""),
     age: (value) => {
       if (!value) return "Age is required.";
-      if (isNaN(value) || value <= 0) return "Age must be a positive number.";
+      if (isNaN(value) || value <= 18) return "Age must be over 18.";
       return "";
     },
     address: (value) => (!value ? "Address is required." : ""),
@@ -40,7 +40,12 @@ const AddDriver = () => {
       if (!/^\d{10}$/.test(value)) return "Phone must be a 10-digit number.";
       return "";
     },
-    license: (value) => (!value ? "License is required." : ""),
+    license: (value) => {
+      if (!value) return "License is required.";
+      const licensePattern = /^[A-Z]{2}\d{2}\d{4}\d{7}$/;
+      if (!licensePattern.test(value)) return "Invalid license number.";
+      return "";
+    },
     vehicleId: (value) => (!value ? "Vehicle ID is required." : ""),
     driverId: (value) => (!value ? "Driver ID is required." : ""),
     photo: (value) => {
@@ -74,7 +79,7 @@ const AddDriver = () => {
     // Clear form on success
     setFormData({
       name: "",
-      age: 0,
+      age: "",
       address: "",
       phone: "",
       license: "",
