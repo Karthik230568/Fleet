@@ -28,13 +28,34 @@
 
 .form-group input[type="file"] {
   padding: 7px;
+  margin-bottom: 10px;
+}
+
+.form-group select,
+.form-group input[type="text"] {
+  padding: 7px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #b3a1c7;
+  color: #fff;
+}
+
+.form-group select option {
+  background-color: #b3a1c7;
+  color: #fff;
+}
+
+.form-group select option[value=""] {
+  color: #ccc;
 }
 
 .error {
   color: rgb(0, 0, 0);
   font-size: 12px;
-  margin-top: -10px;
-  margin-bottom: 5px;
+  margin-top: 0px;
+  margin-bottom: 3px;
   font-weight: bold;
 }
 

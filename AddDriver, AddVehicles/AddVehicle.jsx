@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./AddDriver.css";
+import "./AddVehicle.css";
 
 const AddVehicle = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +13,7 @@ const AddVehicle = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [customFuelType, setCustomFuelType] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
@@ -23,6 +24,17 @@ const AddVehicle = () => {
 
     // Remove error when user starts typing
     setErrors((prev) => ({ ...prev, [name]: "" }));
+  };
+
+  const handleFuelTypeChange = (e) => {
+    const { value } = e.target;
+    if (value === "Others") {
+      setCustomFuelType(true);
+      setFormData((prev) => ({ ...prev, fuelType: "" }));
+    } else {
+      setCustomFuelType(false);
+      setFormData((prev) => ({ ...prev, fuelType: value }));
+    }
   };
 
   const validationFunctions = {
@@ -90,64 +102,115 @@ const AddVehicle = () => {
     <div className="form-container">
       <h2>Enter Vehicle Details</h2>
       <form onSubmit={handleSubmit}>
-        {[
-          {
-            label: "Vehicle Model",
-            type: "text",
-            name: "vehicleModel",
-            placeholder: "Enter vehicle model",
-          },
-          {
-            label: "Fuel Type",
-            type: "text",
-            name: "fuelType",
-            placeholder: "Enter fuel type",
-          },
-          {
-            label: "Seating Capacity",
-            type: "text",
-            name: "seatingCapacity",
-            placeholder: "Enter seating capacity",
-          },
-          {
-            label: "Price Per Day",
-            type: "text",
-            name: "pricePerDay",
-            placeholder: "Enter price per day",
-          },
-          {
-            label: "Registration Plate",
-            type: "text",
-            name: "registrationPlate",
-            placeholder: "Enter registration plate",
-          },
-          {
-            label: "Vehicle ID",
-            type: "text",
-            name: "vehicleId",
-            placeholder: "Enter vehicle ID",
-          },
-          {
-            label: "Photo",
-            type: "file",
-            name: "photo",
-            placeholder: "Upload photo",
-          },
-        ].map(({ label, type, name, placeholder }) => (
-          <div className="form-group" key={name}>
-            <label>{label}:</label>
-            <div>
+        <div className="form-group">
+          <label>Vehicle Model:</label>
+          <div>
+            <input
+              type="text"
+              name="vehicleModel"
+              placeholder="Enter vehicle model"
+              value={formData.vehicleModel}
+              onChange={handleChange}
+            />
+            {errors.vehicleModel && (
+              <p className="error">{errors.vehicleModel}</p>
+            )}
+          </div>
+        </div>
+        <div className="form-group">
+          <label>Fuel Type:</label>
+          <div>
+            {!customFuelType ? (
+              <select name="fuelType" onChange={handleFuelTypeChange}>
+                <option value="">Select fuel type</option>
+                <option value="Petrol">Petrol</option>
+                <option value="Diesel">Diesel</option>
+                <option value="Electric">Electric</option>
+                <option value="Hybrid">Hybrid</option>
+                <option value="Others">Others</option>
+              </select>
+            ) : (
               <input
-                type={type}
-                name={name}
-                placeholder={placeholder}
-                value={type === "file" ? undefined : formData[name]}
+                type="text"
+                name="fuelType"
+                placeholder="Enter fuel type"
+                value={formData.fuelType}
                 onChange={handleChange}
               />
-              {errors[name] && <p className="error">{errors[name]}</p>}
-            </div>
+            )}
+            {errors.fuelType && <p className="error">{errors.fuelType}</p>}
           </div>
-        ))}
+        </div>
+        <div className="form-group">
+          <label>Seating Capacity:</label>
+          <div>
+            <input
+              type="text"
+              name="seatingCapacity"
+              placeholder="Enter seating capacity"
+              value={formData.seatingCapacity}
+              onChange={handleChange}
+            />
+            {errors.seatingCapacity && (
+              <p className="error">{errors.seatingCapacity}</p>
+            )}
+          </div>
+        </div>
+        <div className="form-group">
+          <label>Price Per Day:</label>
+          <div>
+            <input
+              type="text"
+              name="pricePerDay"
+              placeholder="Enter price per day"
+              value={formData.pricePerDay}
+              onChange={handleChange}
+            />
+            {errors.pricePerDay && (
+              <p className="error">{errors.pricePerDay}</p>
+            )}
+          </div>
+        </div>
+        <div className="form-group">
+          <label>Registration Plate:</label>
+          <div>
+            <input
+              type="text"
+              name="registrationPlate"
+              placeholder="Enter registration plate"
+              value={formData.registrationPlate}
+              onChange={handleChange}
+            />
+            {errors.registrationPlate && (
+              <p className="error">{errors.registrationPlate}</p>
+            )}
+          </div>
+        </div>
+        <div className="form-group">
+          <label>Vehicle ID:</label>
+          <div>
+            <input
+              type="text"
+              name="vehicleId"
+              placeholder="Enter vehicle ID"
+              value={formData.vehicleId}
+              onChange={handleChange}
+            />
+            {errors.vehicleId && <p className="error">{errors.vehicleId}</p>}
+          </div>
+        </div>
+        <div className="form-group">
+          <label>Photo:</label>
+          <div>
+            <input
+              type="file"
+              name="photo"
+              placeholder="Upload photo"
+              onChange={handleChange}
+            />
+            {errors.photo && <p className="error">{errors.photo}</p>}
+          </div>
+        </div>
         <button type="submit">Submit</button>
       </form>
     </div>
