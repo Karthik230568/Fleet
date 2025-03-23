@@ -1,9 +1,23 @@
 const express = require('express');
-const { createBooking, confirmPayment } = require('../controllers/bookingController');
+const {
+    getUserBookings,
+    createBooking,
+    updateBooking,
+    cancelBooking,
+} = require('../controllers/bookingController');
 const authMiddleware = require('../middleware/authMiddleware');
 const router = express.Router();
 
+// Get all bookings for a user
+router.get('/', authMiddleware, getUserBookings);
+
+// Create a new booking
 router.post('/create', authMiddleware, createBooking);
-router.post('/confirm-payment', authMiddleware, confirmPayment);
+
+// Update a booking
+router.put('/:id', authMiddleware, updateBooking);
+
+// Cancel a booking
+router.delete('/:id', authMiddleware, cancelBooking);
 
 module.exports = router;

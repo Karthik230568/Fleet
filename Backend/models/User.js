@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
     profile: {
         fullName: String,
         address: String,
+        dateOfBirth: Date, // Added dateOfBirth
         licenseNumber: String,
     },
     pastJourneys: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Booking' }],
