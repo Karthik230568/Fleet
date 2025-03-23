@@ -66,7 +66,7 @@ const jwt = require('jsonwebtoken');
 // module.exports = { signup, login ,verifyOTP };
 const User = require('../models/User');
 const OTP = require('../models/OTP');
-const { generateOTP, sendOTP } = require('../utils/generateOTP');
+const { generateOTP, sendOTP } = require('../utils/OTP');
 
 // Signup function
 const signup = async (req, res, next) => {
