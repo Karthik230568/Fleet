@@ -7,4 +7,4 @@ router.post('/signup', validateSignup, handleValidationErrors, signup);
 router.post('/login', validateLogin, handleValidationErrors, login);
 router.post('/verify-otp', verifyOTP);
 
-module.exports = router;
+module.exports = router; 
