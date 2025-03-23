@@ -20,10 +20,12 @@ const app = express();
 // Middleware
 app.use(cors()); // Enable CORS
 app.use(express.json()); // Parse JSON request bodies
-
+app.use(express.urlencoded({extended: false}))
 // Database Connection
 connectDB();
-
+app.get('/',(req,res)=>{
+    res.send('this is home page')
+})
 // Routes
 app.use('/api/auth', authRoutes); // Authentication routes (signup, login, OTP)
 app.use('/api/user', userRoutes); // User profile and past journeys
