@@ -3,19 +3,21 @@ const {
     getUserProfile,
     updateUserProfile,
     getPastJourneys,
-    submitFeedback,
+    getActiveJourneys,
+    submitFeedback
 } = require('../controllers/userController');
 const authMiddleware = require('../middleware/authMiddleware');
 const router = express.Router();
 
 // User profile routes
-router.get('/profile', authMiddleware, getUserProfile); // Get user profile
-router.put('/profile', authMiddleware, updateUserProfile); // Update user profile
+router.get('/profile', authMiddleware, getUserProfile);
+router.put('/profile', authMiddleware, updateUserProfile);
 
-// Past journeys route
-router.get('/past-journeys', authMiddleware, getPastJourneys); // Get past journeys
+// Journey routes
+router.get('/past-journeys', authMiddleware, getPastJourneys);
+router.get('/active-journeys', authMiddleware, getActiveJourneys);
 
 // Feedback route
-router.post('/feedback', authMiddleware, submitFeedback); // Submit feedback
+router.post('/feedback', authMiddleware, submitFeedback);
 
 module.exports = router;

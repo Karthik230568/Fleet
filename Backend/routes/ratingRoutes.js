@@ -3,10 +3,10 @@ const { rateVehicle, rateDriver } = require('../controllers/ratingController');
 const authMiddleware = require('../middleware/authMiddleware');
 const router = express.Router();
 
-// Rate a vehicle
+// Rate vehicle route
 router.post('/vehicle', authMiddleware, rateVehicle);
 
-// Rate a driver
+// Rate driver route
 router.post('/driver', authMiddleware, rateDriver);
 
 module.exports = router;
