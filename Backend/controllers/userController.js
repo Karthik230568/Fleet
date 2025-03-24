@@ -30,12 +30,11 @@ const updateUserProfile = async (req, res, next) => {
             throw error;
         }
 
-        // Update profile fields
-        user.profile.fullName = fullName || user.profile.fullName;
-        user.profile.address = address || user.profile.address;
-        user.profile.dateOfBirth = dateOfBirth || user.profile.dateOfBirth; // Add dateOfBirth
-        user.phone = phoneNumber || user.phone;
+        user.fullName = fullName || user.fullName;
+        user.address = address || user.address;
+        user.phoneNumber = phoneNumber || user.phoneNumber;
         user.email = email || user.email;
+        user.dateOfBirth = dateOfBirth || user.dateOfBirth;
 
         await user.save();
 
@@ -78,13 +77,6 @@ const submitFeedback = async (req, res, next) => {
     try {
         const { bookingId, comment, rating } = req.body;
 
-        const booking = await Booking.findById(bookingId);
-        if (!booking || booking.status !== 'completed') {
-            const error = new Error('Invalid booking');
-            error.statusCode = 400;
-            throw error;
-        }
-
         const feedback = new Feedback({
             booking: bookingId,
             comment,
@@ -92,10 +84,6 @@ const submitFeedback = async (req, res, next) => {
         });
 
         await feedback.save();
-
-        // Link feedback to booking
-        booking.feedback = feedback._id;
-        await booking.save();
 
         res.status(201).json({ message: 'Feedback submitted successfully', feedback });
     } catch (error) {
@@ -107,6 +95,6 @@ module.exports = {
     getUserProfile,
     updateUserProfile,
     getPastJourneys,
-    getActiveJourneys, // Added active journeys
-    submitFeedback,
+    getActiveJourneys,
+    submitFeedback
 };
