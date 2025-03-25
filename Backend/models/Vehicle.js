@@ -8,6 +8,7 @@ const vehicleSchema = new mongoose.Schema({
     availability: { type: Boolean, default: true },
     rentalName: { type: String, required: true },
     driverDetails: { type: mongoose.Schema.Types.ObjectId, ref: 'Driver' },
+    AdministratorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Administrator', required: true },
 });
 
 module.exports = mongoose.model('Vehicle', vehicleSchema);

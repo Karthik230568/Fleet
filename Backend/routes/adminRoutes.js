@@ -1,19 +1,20 @@
 const express = require('express');
 const {
+    register,
+    login,
     addVehicle,
     removeVehicle,
     updateVehicle,
     addDriver,
     removeDriver,
-    getUsers,
-    updateUser,
-    deleteUser,
     getAllBookings,
     viewBookingsByDate,
 } = require('../controllers/adminController');
 const authMiddleware = require('../middleware/authMiddleware');
 const router = express.Router();
-
+//register and login
+router.post('/register',register)
+router.post('/login',login)
 // Vehicle routes
 router.post('/vehicle', authMiddleware, addVehicle);
 router.delete('/vehicle/:id', authMiddleware, removeVehicle);
@@ -23,10 +24,6 @@ router.put('/vehicle/:id', authMiddleware, updateVehicle);
 router.post('/driver', authMiddleware, addDriver);
 router.delete('/driver/:id', authMiddleware, removeDriver);
 
-// User routes
-router.get('/users', authMiddleware, getUsers);
-router.put('/users/:id', authMiddleware, updateUser);
-router.delete('/users/:id', authMiddleware, deleteUser);
 
 // Booking routes
 router.get('/bookings', authMiddleware, getAllBookings);
