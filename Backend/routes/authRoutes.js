@@ -1,7 +1,7 @@
 const express = require('express');
 const { signup, login, verifyOTP } = require('../controllers/authController');
 const { validateSignup, validateLogin, handleValidationErrors } = require('../middleware/validationMiddleware');
-const { generateOTP, sendOTP } = require('../utils/OTP'); // Import OTP functions
+// const { generateOTP, sendOTP } = require('../utils/OTP'); // Import OTP functions
 const router = express.Router();
 
 router.post('/signup', validateSignup, handleValidationErrors, signup);
