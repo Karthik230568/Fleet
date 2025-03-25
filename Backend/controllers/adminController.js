@@ -93,6 +93,25 @@ const addDriver = async (req, res, next) => {
     }
 };
 
+//Update Driver
+const updateDriver = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const updates = req.body; // Fields to update
+
+        const updatedDriver = await Driver.findByIdAndUpdate(id, updates, { new: true });
+
+        if (!updatedDriver) {
+            return res.status(404).json({ message: 'Driver not found' });
+        }
+
+        res.status(200).json({ message: 'Driver updated successfully', driver: updatedDriver });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
 // Remove a driver
 const removeDriver = async (req, res, next) => {
     try {
@@ -148,6 +167,7 @@ module.exports = {
     removeVehicle,
     updateVehicle,
     addDriver,
+    updateDriver,
     removeDriver,
     getAllBookings,
     viewBookingsByDate,

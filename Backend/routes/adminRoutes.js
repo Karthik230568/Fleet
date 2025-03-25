@@ -4,6 +4,7 @@ const {
     removeVehicle,
     updateVehicle,
     addDriver,
+    updateDriver,
     removeDriver,
     getAllBookings,
     viewBookingsByDate,
@@ -25,10 +26,11 @@ router.post('/login', validateLogin, handleValidationErrors, login)
 // Vehicle routes
 router.post('/vehicle', authMiddleware, addVehicle);
 router.delete('/vehicle/:id', authMiddleware, removeVehicle);
-router.put('/vehicle/:id', authMiddleware, updateVehicle);
+router.patch('/vehicle/:id', authMiddleware, updateVehicle);
 
 // Driver routes
 router.post('/driver', authMiddleware, addDriver);
+router.patch('/driver/:id',authMiddleware, updateDriver);
 router.delete('/driver/:id', authMiddleware, removeDriver);
 
 
