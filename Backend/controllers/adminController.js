@@ -15,6 +15,7 @@ get bookings by date
 
 const addVehicle = async (req, res, next) => {
     try{
+        const { name, image, pricePerDay, rentalName, driverDetails } = req.body
         const vehicle = new Vehicle({
             name,
             image,

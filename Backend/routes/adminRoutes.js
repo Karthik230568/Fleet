@@ -8,8 +8,19 @@ const {
     getAllBookings,
     viewBookingsByDate,
 } = require('../controllers/adminController');
+
+const { validateLogin, handleValidationErrors } = require('../middleware/validationMiddleware');
+
+const { login, register }= require('../controllers/adminauth')
+
 const authMiddleware = require('../middleware/authMiddleware');
+
 const router = express.Router();
+
+//login
+router.post('/register', register)
+
+router.post('/login', validateLogin, handleValidationErrors, login)
 
 // Vehicle routes
 router.post('/vehicle', authMiddleware, addVehicle);
