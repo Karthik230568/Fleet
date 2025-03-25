@@ -2,7 +2,12 @@ const Vehicle = require('../models/Vehicle');
 const Driver = require('../models/Driver');
 const Booking = require('../models/Booking');
 const User = require('../models/User');
-
+/*controllers:
+Add a vehicle
+get user profile
+update user profile
+get past journeys
+*/
 // Add a new vehicle
 const addVehicle = async (req, res, next) => {
     try {

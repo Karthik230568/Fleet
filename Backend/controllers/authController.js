@@ -100,7 +100,7 @@ const signup = async (req, res, next) => {
     }
 };
 
-// Login function
+// Login function 
 const login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
