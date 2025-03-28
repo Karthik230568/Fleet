@@ -1,0 +1,66 @@
+#root, 
+:root,
+html, 
+body,
+#app {
+    background: #e1d3fa !important;
+}
+
+.container_tc {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.h1_tc {
+    text-align: center;
+    color: #333;
+}
+
+.h2_tc {
+  margin-top: 20px;
+  color: #555;
+}
+
+.p_tc, .ul_tc {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #444;
+}
+
+.ul_tc {
+  padding-left: 20px;
+}
+
+.ul_tc .li_tc {
+  margin-bottom: 10px;
+}
+.button-container_tc {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.agree-button_tc,
+.cancel-button_tc {
+  padding: 10px 20px;
+  margin-left: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.agree-button_tc {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.cancel-button_tc {
+  background-color: #f44336;
+  color: white;
+}

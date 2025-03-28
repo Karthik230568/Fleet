@@ -1,0 +1,212 @@
+/* Reset default margin and padding */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Full-screen container */
+.body_past {
+  font-family: Arial, sans-serif;
+  background-color: #e1d3fa; /* Soft purple */
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+/* Tabs */
+.tabs_past {
+  display: flex;
+  justify-content: center;
+  padding: 15px;
+  background: #e1d3fa;
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.tab_past {
+  margin: 0 20px;
+  padding: 5px 15px;
+  cursor: pointer;
+  font-size: 16px;
+  color: #555;
+  background-color: transparent;
+  border: 0;
+}
+
+.tab_past:focus {
+  outline: none;
+}
+
+.active_past {
+  font-weight: bold;
+  border-bottom: 3px solid #271944;
+  color: #271944;
+  border-radius: 0;
+  background-color: transparent;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+}
+
+.active_past:focus {
+  outline: none;
+}
+
+.active_past:hover {
+  border-bottom: 3px solid #271944;
+}
+
+
+/* Full-screen content */
+.content_past {
+  flex-grow: 1;  /* Makes content take full available space */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Booking Card */
+.booking-card_past {
+  background: rgb(113, 85, 139);
+  padding: 20px;
+  border-radius: 12px;
+  width: 80%;
+  max-width: 750px;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.details_past {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rating_past {
+  display: flex;
+  justify-content: center;
+}
+
+.left_past h3,
+.right_past h3 {
+  margin: 0;
+  font-weight: bold;
+  color: white;
+}
+
+.left_past p,
+.right_past p {
+  margin: 5px 0;
+  color: white;
+}
+
+.rental-company_past {
+  font-weight: bold;
+  color: white;
+}
+
+.middle_past {
+  text-align: center;
+  font-weight: normal;
+}
+
+.rating-btn_past {
+  margin-top: 10px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  background: #AEB2B8;
+  color: #271944;
+  font-weight: bolder;
+  margin-left: 35px;
+}
+
+.rating-btn_past:hover {
+  background-color: #271944;
+  color: white;
+}
+
+/* Overlay effect */
+.overlay::before {
+content: "";
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0, 0, 0, 0.5);
+z-index: 999;
+}
+
+/* Popup Styling */
+.popup {
+position: fixed;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+background: white;
+padding: 30px;
+width: 500px;
+border-radius: 10px;
+box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+z-index: 1000;
+}
+
+.popup-content {
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+.rateNow {
+  color: #271944;
+}
+
+.star-rating {
+display: flex;
+justify-content: center;
+margin: 20px 0;
+}
+
+.star {
+font-size: 2.5rem;
+cursor: pointer;
+color: #ccc;
+transition: color 0.2s;
+}
+
+.star:hover,
+.star.filled {
+color: #ffcc00;
+}
+
+.popup-buttons {
+display: flex;
+justify-content: space-between;
+width: 100%;
+margin-top: 20px;
+}
+
+.popup-buttons button {
+padding: 10px 20px;
+cursor: pointer;
+border: none;
+border-radius: 5px;
+font-size: 16px;
+}
+
+.popup-buttons button:first-child {
+background-color: green;
+color: white;
+}
+
+.popup-buttons button:last-child {
+background-color: red;
+color: white;
+}
+

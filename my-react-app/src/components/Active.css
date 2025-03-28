@@ -1,0 +1,115 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.body_active {
+    font-family: Arial, sans-serif;
+    background-color: #e1d3fa; /* Soft purple blah blah blah*/
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tabs_active {
+    display: flex;
+    justify-content: center;
+    padding: 15px;
+    background: #e1d3fa;
+    width: 100%;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.active_active {
+    font-weight: bold;
+    border-bottom: 3px solid #271944;
+    color: #271944;
+    border-radius: 0;
+    background-color: transparent;
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+}
+
+.active_active:focus {
+    outline: none;
+}
+
+.active_active:hover {
+    border-bottom: 3px solid #271944;
+}
+
+.past_active {
+    margin: 0 20px;
+    padding: 5px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    color: #555;
+    background-color: transparent;
+    border: 0;
+}
+
+.past_active:focus {
+    outline: none;
+}
+
+.content_active {
+    flex-grow: 1;  /* Makes content take full available space */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.booking-card_active {
+    background: rgb(113, 85, 139);
+    padding: 20px;
+    border-radius: 12px;
+    width: 80%;
+    max-width: 750px;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.details_active {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.left_active h3,
+.right_active h3 {
+  margin: 0;
+  font-weight: bold;
+  color: white;
+}
+
+.left_active p,
+.right_active p {
+  margin: 5px 0;
+  color: white;
+}
+
+.rental-company_active {
+    font-weight: bold;
+    color: white;
+}
+
+.middle_active {
+    text-align: center;
+    font-weight: normal;
+}
+
+.cancle_active {
+    margin-left: 85%;
+}
+
+.cancel-btn {
+    background-color: red;
+    font-weight: bold;
+    border-radius: 20px;
+}
+  

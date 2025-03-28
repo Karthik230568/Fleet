@@ -1,0 +1,30 @@
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.admin-content {
+    flex: 1;
+    padding: 0px;
+    margin-left: 0px; /* Adjust this value based on your Nav width */
+    background-color: #e1d3fa;
+    min-height: 100vh;
+    overflow-y: auto;
+    position: relative;
+    z-index: 1;
+}
+
+/* Ensure the nav stays fixed but doesn't block clicks */
+.admin-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.admin-nav > * {
+    pointer-events: auto;
+} 
