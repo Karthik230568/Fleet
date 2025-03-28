@@ -111,8 +111,8 @@ function Admincarspage() {
                     onDelete={handleDeleteVehicle}
                   />
                 ))}
-                <div className="card add-car-card" onClick={handleAddVehicle}>
-                  <h2>+ Add Vehicle</h2>
+                <div className="add-card" onClick={handleAddVehicle}>
+                  <h2>+ Add Vehicle</h2> 
                 </div>
               </div>
             </div>
