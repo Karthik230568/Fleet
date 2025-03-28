@@ -1,4 +1,5 @@
 // Mock data for testing
+const Bookings = require('../models/Booking');
 const mockVehicles = [
     { id: 'vehicle_id', make: 'Toyota', model: 'Camry', year: 2021, licensePlate: 'ABC123', rating: 4.0 },
 ];
@@ -14,22 +15,22 @@ const mockBookings = [
 // Submit rating for a vehicle
 const rateVehicle = async (req, res, next) => {
     try {
-        const { bookingId, rating } = req.body;
-
+        const { bookingId } = req.body;
+        const rating = Number(req.body.rating);
         // Validate rating
-        if (typeof rating !== 'number' || rating < 0 || rating > 5) {
-            const error = new Error('Invalid rating');
+        if (!Number.isFinite(rating) || rating < 0 || rating > 5) {
+            const error = new Error('Invalid rating not a number');
             error.statusCode = 400;
             throw error;
         }
 
         // Fetch booking details
-        const booking = mockBookings.find(b => b.id === bookingId);
+        const booking = Bookings.findById(bookingId);
         if (!booking || booking.status !== 'completed') {
             const error = new Error('Invalid booking');
             error.statusCode = 404;
             throw error;
-        }
+        } 
 
         // Fetch vehicle details
         const vehicle = mockVehicles.find(v => v.id === booking.vehicle);

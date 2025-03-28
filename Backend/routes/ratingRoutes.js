@@ -6,7 +6,7 @@ const router = express.Router();
 // Rate vehicle route
 router.post('/vehicle', authMiddleware, rateVehicle);
 
-// Rate driver route
-router.post('/driver', authMiddleware, rateDriver);
+// // Rate driver route
+// router.post('/driver', authMiddleware, rateDriver);
 
 module.exports = router;
