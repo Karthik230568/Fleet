@@ -6,6 +6,7 @@ const carData = [
     availability: "Yes",
     rating: "4.2",
     image: "Images/kia-pecanto.png",
+    driverName: "John Doe", // 🔹 Add driverName
   },
   {
     type: "Car",

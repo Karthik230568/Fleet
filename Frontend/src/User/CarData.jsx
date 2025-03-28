@@ -10,7 +10,7 @@ const carData = [
       bookingStatus: "active", // 🟢 "active", "past", or "none"
       startDate : "25-03-2025",
       startTime : "17:25",
-      driverName : "Pallavi",
+      driverName : "John Doe",
   },
   {
       type: "Car",
