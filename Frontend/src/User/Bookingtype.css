@@ -1,0 +1,39 @@
+.bookingtype-container {
+    text-align: center;
+    margin-top: 200px;
+  }
+  .bookingtype {
+    color: black;
+  } 
+  .bookingtype_button-group {
+    margin: 20px 0;
+  }
+  
+  .button_bookingtype {
+    margin: 15px;
+    padding: 12px 30px;
+    gap: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    color: white;
+    background: rgb(113,85,139);
+    ;
+  }
+  .button_bookingtype:hover {
+    background: rgb(113,85,139);
+    transform: scale(1.1);
+  }
+  .button_bookingtype.active {
+    background: #271944;
+  }
+  
+  .bookingtype_confirm-button {
+    margin-top: 20px;
+    padding: 13px 30px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .bookingtype_confirm-button:hover {
+    background:black;
+    transform: scale(1.1);
+  }

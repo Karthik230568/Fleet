@@ -1,82 +1,77 @@
 .pickup_body {
-    padding-top: 10vh; /* To prevent overlap with NavBar */
-    background-color: #E1D3FA;
-    /* Light purple background */
-    display: flex;
-    justify-content: space-between; /* Align logo on left and payment box on right */
-    align-items: center;
-    height: 100vh;
-    padding: 0 5vw; /* Add horizontal padding */
-  }
-  
-  /* Logo styling */
-  .pickup_logo-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-left: 150px;
-  }
-  
-  .pickup_logo-image {
-    width: 350px;
-    height: auto;
-  }
-  
-  .pickup_location {
-    background-color:#2c1b47; /* Purple background */
-    padding: 20px;
-    border-radius: 10px;
-    width: 60%; /* Control width */
-    text-align: center;
-    margin-left: 200px;
-  }
-  
-  .pickup_location-1 {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #d9c4ea;
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 12px;
-    font-size: 18px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  /* Hover and click effects */
-  .pickup_location-1:hover {
-    background-color: #d5a9f2;
-  }
-  
-  .pickup_location-1:active {
-    background-color: #9b4ebf;
-  }
-  
-  /* Map logo */
-  .pickup_location-1 img {
-    width: 30px;
-    height: 40px;
-  }
-  
-  /* Next button */
-  .pickup_next-button {
-    background-color: #d9c4ea;
-    color: #000;
-    padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
-    font-size: 18px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    align-self: flex-end;
-    margin-top: 50px;
-  }
-  
-  .pickup_next-button:hover {
-    background-color: #d5a9f2;
-  }
-  
-  .pickup_next-button:active {
-    background-color:#9b4ebf;
-  }
+  padding-top: 10vh; /* To prevent overlap with NavBar */
+  background-color: #E1D3FA;
+  /* Light purple background */
+  display: flex;
+  align-items: center;
+  height: 100vh;
+  padding: 0 5vw; /* Add horizontal padding */
+}
+
+/* Logo styling */
+.pickup_logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 150px;
+}
+
+.pickup_logo-image {
+  width: 350px;
+  height: auto;
+}
+
+.pickup_location {
+  text-align: center;
+  margin-left: 350px;
+  display: flex;
+  flex-direction: column;
+
+}
+
+.pickup_location-1 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgb(113,85,139);
+  padding: 14px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  font-size: 18px;
+  cursor: pointer;
+  width: 500px;
+  transition: background-color 0.3s ease;
+}
+
+.pickup_input-field {
+  flex: 0.97;
+  padding: 8px;
+  color: white;
+}
+
+.pickup_location-1 img {
+  width: 30px;
+  height: 40px;
+}
+
+/* Next button */
+.pickup_next-button {
+
+  width: 40%;
+  padding: 8px;
+  border: 1px solid  rgb(113, 85, 139);
+  border-radius: 5px;
+  font-size: 16px;
+  background-color:  rgb(113, 85, 139);
+  color:white;
+  align-self: self-end;
+
+}
+
+.pickup_next-button:hover {
+  background-color: #271944;
+}
+
+.pickup_next-button:active {
+  background-color:black;
+}
