@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import './Profile.css'
+import { useNavigate } from 'react-router-dom';
 
 function Profile() {
 
- 
+  const navigate = useNavigate();
   const [profilePic, setProfilePic] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -99,6 +100,13 @@ function Profile() {
           {isEditing && (
             <button className="profile-save-button" onClick={handleSaveClick}>Save</button>
           )}
+
+          <button className="profile-save-button" onClick={
+            () => {
+              navigate ("/auth/signin");
+            }
+          }>Logout</button>
+
         </div>
       </div>
     </div>
