@@ -1,9 +1,7 @@
 const { body, validationResult } = require('express-validator');
 
 const validateSignup = [
-    body('username').notEmpty().withMessage('Username is required'),
     body('email').isEmail().withMessage('Invalid email address'),
-    body('phone').isMobilePhone().withMessage('Invalid phone number'),
     body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
 ];
 
