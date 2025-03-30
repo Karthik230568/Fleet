@@ -17,6 +17,7 @@ import AddDriver from './Admin/src/adddriverdetails/adddriver.jsx';
 import Signin from './signupandsignin/src/Signin.jsx';
 import Signup from './signupandsignin/src/Signup.jsx';
 import Adminsignin from './signupandsignin/src/Adminsignin.jsx';
+import Bookingtype from './User/Bookingtype.jsx';
 import './Admin/src/AdminLayout.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import './signupandsignin/src/App.css';
@@ -36,6 +37,7 @@ const UserLayout = () => {
         <Route path='userpickup' element={<Userpickup />} />
         <Route path='userpayment' element={<Userpayment />} />
         <Route path='vehicles' element={<Usercarspage />} />
+        <Route path='bookingtype' element={<Bookingtype />}></Route>
       </Routes>
     </>
   );

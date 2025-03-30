@@ -6,11 +6,6 @@
     color: white;
     width: 100%;
     visibility: inherit;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
 }
 
 .logo_nav {
@@ -43,6 +38,7 @@
     cursor: pointer;
     font-weight: bold;
     color: #2e223a;
+
 }
 
 .booking_nav {
@@ -95,4 +91,3 @@
     background-color: #2e223a;
 }
   
-
