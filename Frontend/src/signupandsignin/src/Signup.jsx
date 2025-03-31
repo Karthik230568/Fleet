@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 import './Auth.css';
 import fleetLogo from './Fleet Logo.png';
 import OTPVerification from './otpverification';
+import useAuthStore from "./../../../store/AuthStore.js";
 
 export default function Signup() {
   const navigate = useNavigate();
+  const { setSignupData, sendOtp, isOtpSent } = useAuthStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -14,7 +16,7 @@ export default function Signup() {
 
   const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!isValidEmail(email)) {
@@ -29,9 +31,14 @@ export default function Signup() {
       setError("Passwords do not match!");
       return;
     }
-
-    setError("");
-    setShowOtp(true); // Show OTP verification instead of navigating
+    try {
+      setSignupData(email, password);
+      await sendOtp();
+      setError("");
+      setShowOtp(true); // Show OTP verification instead of navigating
+    } catch (err) {
+      setError("Failed to send OTP. Please try again.");
+    }
   };
 
   if (showOtp) {

@@ -31,8 +31,6 @@ const signup = async (req, res, next) => {
     }
 };
 
-
-
 // Login function 
 const login = async (req, res, next) => {
     try {
@@ -62,6 +60,7 @@ const login = async (req, res, next) => {
         next(error);
     }
 };
+
 //function to verify otp
 const verifyOTP = async (req, res, next) => {
     try {
