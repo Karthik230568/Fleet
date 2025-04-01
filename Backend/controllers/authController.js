@@ -13,7 +13,7 @@ const signup = async (req, res, next) => {
         // Check if user already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).json({ error: "User already exists" });
+            return res.status(400).json({ message: "User already exists" });
         }
 
         // Generate OTP
@@ -71,7 +71,7 @@ const verifyOTP = async (req, res, next) => {
         const otpRecord = await OTP.findOne({ email, otp });
 
         if (!otpRecord) {
-            return res.status(400).json({ error: "Invalid or expired OTP" });
+            return res.status(400).json({success: false, message: "Invalid or expired OTP" });
         }
 
         // Hash password
@@ -84,7 +84,7 @@ const verifyOTP = async (req, res, next) => {
         // Delete OTP after verification
         await OTP.deleteOne({ email });
 
-        res.status(201).json({ message: "User registered successfully!" });
+        res.status(201).json({ success: true, message: "User registered successfully!" });
     } catch (error) {
         next(error);
     }

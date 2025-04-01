@@ -6,7 +6,7 @@ import useAuthStore from "./../../../store/AuthStore.js";
 
 export default function OTPVerification() {
   const navigate = useNavigate();
-  const { email, sendOtp, verifyOtp, isVerified } = useAuthStore();
+  const { email, sendOtp, verifyOtp } = useAuthStore();
 
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [timer, setTimer] = useState(45);
@@ -58,10 +58,16 @@ export default function OTPVerification() {
   const handleVerifyOtp = async () => {
     try {
       const enteredOtp = otp.join("");
-      await verifyOtp(enteredOtp);
+      const res = await verifyOtp(enteredOtp);
+      console.log(res);
+      // if (!res.success) {
+      //   setMessage(res.message);
+      //   return;
+      // }
       setMessage("OTP Verified Successfully!");
       setTimeout(() => navigate("/home"), 1000);
     } catch (error) {
+      console.log(error);
       setMessage("Invalid OTP. Please try again.");
     }
   };

@@ -5,7 +5,7 @@ const useAuthStore = create((set, get) => ({
   email: "",
   password: "",
   isOtpSent: false,
-  
+  isVerified: false,
   // Set email and password during signup
   setSignupData: (email, password) =>
     set({ email, password }),
@@ -16,11 +16,11 @@ const useAuthStore = create((set, get) => ({
       const { email } = get();
       const res=await axios.post("/api/auth/signup", { email });
       if (res.status !== 200) {
-        return { success: false, message: res.message };
+        return res.data;
       }
       // If OTP sent successfully:
       set({ isOtpSent: true });
-      return { success: true, message: "OTP sent successfully!" };
+      return res.data;
     } catch (error) {
       console.error("Error sending OTP:", error.response?.data || error.message);
       throw error;
@@ -31,10 +31,10 @@ const useAuthStore = create((set, get) => ({
   verifyOtp: async (otp) => {
     try {
       const { email, password } = get();
-      await axios.post("/api/auth/verify-otp", { email, otp, password });
-      
+      const res=await axios.post("/api/auth/verify-otp", { email, otp, password });
+      set({ isVerified: true });
       // If successful verification:
-      return true;
+      return res.data;
       
      } catch(error){
      throw error;

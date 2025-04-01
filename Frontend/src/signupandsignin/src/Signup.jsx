@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Auth.css";
 import fleetLogo from "./Fleet Logo.png";
@@ -31,22 +31,31 @@ export default function Signup() {
       setError("Passwords do not match!");
       return;
     }
-
+    try {
       setSignupData(email, password);
-      const res=await sendOtp();
-      if (!res.success) {
-        setError(res.message);
-        return;
-      }
-      console.log("OTP sent successfully");
+      const res = await sendOtp();
+      // if (res.status !== 200) {
+      //   setError(res.message);
+      //   console.log(res.message);
+      //   return;
+      // }
+      console.log(res);
       setError("");
-      setShowOtp(true); // Show OTP verification instead of navigating
+      setShowOtp(true); 
+    }
+      catch (error) {
+        console.error("Error sending OTP:", error.response?.data || error.message);
+        setError("Failed to send OTP. Please try again.");
+      }
+      // Show OTP verification instead of navigating
   
   };
 
   if (showOtp) {
+    console.log("Navigating to OTP verification page...");
     return <OTPVerification />;
   }
+
 
   return (
     <div className="auth-container">
