@@ -231,6 +231,55 @@ body {
   margin-bottom: 0.5rem;
 }
 
+.form-group:first-child {
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.form-group:first-child .radio-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.form-group:first-child .radio-group {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-group:first-child .radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: white;
+  font-size: 1.1rem;
+  padding: 8px 16px;
+  background-color: #5a3e85;
+  border-radius: 20px;
+  transition: background-color 0.3s ease;
+  margin: 0;
+  min-width: auto;
+  text-align: center;
+}
+
+.form-group:first-child .radio-group label:hover {
+  background-color: #4a2e75;
+}
+
+.form-group:first-child .radio-group input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #4CAF50;
+}
+
+.form-group:first-child .radio-group input[type="radio"]:checked + span {
+  color: #4CAF50;
+}
+
 .form-group label {
   color: white;
   font-size: 1.5rem;
@@ -325,6 +374,50 @@ body {
   color: white;
   font-size: 1rem;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.radio-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.radio-group {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  justify-content: center;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: white;
+  font-size: 1.1rem;
+  padding: 8px 16px;
+  background-color: #5a3e85;
+  border-radius: 20px;
+  transition: background-color 0.3s ease;
+  margin: 0;
+  min-width: auto;
+  text-align: center;
+}
+
+.radio-group label:hover {
+  background-color: #4a2e75;
+}
+
+.radio-group input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #4CAF50;
+}
+
+.radio-group input[type="radio"]:checked + span {
+  color: #4CAF50;
 }
 
 /* Existing CSS remains the same until the media queries */

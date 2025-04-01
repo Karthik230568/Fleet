@@ -25,6 +25,8 @@ const signup = async (req, res, next) => {
         });
 
         await sendOTP(email, otp);
+        console.log(`OTP sent to ${email}`); // For debugging 
+
         res.status(200).json({ message: "OTP sent to email. Please verify." });
     } catch (error) {
         console.error('Signup error:', error);

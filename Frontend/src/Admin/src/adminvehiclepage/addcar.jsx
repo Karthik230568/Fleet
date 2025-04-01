@@ -8,7 +8,7 @@ function AddCar({ onAddVehicle, editingVehicle }) {
     type: "Car",
     name: "",
     price: "",
-    availability: "Available",
+    availability: "Yes",
     rating: "0.0",
     image: "",
     fuelType: "Petrol",
@@ -16,12 +16,17 @@ function AddCar({ onAddVehicle, editingVehicle }) {
     registrationPlate: "",
     vehicleId: "",
     driverName: "",
+    hasDriver: "no",
+    driverId: "",
   });
   const [imagePreview, setImagePreview] = useState(null);
 
   useEffect(() => {
     if (editingVehicle) {
-      setFormData(editingVehicle);
+      setFormData({
+        ...editingVehicle,
+        hasDriver: editingVehicle.driverName ? "yes" : "no"
+      });
       setImagePreview(editingVehicle.image);
     }
   }, [editingVehicle]);
@@ -66,7 +71,8 @@ function AddCar({ onAddVehicle, editingVehicle }) {
       seatingCapacity: formData.seatingCapacity,
       registrationPlate: formData.registrationPlate,
       vehicleId: formData.vehicleId,
-      driverName: formData.driverName,
+      driverName: formData.hasDriver === "yes" ? formData.driverName : "",
+      driverId: formData.hasDriver === "yes" ? formData.driverId : "",
     };
     onAddVehicle(cardData);
     navigate("/admin/vehicles");
@@ -76,6 +82,58 @@ function AddCar({ onAddVehicle, editingVehicle }) {
     <div className="form-container">
       <h2>{editingVehicle ? "Edit Vehicle" : "Add New Vehicle"}</h2>
       <form onSubmit={handleSubmit}>
+        <div className="radio-container">
+          <div className="radio-group">
+            <label>
+              <input
+                type="radio"
+                name="hasDriver"
+                value="yes"
+                checked={formData.hasDriver === "yes"}
+                onChange={handleChange}
+              />
+              <span>With Driver</span>
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="hasDriver"
+                value="no"
+                checked={formData.hasDriver === "no"}
+                onChange={handleChange}
+              />
+              <span>Without Driver</span>
+            </label>
+          </div>
+        </div>
+
+        {formData.hasDriver === "yes" && (
+          <>
+            <div className="form-group">
+              <label>Driver Name:</label>
+              <input
+                type="text"
+                name="driverName"
+                value={formData.driverName}
+                onChange={handleChange}
+                placeholder="Enter driver name"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Driver ID:</label>
+              <input
+                type="text"
+                name="driverId"
+                value={formData.driverId}
+                onChange={handleChange}
+                placeholder="Enter driver ID"
+                required
+              />
+            </div>
+          </>
+        )}
+
         <div className="form-group">
           <label>Vehicle Type:</label>
           <select
@@ -86,6 +144,8 @@ function AddCar({ onAddVehicle, editingVehicle }) {
           >
             <option value="Car">Car</option>
             <option value="Bike">Bike</option>
+            <option value="Van">Van</option>
+            <option value="Truck">Truck</option>
           </select>
         </div>
 
@@ -121,8 +181,8 @@ function AddCar({ onAddVehicle, editingVehicle }) {
             onChange={handleChange}
             required
           >
-            <option value="Available">Available</option>
-            <option value="Not available">Not Available</option>
+            <option value="Yes">Available</option>
+            <option value="No">Not Available</option>
           </select>
         </div>
 
@@ -141,18 +201,6 @@ function AddCar({ onAddVehicle, editingVehicle }) {
         </div>
 
         <div className="form-group">
-          <label>Driver Name:</label>
-          <input
-            type="text"
-            name="driverName"
-            value={formData.driverName}
-            onChange={handleChange}
-            placeholder="Enter driver name"
-            required
-          />
-        </div>
-
-        <div className="form-group">
           <label>Fuel Type:</label>
           <select
             name="fuelType"
@@ -163,6 +211,7 @@ function AddCar({ onAddVehicle, editingVehicle }) {
             <option value="Petrol">Petrol</option>
             <option value="Diesel">Diesel</option>
             <option value="Electric">Electric</option>
+            <option value="Hybrid">Hybrid</option>
           </select>
         </div>
 

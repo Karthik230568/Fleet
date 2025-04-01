@@ -30,6 +30,11 @@ export default function Adminsignin() {
     navigate("/admin");
   };
 
+  const handleForgotPassword = (e) => {
+    e.preventDefault();
+    navigate("/auth/signup", { state: { isForgotPassword: true, isAdmin: true } });
+  };
+
   return (
     <div className="auth-container">
       <div className="auth-box">
@@ -65,6 +70,9 @@ export default function Adminsignin() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              <div className="forgot-password">
+                <a href="#" onClick={handleForgotPassword}>Forgot Password?</a>
+              </div>
             </div>
 
             <button type="submit" className="btn">Sign In</button>

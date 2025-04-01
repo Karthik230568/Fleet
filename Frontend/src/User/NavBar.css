@@ -90,4 +90,23 @@
 .custom-button_nav {
     background-color: #2e223a;
 }
+
+.logout_nav {
+    text-decoration: none;
+    padding: 10px;
+    padding-left: 30px;
+    padding-right: 30px;
+    border-radius: 30px;
+    background: #e1d3fa;
+    cursor: pointer;
+    font-weight: bold;
+    color: #2e223a;
+    border: none;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.logout_nav:hover {
+    background: rgb(113, 85, 139);
+    color: #e1d3fa;
+}
   
