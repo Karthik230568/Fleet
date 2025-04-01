@@ -1,23 +1,17 @@
 const express = require('express');
-const {
-    getUserProfile,
-    updateUserProfile,
-    getPastJourneys,
-    getActiveJourneys,
-    submitFeedback
-} = require('../controllers/userController');
-const authMiddleware = require('../middleware/authMiddleware');
 const router = express.Router();
+const { 
+    getUserProfile, 
+    updateUserProfile, 
+    getHelpInfo, 
+    logout
+} = require('../controllers/userController');
+const { authenticateUser } = require('../middleware/authMiddleware');
 
-// User profile routes
-router.get('/profile', authMiddleware, getUserProfile);
-router.put('/profile', authMiddleware, updateUserProfile);
+// Profile routes
+router.get('/profile', authenticateUser, getUserProfile);
+router.put('/profile', authenticateUser, updateUserProfile);
+router.get('/help', authenticateUser, getHelpInfo);
+router.post('/logout', authenticateUser, logout);
 
-// Journey routes
-router.get('/past-journeys', authMiddleware, getPastJourneys);
-router.get('/active-journeys', authMiddleware, getActiveJourneys);
-
-// Feedback route
-router.post('/feedback', authMiddleware, submitFeedback);
-
-module.exports = router;
+module.exports = router;  // Make sure this line exists

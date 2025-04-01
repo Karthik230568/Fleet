@@ -1,24 +1,29 @@
 const express = require('express');
-
-const {
-    getUserBookings,
-    createBooking,
-    updateBooking,
-    cancelBooking,
-} = require('../controllers/bookingController');
-const authMiddleware = require('../middleware/authMiddleware');
 const router = express.Router();
+const { 
+    initializeBooking,
+    confirmBookingWithDriver,
+    confirmSelfDriveStorePickup,
+    confirmSelfDriveHomeDelivery,
+    getActiveBookings,
+    getPastBookings,
+    cancelBooking
+} = require('../controllers/bookingController');
+const { authenticateUser } = require('../middleware/authMiddleware');
 
-// Get all bookings for a user
-router.get('/', authMiddleware, getUserBookings);
+// Initialize booking and get price details
+router.post('/initialize', authenticateUser, initializeBooking);
 
-// Create a new booking
-router.post('/create', authMiddleware, createBooking);
+// Confirm bookings
+router.post('/confirm-driver', authenticateUser, confirmBookingWithDriver);
+router.post('/confirm-self-drive-store', authenticateUser, confirmSelfDriveStorePickup);
+router.post('/confirm-self-drive-home', authenticateUser, confirmSelfDriveHomeDelivery);
 
-// Update a booking
-router.put('/:id', authMiddleware, updateBooking);
+// Get bookings
+router.get('/active/:userId', authenticateUser, getActiveBookings);
+router.get('/past/:userId', authenticateUser, getPastBookings);
 
-// Cancel a booking
-router.delete('/:id', authMiddleware, cancelBooking);
+// Cancel booking
+router.put('/cancel/:bookingId', authenticateUser, cancelBooking);
 
 module.exports = router;

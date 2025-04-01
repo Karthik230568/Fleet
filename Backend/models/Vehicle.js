@@ -1,14 +1,67 @@
 const mongoose = require('mongoose');
 
 const vehicleSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    image: { type: String, required: true },
-    pricePerDay: { type: Number, required: true },
-    availability: { type: Boolean, default: true },
-    rentalName: { type: String, required: true },
-    driverDetails: { type: mongoose.Schema.Types.ObjectId, ref: 'Driver' ,required: false},
-    bookings: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Booking' }]
-
+    name: {
+        type: String,
+        required: true
+    },
+    type: {
+        type: String,
+        required: true,
+        enum: ['Car', 'Bike']
+    },
+    price: {
+        type: Number,
+        required: true
+    },
+    availability: {
+        type: String,
+        enum: ['Available', 'Not available'],
+        default: 'Available'
+    },
+    rating: {
+        type: Number,
+        default: 0.0
+    },
+    driverName: {
+        type: String,
+        default: null
+    },
+    driverId: {
+        type: String,
+        required: function() {
+            return this.driverName !== null;
+        }
+    },
+    city: {
+        type: String,
+        required: true
+    },
+    fuelType: {
+        type: String,
+        required: true,
+        enum: ['Petrol', 'Diesel', 'Electric']
+    },
+    seatingCapacity: {
+        type: Number,
+        required: true
+    },
+    registrationPlate: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    vehicleId: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    image: {
+        type: String,
+        required: true
+    }
+}, {
+    timestamps: true
 });
 
 module.exports = mongoose.model('Vehicle', vehicleSchema);

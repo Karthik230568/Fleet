@@ -1,91 +1,102 @@
 const User = require('../models/User');
-const Booking = require('../models/Booking');
-const Feedback = require('../models/Feedback');
 
-// Get user profile
 const getUserProfile = async (req, res, next) => {
     try {
-        const user = await User.findById(req.user.userId).select('-password');
+        const user = await User.findById(req.user._id)
+            .select('fullName phoneNumber email dateOfBirth address')
+            .lean();
+
         if (!user) {
-            const error = new Error('User not found');
-            error.statusCode = 404;
-            throw error;
+            return res.status(404).json({
+                success: false,
+                error: 'User not found'
+            });
         }
 
-        res.status(200).json({ user });
+        const formattedUser = {
+            ...user,
+            dateOfBirth: user.dateOfBirth ? new Date(user.dateOfBirth).toISOString().split('T')[0] : null
+        };
+
+        res.status(200).json({
+            success: true,
+            user: formattedUser
+        });
     } catch (error) {
         next(error);
     }
 };
 
-// Update user profile
 const updateUserProfile = async (req, res, next) => {
     try {
-        const { fullName, address, phoneNumber, email, dateOfBirth } = req.body;
+        const { fullName, phoneNumber, email, dateOfBirth, address } = req.body;
 
-        const user = await User.findById(req.user.userId);
+        const user = await User.findById(req.user._id);
         if (!user) {
-            const error = new Error('User not found');
-            error.statusCode = 404;
-            throw error;
+            return res.status(404).json({
+                success: false,
+                error: 'User not found'
+            });
         }
 
-        user.fullName = fullName || user.fullName;
-        user.address = address || user.address;
-        user.phoneNumber = phoneNumber || user.phoneNumber;
-        user.email = email || user.email;
-        user.dateOfBirth = dateOfBirth || user.dateOfBirth;
+        if (email && email !== user.email) {
+            const emailExists = await User.findOne({ email, _id: { $ne: user._id } });
+            if (emailExists) {
+                return res.status(400).json({
+                    success: false,
+                    error: 'Email already in use'
+                });
+            }
+        }
 
-        await user.save();
+        const updates = {};
+        if (fullName) updates.fullName = fullName;
+        if (phoneNumber) updates.phoneNumber = phoneNumber;
+        if (email) updates.email = email;
+        if (dateOfBirth) updates.dateOfBirth = new Date(dateOfBirth);
+        if (address) updates.address = address;
 
-        res.status(200).json({ message: 'Profile updated successfully', user });
-    } catch (error) {
-        next(error);
-    }
-};
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user._id,
+            { $set: updates },
+            { new: true }
+        ).select('fullName phoneNumber email dateOfBirth address');
 
-// Get past journeys
-const getPastJourneys = async (req, res, next) => {
-    try {
-        const pastJourneys = await Booking.find({
-            user: req.user.userId,
-            status: 'completed',
-        }).populate('vehicle driverDetails');
-
-        res.status(200).json({ pastJourneys });
-    } catch (error) {
-        next(error);
-    }
-};
-
-// Get active journeys
-const getActiveJourneys = async (req, res, next) => {
-    try {
-        const activeJourneys = await Booking.find({
-            user: req.user.userId,
-            status: 'active',
-        }).populate('vehicle driverDetails');
-
-        res.status(200).json({ activeJourneys });
-    } catch (error) {
-        next(error);
-    }
-};
-
-// Submit feedback for a past booking
-const submitFeedback = async (req, res, next) => {
-    try {
-        const { bookingId, comment, rating } = req.body;
-
-        const feedback = new Feedback({
-            booking: bookingId,
-            comment,
-            rating,
+        res.status(200).json({
+            success: true,
+            message: 'Profile updated successfully',
+            user: {
+                ...updatedUser.toObject(),
+                dateOfBirth: updatedUser.dateOfBirth ? new Date(updatedUser.dateOfBirth).toISOString().split('T')[0] : null
+            }
         });
+    } catch (error) {
+        next(error);
+    }
+};
 
-        await feedback.save();
+const getHelpInfo = async (_, res, next) => {
+    try {
+        res.status(200).json({
+            success: true,
+            helpInfo: {
+                message: "You can contact us 24/7",
+                supportEmail: "support@fleet.com",
+                supportPhone: "+1 (555) 123-4567"
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 
-        res.status(201).json({ message: 'Feedback submitted successfully', feedback });
+const logout = async (req, res, next) => {
+    try {
+        res.clearCookie('token');
+        res.status(200).json({
+            success: true,
+            message: 'Logged out successfully'
+        });
     } catch (error) {
         next(error);
     }
@@ -94,7 +105,6 @@ const submitFeedback = async (req, res, next) => {
 module.exports = {
     getUserProfile,
     updateUserProfile,
-    getPastJourneys,
-    getActiveJourneys,
-    submitFeedback
+    getHelpInfo,
+    logout
 };

@@ -1,147 +1,359 @@
 const Booking = require('../models/Booking');
 const Vehicle = require('../models/Vehicle');
-const Driver = require('../models/Driver');
 const { calculateTotalPayment } = require('../utils/calculatePayment');
+const { markVehicleUnavailable } = require('./vehicleController');
+const schedule = require('node-schedule');
+// Remove this line
+// const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-// Get all bookings for a user
-const getUserBookings = async (req, res, next) => {
+const initializeBooking = async (req, res, next) => {
     try {
-        const bookings = await Booking.find({ user: req.user.userId })
-            .populate('vehicle')
-            .populate('driverDetails');
+        const { vehicleId, pickupDate, returnDate } = req.body;
 
-        res.status(200).json({ bookings });
+        const vehicle = await Vehicle.findById(vehicleId);
+        if (!vehicle) {
+            return res.status(404).json({
+                success: false,
+                error: "Vehicle not found"
+            });
+        }
+
+        const totalPrice = calculateTotalPayment(vehicle.price, pickupDate, returnDate);
+
+        res.status(200).json({
+            success: true,
+            priceDetails: {
+                pricePerDay: vehicle.price,
+                totalPrice,
+                days: Math.ceil((new Date(returnDate) - new Date(pickupDate)) / (1000 * 60 * 60 * 24))
+            }
+        });
     } catch (error) {
         next(error);
     }
 };
 
-// Create a new booking
-const createBooking = async (req, res, next) => {
+const confirmBookingWithDriver = async (req, res, next) => {
     try {
-        const { vehicle, pickupDate, returnDate, pickupLocation, city, withDriver, deliveryRequired } = req.body;
-
-        // Fetch vehicle details
-        const selectedVehicle = await Vehicle.findById(vehicle);
-        if (!selectedVehicle) {
-            const error = new Error('Vehicle not found');
-            error.statusCode = 404;
-            throw error;
+        const { vehicleId, pickupDate, returnDate, address, isDelivery } = req.body;
+        
+        // Check if user is authenticated
+        if (!req.user || !req.user._id) {
+            return res.status(401).json({
+                success: false,
+                error: "User not authenticated"
+            });
         }
 
-        // Calculate total payment
-        const totalPayment = calculateTotalPayment(selectedVehicle.pricePerDay, pickupDate, returnDate);
+        const userId = req.user._id;
 
-        // Create booking
-        const booking = new Booking({
-            user: req.user.userId,
-            vehicle,
-            pickupDate,
-            returnDate,
-            pickupLocation,
-            city,
-            withDriver,
-            deliveryRequired,
-            totalPayment,
+        // Validate dates
+        const pickup = new Date(pickupDate);
+        const return_ = new Date(returnDate);
+        const now = new Date();
+
+        if (pickup <= now) {
+            return res.status(400).json({
+                success: false,
+                error: "Pickup date must be in the future"
+            });
+        }
+
+        if (return_ <= pickup) {
+            return res.status(400).json({
+                success: false,
+                error: "Return date must be after pickup date"
+            });
+        }
+
+        const vehicle = await Vehicle.findById(vehicleId);
+        if (!vehicle) {
+            return res.status(404).json({
+                success: false,
+                error: "Vehicle not found"
+            });
+        }
+
+        const totalPrice = calculateTotalPayment(vehicle.price, pickupDate, returnDate);
+
+        const newBooking = new Booking({
+            user: userId,
+            vehicle: vehicleId,
+            pickupDate: pickup,
+            returnDate: return_,
+            address,
+            totalAmount: totalPrice,
+            withDriver: true,
+            isDelivery: isDelivery || false,
+            status: 'pending',
+            bookingDate: new Date()
         });
 
-        await booking.save();
+        await newBooking.save();
 
-        // Update vehicle availability
-        selectedVehicle.availability = false;
-        await selectedVehicle.save();
-
-        // Assign driver for delivery (if self-driving and delivery is required)
-        if (!withDriver && deliveryRequired) {
-            const availableDriver = await Driver.findOne({ availability: true });
-            if (!availableDriver) {
-                const error = new Error('No available drivers for delivery');
-                error.statusCode = 400;
-                throw error;
-            }
-
-            // Assign driver to booking
-            booking.driverDetails = availableDriver._id;
-            await booking.save();
-
-            // Update driver availability
-            availableDriver.availability = false;
-            await availableDriver.save();
+        const statusUpdated = await markVehicleUnavailable(vehicleId, returnDate, newBooking._id);
+        
+        if (!statusUpdated) {
+            await Booking.findByIdAndDelete(newBooking._id);
+            return res.status(500).json({
+                success: false,
+                error: "Failed to update vehicle status"
+            });
         }
 
-        res.status(201).json({ message: 'Booking created successfully', booking });
+        res.status(200).json({
+            success: true,
+            message: "Booking confirmed successfully",
+            booking: newBooking
+        });
+
     } catch (error) {
         next(error);
     }
 };
 
-// Update a booking
-const updateBooking = async (req, res, next) => {
+const confirmSelfDriveStorePickup = async (req, res, next) => {
     try {
-        const { bookingId, pickupDate, returnDate, pickupLocation, city, withDriver, deliveryRequired } = req.body;
+        const { vehicleId, pickupDate, returnDate, userId, termsAccepted } = req.body;
 
-        const booking = await Booking.findById(bookingId);
-        if (!booking) {
-            const error = new Error('Booking not found');
-            error.statusCode = 404;
-            throw error;
+        if (!termsAccepted) {
+            return res.status(400).json({
+                success: false,
+                error: "Terms and conditions must be accepted"
+            });
         }
 
-        // Update booking fields
-        booking.pickupDate = pickupDate || booking.pickupDate;
-        booking.returnDate = returnDate || booking.returnDate;
-        booking.pickupLocation = pickupLocation || booking.pickupLocation;
-        booking.city = city || booking.city;
-        booking.withDriver = withDriver || booking.withDriver;
-        booking.deliveryRequired = deliveryRequired || booking.deliveryRequired;
+        const vehicle = await Vehicle.findById(vehicleId);
+        if (!vehicle) {
+            return res.status(404).json({
+                success: false,
+                error: "Vehicle not found"
+            });
+        }
 
-        await booking.save();
+        const totalPrice = calculateTotalPayment(vehicle.price, pickupDate, returnDate);
 
-        res.status(200).json({ message: 'Booking updated successfully', booking });
+        const newBooking = new Booking({
+            user: userId,
+            vehicle: vehicleId,
+            pickupDate,
+            returnDate,
+            totalAmount: totalPrice,
+            withDriver: false,
+            isDelivery: false,
+            status: 'pending',
+            termsAccepted,
+            bookingDate: new Date()
+        });
+
+        await newBooking.save();
+
+        const statusUpdated = await markVehicleUnavailable(vehicleId, returnDate, newBooking._id);
+        
+        if (!statusUpdated) {
+            await Booking.findByIdAndDelete(newBooking._id);
+            return res.status(500).json({
+                success: false,
+                error: "Failed to update vehicle status"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Self-drive booking confirmed with store pickup",
+            booking: newBooking
+        });
+
     } catch (error) {
         next(error);
     }
 };
 
-// Cancel a booking
+const confirmSelfDriveHomeDelivery = async (req, res, next) => {
+    try {
+        const { vehicleId, pickupDate, returnDate, deliveryAddress, userId, termsAccepted } = req.body;
+
+        if (!termsAccepted) {
+            return res.status(400).json({
+                success: false,
+                error: "Terms and conditions must be accepted"
+            });
+        }
+
+        if (!deliveryAddress) {
+            return res.status(400).json({
+                success: false,
+                error: "Delivery address is required"
+            });
+        }
+
+        const vehicle = await Vehicle.findById(vehicleId);
+        if (!vehicle) {
+            return res.status(404).json({
+                success: false,
+                error: "Vehicle not found"
+            });
+        }
+
+        const totalPrice = calculateTotalPayment(vehicle.price, pickupDate, returnDate);
+
+        const newBooking = new Booking({
+            user: userId,
+            vehicle: vehicleId,
+            pickupDate,
+            returnDate,
+            deliveryAddress,
+            totalAmount: totalPrice,
+            withDriver: false,
+            isDelivery: true,
+            status: 'pending',
+            termsAccepted,
+            bookingDate: new Date()
+        });
+
+        await newBooking.save();
+
+        const statusUpdated = await markVehicleUnavailable(vehicleId, returnDate, newBooking._id);
+        
+        if (!statusUpdated) {
+            await Booking.findByIdAndDelete(newBooking._id);
+            return res.status(500).json({
+                success: false,
+                error: "Failed to update vehicle status"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Self-drive booking confirmed with home delivery",
+            booking: newBooking
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
+const getActiveBookings = async (req, res, next) => {
+    try {
+        const userId = req.params.userId;
+        const currentDate = new Date();
+
+        const activeBookings = await Booking.find({
+            user: userId,
+            status: { $in: ['pending', 'active'] },  // Include both pending and active bookings
+            returnDate: { $gte: currentDate }   // Only check if return date hasn't passed
+        }).populate('vehicle', 'name image vehicleId driverName');
+
+        const formattedBookings = activeBookings.map(booking => {
+            const startDate = new Date(booking.pickupDate);
+            const endDate = new Date(booking.returnDate);
+            const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+
+            return {
+                vehicleName: booking.vehicle.name,
+                startDate: startDate.toLocaleString(),
+                endDate: endDate.toLocaleString(),
+                duration,
+                driverName: booking.vehicle.driverName,
+                vehicleId: booking.vehicle.vehicleId,
+                price: booking.totalAmount,
+                image: booking.vehicle.image,
+                bookingId: booking._id,
+                status: booking.status,
+                withDriver: booking.withDriver,
+                isDelivery: booking.isDelivery,
+                address: booking.address
+            };
+        });
+
+        res.status(200).json({
+            success: true,
+            bookings: formattedBookings
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getPastBookings = async (req, res, next) => {
+    try {
+        const { userId } = req.params;
+        
+        const pastBookings = await Booking.find({
+            user: userId,
+            status: 'completed'
+        }).populate('vehicle');
+
+        const formattedPastBookings = pastBookings.map(booking => ({
+            vehicleName: booking.vehicle.name,
+            startDate: new Date(booking.pickupDate).toLocaleString(),
+            endDate: new Date(booking.returnDate).toLocaleString(),
+            duration: Math.ceil((new Date(booking.returnDate) - new Date(booking.pickupDate)) / (1000 * 60 * 60 * 24)),
+            image: booking.vehicle.image,
+            bookingId: booking._id,
+            price: booking.totalAmount
+        }));
+
+        res.status(200).json({
+            success: true,
+            bookings: formattedPastBookings
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
 const cancelBooking = async (req, res, next) => {
     try {
         const { bookingId } = req.params;
 
         const booking = await Booking.findById(bookingId);
-        if (!booking || booking.status !== 'active') {
-            const error = new Error('Invalid booking');
-            error.statusCode = 400;
-            throw error;
+        if (!booking) {
+            return res.status(404).json({
+                success: false,
+                error: "Booking not found"
+            });
         }
 
-        // Update booking status
+        // Log the current status for debugging
+        console.log('Current booking status:', booking.status);
+
+        // Allow cancellation of both pending and active bookings
+        if (!['pending', 'active'].includes(booking.status)) {
+            return res.status(400).json({
+                success: false,
+                error: "Only pending or active bookings can be cancelled"
+            });
+        }
+
+        // Update vehicle status to available
+        await Vehicle.findByIdAndUpdate(booking.vehicle, {
+            availability: 'Available'
+        });
+
+        // Update booking status to cancelled
         booking.status = 'cancelled';
         await booking.save();
 
-        // Update vehicle availability
-        const vehicle = await Vehicle.findById(booking.vehicle);
-        vehicle.availability = true;
-        await vehicle.save();
+        res.status(200).json({
+            success: true,
+            message: "Booking cancelled successfully"
+        });
 
-        // Update driver availability (if a driver was assigned for delivery)
-        if (booking.driverDetails) {
-            const driver = await Driver.findById(booking.driverDetails);
-            if (driver) {
-                driver.availability = true;
-                await driver.save();
-            }
-        }
-
-        res.status(200).json({ message: 'Booking cancelled successfully' });
     } catch (error) {
+        console.error('Error in cancelBooking:', error);
         next(error);
     }
 };
 
 module.exports = {
-    getUserBookings,
-    createBooking,
-    updateBooking,
-    cancelBooking,
+    initializeBooking,
+    confirmBookingWithDriver,
+    confirmSelfDriveStorePickup,
+    confirmSelfDriveHomeDelivery,
+    getActiveBookings,
+    getPastBookings,
+    cancelBooking
 };
