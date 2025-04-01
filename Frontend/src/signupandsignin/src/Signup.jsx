@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import './Auth.css';
-import fleetLogo from './Fleet Logo.png';
-import OTPVerification from './otpverification';
+import "./Auth.css";
+import fleetLogo from "./Fleet Logo.png";
+import OTPVerification from "./otpverification";
 import useAuthStore from "./../../../store/AuthStore.js";
 
 export default function Signup() {
   const navigate = useNavigate();
-  const { setSignupData, sendOtp, isOtpSent } = useAuthStore();
+  const { setSignupData, sendOtp } = useAuthStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -31,18 +31,21 @@ export default function Signup() {
       setError("Passwords do not match!");
       return;
     }
-    try {
+
       setSignupData(email, password);
-      await sendOtp();
+      const res=await sendOtp();
+      if (!res.success) {
+        setError(res.message);
+        return;
+      }
+      console.log("OTP sent successfully");
       setError("");
       setShowOtp(true); // Show OTP verification instead of navigating
-    } catch (err) {
-      setError("Failed to send OTP. Please try again.");
-    }
+  
   };
 
   if (showOtp) {
-    return <OTPVerification email={email} />;
+    return <OTPVerification />;
   }
 
   return (
@@ -56,7 +59,7 @@ export default function Signup() {
 
         <div className="form-section">
           <h2 className="auth-title">Create New Account</h2>
-          
+
           {error && <div className="alert alert-danger">{error}</div>}
 
           <form onSubmit={handleSubmit} className="auth-form">

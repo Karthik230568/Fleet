@@ -1,40 +1,43 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const useAuthStore = create((set) => ({
-    email: "",
-    password: "",
-    otp: "",
-    isOtpSent: false,
-    isVerified: false,
+const useAuthStore = create((set, get) => ({
+  email: "",
+  password: "",
+  isOtpSent: false,
+  
+  // Set email and password during signup
+  setSignupData: (email, password) =>
+    set({ email, password }),
 
-    // Set email and password during signup
-    setSignupData: (email, password) => set({ email, password }),
-
-    // Send OTP request to backend
-    sendOtp: async () => {
-        try {
-            const { email } = useAuthStore.getState();
-            await axios.post("http://localhost:5000/api/auth/signup", { email });
-            set({ isOtpSent: true });
-        } catch (error) {
-            console.error("Error sending OTP:", error.response?.data || error.message);
-        }
-    },
-
-    // Verify OTP
-    verifyOtp: async (otp) => {
-        try {
-            const { email, password } = useAuthStore.getState();
-            const response = await axios.post("http://localhost:5000/api/auth/verify-otp", { email, otp, password });
-
-            if (response.status === 201) {
-                set({ isVerified: true });
-            }
-        } catch (error) {
-            console.error("Invalid OTP:", error.response?.data || error.message);
-        }
+  // Send OTP request to backend
+  sendOtp: async () => {
+    try {
+      const { email } = get();
+      const res=await axios.post("/api/auth/signup", { email });
+      if (res.status !== 200) {
+        return { success: false, message: res.message };
+      }
+      // If OTP sent successfully:
+      set({ isOtpSent: true });
+      return { success: true, message: "OTP sent successfully!" };
+    } catch (error) {
+      console.error("Error sending OTP:", error.response?.data || error.message);
+      throw error;
     }
-}));
+  },
 
+  // Verify OTP
+  verifyOtp: async (otp) => {
+    try {
+      const { email, password } = get();
+      await axios.post("/api/auth/verify-otp", { email, otp, password });
+      
+      // If successful verification:
+      return true;
+      
+     } catch(error){
+     throw error;
+     }
+}}));
 export default useAuthStore;
