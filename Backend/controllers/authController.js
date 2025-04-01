@@ -8,7 +8,7 @@ const { generateOTP, sendOTP } = require('../utils/OTP');
 
 const signup = async (req, res, next) => {
     try {
-        const { email, password } = req.body;
+        const { email } = req.body;
 
         // Check if user already exists
         const existingUser = await User.findOne({ email });
@@ -24,6 +24,7 @@ const signup = async (req, res, next) => {
 
         // Send OTP via email
         await sendOTP(email, otp);
+        console.log(`OTP sent to ${email}`); // For debugging 
 
         res.status(200).json({ message: "OTP sent to email. Please verify." });
     } catch (error) {
