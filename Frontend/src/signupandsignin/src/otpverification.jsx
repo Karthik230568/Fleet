@@ -37,7 +37,7 @@ export default function OTPVerification() {
     newOtp[index] = value;
     setOtp(newOtp);
 
-    if (value && index < 5) {
+    if (value && index < otp.length - 1) {
       document.getElementById(`otp-${index + 1}`).focus();
     } else if (!value && index > 0) {
       document.getElementById(`otp-${index - 1}`).focus();
@@ -56,9 +56,8 @@ export default function OTPVerification() {
 
   // Verify OTP Function
   const handleVerifyOtp = async () => {
-    const enteredOtp = otp.join("");
-
     try {
+      const enteredOtp = otp.join("");
       await verifyOtp(enteredOtp);
       setMessage("OTP Verified Successfully!");
       setTimeout(() => navigate("/home"), 1000);
@@ -67,6 +66,17 @@ export default function OTPVerification() {
     }
   };
 
+  // Resend OTP Function
+  const handleResendOtp = async () => {
+    try {
+      await sendOtp();
+      setTimer(45);
+      setResendEnabled(false);
+    } catch (error) {
+      console.error(error);
+      setMessage("Failed to resend OTP. Please try again.");
+    }
+  };
   return (
     <div className="auth-container">
       <div className="auth-box">
@@ -115,21 +125,11 @@ export default function OTPVerification() {
           </button>
 
           <div className="auth-links">
-            {!resendEnabled ? (
-              <p>
-                Resend OTP in <span className="timer">{timer}</span> seconds
-              </p>
-            ) : (
-              <a href="#" onClick={(e) => {
-                  e.preventDefault();
-                  setTimer(45);
-                  setResendEnabled(false);
-                  sendOtp();
-                }}
-              >
-                Resend OTP
-              </a>
-            )}
+          {!resendEnabled ? (
+            <p>Resend OTP in {timer} seconds</p>
+          ) : (
+            <button onClick={handleResendOtp}>Resend OTP</button>
+          )}
           </div>
         </div>
       </div>

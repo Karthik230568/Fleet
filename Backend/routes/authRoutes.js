@@ -4,7 +4,7 @@ const { validateSignup, validateLogin, handleValidationErrors } = require('../mi
 // const { generateOTP, sendOTP } = require('../utils/OTP'); // Import OTP functions
 const router = express.Router();
 
-router.post('/signup', validateSignup, handleValidationErrors, signup);
+router.post('/signup', signup);
 router.post('/login', validateLogin, handleValidationErrors, login);
 router.post('/verify-otp', verifyOTP);
 
