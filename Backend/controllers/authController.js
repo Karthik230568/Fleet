@@ -6,8 +6,11 @@ const { generateOTP, sendOTP } = require('../utils/OTP');
 
 const signup = async (req, res, next) => {
     try {
-        const { email } = req.body;
+        const { email, password, confirmPassword } = req.body;
 
+        if (password !== confirmPassword) {
+            return res.status(400).json({ error: "Passwords do not match" });
+        }
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
