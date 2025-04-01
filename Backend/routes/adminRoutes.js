@@ -1,46 +1,35 @@
 const express = require('express');
+const router = express.Router();
 const {
+    getAllVehicles,
     addVehicle,
-    removeVehicle,
     updateVehicle,
-    addDriver,
-    updateDriver,
-    removeDriver,
+    removeVehicle,
     getAllBookings,
     viewBookingsByDate,
+    addDriver,
+    removeDriver,
+    getDrivers,
+    getDriverProfile,
+    updateDriverProfile
 } = require('../controllers/adminController');
-
-const { validateLogin, handleValidationErrors } = require('../middleware/validationMiddleware');
-
-const { login, register }= require('../controllers/adminauth')
-
-const authMiddleware = require('../middleware/authMiddleware');
-
-const router = express.Router();
-
-//login
-router.post('/register', register)
-
-router.post('/login', validateLogin, handleValidationErrors, login)
+const { authenticateUser, authenticateAdmin } = require('../middleware/authMiddleware');
 
 // Vehicle routes
-router.post('/vehicle', authMiddleware, addVehicle);
-router.delete('/vehicle/:id', authMiddleware, removeVehicle);
-router.patch('/vehicle/:id', authMiddleware, updateVehicle);
+router.get('/vehicles', authenticateUser, authenticateAdmin, getAllVehicles);
+router.post('/vehicles', authenticateUser, authenticateAdmin, addVehicle);
+router.put('/vehicles/:id', authenticateUser, authenticateAdmin, updateVehicle);
+router.delete('/vehicles/:id', authenticateUser, authenticateAdmin, removeVehicle);
 
 // Driver routes
-router.post('/driver', authMiddleware, addDriver);
-router.patch('/driver/:id',authMiddleware, updateDriver);
-router.delete('/driver/:id', authMiddleware, removeDriver);
-
+router.post('/drivers', authenticateUser, authenticateAdmin, addDriver);
+router.delete('/drivers/:id', authenticateUser, authenticateAdmin, removeDriver);
+router.get('/drivers', authenticateUser, authenticateAdmin, getDrivers);
+router.get('/drivers/profile', authenticateUser, getDriverProfile);
+router.put('/drivers/profile', authenticateUser, updateDriverProfile);
 
 // Booking routes
-router.get('/bookings', authMiddleware, getAllBookings);
-router.get('/bookings-by-date', authMiddleware, viewBookingsByDate);
+router.get('/bookings', authenticateUser, authenticateAdmin, getAllBookings);
+router.get('/bookings/date', authenticateUser, authenticateAdmin, viewBookingsByDate);
 
 module.exports = router;
-
-
-//register and login
-// router.post('/register',register)
-// router.post('/login',login)

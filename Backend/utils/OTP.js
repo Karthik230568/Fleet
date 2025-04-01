@@ -22,8 +22,8 @@ async function sendOTP(email, otp) {
             from: `"Fleet" <${process.env.gmail}>`,
             to: email,
             subject: "Your OTP Code",
-            text: `Your OTP code is ${otp}. It will expire in 5 minutes.`,
-            html: `<p>Your OTP code is <b>${otp}</b>. It will expire in 5 minutes.</p>`,
+            text: `Your OTP code is ${otp}. It will expire in 10 minutes.`,
+            html: `<p>Your OTP code is <b>${otp}</b>. It will expire in 10 minutes.</p>`,
         };
 
         // Send email

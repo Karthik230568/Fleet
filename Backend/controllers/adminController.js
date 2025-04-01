@@ -1,203 +1,349 @@
-const Admin = require('../models/Administrator') 
+// const Admin = require('../models/Administrator');
 const Vehicle = require('../models/Vehicle');
-const Driver = require('../models/Driver');
 const Booking = require('../models/Booking');
+const Driver = require('../models/Driver');
 
-/*controllers:
-Add a vehicle
-get user profile
-update user profile
-get bookings by date
-*/
-// Add a new vehicle
-
-
-
-const addVehicle = async (req, res, next) => {
-    try{
-        const { name, image, pricePerDay, rentalName, driverDetails } = req.body
-        const vehicle = new Vehicle({
-            name,
-            image,
-            pricePerDay,
-            rentalName,
-            driverDetails,
+// Vehicle Management
+const getAllVehicles = async (req, res, next) => {
+    try {
+        const vehicles = await Vehicle.find()
+            .select('name type price availability rating driver fuelType seatingCapacity registrationPlate vehicleId image city');
+        
+        res.status(200).json({
+            success: true,
+            vehicles
         });
-
-        await vehicle.save();
-
-        res.status(201).json({ message: 'Vehicle added successfully', vehicle });
     } catch (error) {
         next(error);
     }
 };
 
-// Remove a vehicle
+// const getVehicleById = async (req, res, next) => {
+//     try {
+//         const { id } = req.params;
+//         const vehicle = await Vehicle.findById(id)
+//             .select('name type price availability rating driver fuelType seatingCapacity registrationPlate vehicleId image city');
+        
+//         if (!vehicle) {
+//             return res.status(404).json({
+//                 success: false,
+//                 error: 'Vehicle not found'
+//             });
+//         }
+
+//         res.status(200).json({
+//             success: true,
+//             vehicle
+//         });
+//     } catch (error) {
+//         next(error);
+//     }
+// };
+
+const addVehicle = async (req, res, next) => {
+    try {
+        const { 
+            name, 
+            type,
+            price, 
+            city,
+            driverName,
+            driverId,
+            fuelType,
+            seatingCapacity,
+            registrationPlate,
+            vehicleId,
+            image,
+            withDriver
+        } = req.body;
+
+        // Create vehicle object with required fields
+        const vehicleData = {
+            name,
+            type,
+            price,
+            city,
+            availability: 'Available',
+            rating: 0.0,
+            fuelType,
+            seatingCapacity,
+            registrationPlate,
+            vehicleId,
+            image
+        };
+
+        // Only add driver-related fields if withDriver is true
+        if (withDriver === true) {
+            if (!driverName || !driverId) {
+                return res.status(400).json({
+                    success: false,
+                    error: 'Driver name and ID are required when adding a vehicle with driver'
+                });
+            }
+            vehicleData.driverName = driverName;
+            vehicleData.driverId = driverId;
+        }
+
+        const vehicle = new Vehicle(vehicleData);
+        await vehicle.save();
+
+        res.status(201).json({
+            success: true,
+            message: 'Vehicle added successfully',
+            vehicle
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const updateVehicle = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const updates = req.body;
+
+        const vehicle = await Vehicle.findByIdAndUpdate(
+            id,
+            updates,
+            { new: true }
+        );
+
+        if (!vehicle) {
+            return res.status(404).json({
+                success: false,
+                error: 'Vehicle not found'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Vehicle updated successfully',
+            vehicle
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 const removeVehicle = async (req, res, next) => {
     try {
         const { id } = req.params;
 
         const vehicle = await Vehicle.findByIdAndDelete(id);
         if (!vehicle) {
-            const error = new Error('Vehicle not found');
-            error.statusCode = 404;
-            throw error;
+            return res.status(404).json({
+                success: false,
+                error: 'Vehicle not found'
+            });
         }
 
-        res.status(200).json({ message: 'Vehicle removed successfully' });
+        res.status(200).json({
+            success: true,
+            message: 'Vehicle removed successfully'
+        });
     } catch (error) {
         next(error);
     }
 };
 
-// Update a vehicle
-const updateVehicle = async (req, res, next) => {
+// Booking Management
+const getAllBookings = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const { name, image, pricePerDay, rentalName, driverDetails } = req.body;
+        const bookings = await Booking.find()
+            .populate('user', 'email')
+            .populate('vehicle', 'name type');
 
-        const vehicle = await Vehicle.findByIdAndUpdate(
-            id,
-            { name, image, pricePerDay, rentalName, driverDetails },
-            { new: true }
-        );
-
-        if (!vehicle) {
-            const error = new Error('Vehicle not found');
-            error.statusCode = 404;
-            throw error;
-        }
-
-        res.status(200).json({ message: 'Vehicle updated successfully', vehicle });
+        res.status(200).json({
+            success: true,
+            count: bookings.length,
+            bookings
+        });
     } catch (error) {
         next(error);
     }
 };
 
-// Add a new driver
+const viewBookingsByDate = async (req, res, next) => {
+    try {
+        const { startDate, endDate } = req.query;
+        
+        const bookings = await Booking.find({
+            $or: [
+                {
+                    pickupDate: {
+                        $gte: new Date(startDate),
+                        $lte: new Date(endDate)
+                    }
+                },
+                {
+                    returnDate: {
+                        $gte: new Date(startDate),
+                        $lte: new Date(endDate)
+                    }
+                },
+                {
+                    $and: [
+                        { pickupDate: { $lte: new Date(startDate) } },
+                        { returnDate: { $gte: new Date(endDate) } }
+                    ]
+                }
+            ]
+        })
+        .populate('user', 'name email')
+        .populate('vehicle', 'name type');
+
+        const formattedBookings = bookings.map(booking => ({
+            bookingId: booking._id,
+            userName: booking.user.name,
+            userEmail: booking.user.email,
+            vehicleName: booking.vehicle.name,
+            pickupDate: new Date(booking.pickupDate).toLocaleString(),
+            returnDate: new Date(booking.returnDate).toLocaleString(),
+            totalAmount: booking.totalAmount,
+            status: booking.status,
+            withDriver: booking.withDriver,
+            isDelivery: booking.isDelivery,
+            address: booking.address
+        }));
+
+        res.status(200).json({
+            success: true,
+            bookings: formattedBookings,
+            dateRange: {
+                startDate,
+                endDate
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Driver Management
 const addDriver = async (req, res, next) => {
     try {
-        const { name, licenseNumber, contact } = req.body;
+        const { name, age, phone, license, vehicleId, driverId, image, address } = req.body;
 
-        const driver = new Driver({
+        // Create driver object with required fields
+        const driverData = {
             name,
-            licenseNumber,
-            contact,
-        });
+            age,
+            phone,
+            license,
+            driverId,
+            address,
+            image: image || 'default-driver.jpg'
+        };
 
-        await driver.save();
-
-        res.status(201).json({ message: 'Driver added successfully', driver });
-    } catch (error) {
-        next(error);
-    }
-};
-
-//Update Driver
-const updateDriver = async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        const updates = req.body; // Fields to update
-
-        const updatedDriver = await Driver.findByIdAndUpdate(id, updates, { new: true });
-
-        if (!updatedDriver) {
-            return res.status(404).json({ message: 'Driver not found' });
+        // Only add vehicleId if it's provided
+        if (vehicleId) {
+            driverData.vehicleId = vehicleId;
         }
 
-        res.status(200).json({ message: 'Driver updated successfully', driver: updatedDriver });
+        const driver = new Driver(driverData);
+        await driver.save();
+
+        res.status(201).json({
+            success: true,
+            message: 'Driver added successfully',
+            driver
+        });
     } catch (error) {
         next(error);
     }
 };
 
-
-// Remove a driver
 const removeDriver = async (req, res, next) => {
     try {
         const { id } = req.params;
 
         const driver = await Driver.findByIdAndDelete(id);
         if (!driver) {
-            const error = new Error('Driver not found');
-            error.statusCode = 404;
-            throw error;
+            return res.status(404).json({
+                success: false,
+                error: 'Driver not found'
+            });
         }
 
-        res.status(200).json({ message: 'Driver removed successfully' });
+        res.status(200).json({
+            success: true,
+            message: 'Driver removed successfully'
+        });
     } catch (error) {
         next(error);
     }
 };
 
-
-
-// Get all bookings
-const getAllBookings = async (req, res, next) => {
+const getDrivers = async (req, res, next) => {
     try {
-        const bookings = await Booking.find()
-            .populate('vehicle')
-            .populate('user')
-            .populate('driverDetails');
-
-        res.status(200).json({ bookings });
+        const drivers = await Driver.find();
+        res.status(200).json({
+            success: true,
+            drivers
+        });
     } catch (error) {
         next(error);
     }
 };
 
-// View bookings by date
-const viewBookingsByDate = async (req, res, next) => {
+const getDriverProfile = async (req, res, next) => {
     try {
-        const { date } = req.query;
+        const driver = await Driver.findById(req.user.userId)
+            .select('name license contact');
 
-        const bookings = await Booking.find({
-            pickupDate: { $lte: new Date(date) },
-            returnDate: { $gte: new Date(date) },
-        }).populate('vehicle user');
+        if (!driver) {
+            return res.status(404).json({
+                success: false,
+                error: 'Driver not found'
+            });
+        }
 
-        res.status(200).json({ bookings });
+        res.status(200).json({
+            success: true,
+            driver
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const updateDriverProfile = async (req, res, next) => {
+    try {
+        const { name, contact } = req.body;
+        
+        const driver = await Driver.findByIdAndUpdate(
+            req.user.userId,
+            { name, contact },
+            { new: true }
+        );
+
+        if (!driver) {
+            return res.status(404).json({
+                success: false,
+                error: 'Driver not found'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Profile updated successfully',
+            driver
+        });
     } catch (error) {
         next(error);
     }
 };
 
 module.exports = {
+    getAllVehicles,
     addVehicle,
-    removeVehicle,
     updateVehicle,
-    addDriver,
-    updateDriver,
-    removeDriver,
+    removeVehicle,
     getAllBookings,
     viewBookingsByDate,
+    addDriver,
+    removeDriver,
+    getDrivers,
+    getDriverProfile,
+    updateDriverProfile
 };
-
-
-// const register=async (req, res,next) => {
-//     try {
-//       const { name, email,city, password, contactInfo } = req.body;
-//       const hashedPassword = await bcrypt.hash(password, 10);
-//       const admin = new Admin({ name, email,city, password: hashedPassword, contactInfo });
-//       await admin.save();
-//       res.status(201).json({ message: 'Organization registered successfully' });
-//     } catch (error) {
-//       res.status(500).json({ message: 'Error registering organization', error: error.message });
-//       next(error);
-//     }
-// };
-
-// const login= async (req, res,next) => {
-//     try {
-//       const { email, password } = req.body;
-//       const admin = await Admin.findOne({ email });
-//       if (!admin || !(await bcrypt.compare(password, admin.password))) {
-//         return res.status(401).json({ message: 'Invalid credentials' });
-//       }
-//       const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-//       res.json({ token });
-//     } catch (error) {
-//       res.status(500).json({ message: 'Error logging in', error: error.message });
-//       next(error);
-//     }
-// };

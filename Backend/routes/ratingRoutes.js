@@ -1,12 +1,12 @@
 const express = require('express');
-const { rateVehicle, rateDriver } = require('../controllers/ratingController');
-const authMiddleware = require('../middleware/authMiddleware');
 const router = express.Router();
+const { 
+    submitFeedback,
+    getFeedbackStatus 
+} = require('../controllers/ratingController');
+const { authenticateUser } = require('../middleware/authMiddleware');
 
-// Rate vehicle route
-router.post('/vehicle', authMiddleware, rateVehicle);
-
-// // Rate driver route
-// router.post('/driver', authMiddleware, rateDriver);
+router.post('/submit', authenticateUser, submitFeedback);
+router.get('/status/:bookingId', authenticateUser, getFeedbackStatus);
 
 module.exports = router;

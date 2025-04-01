@@ -72,9 +72,9 @@ function Admincarspage() {
     let updatedVehicles = [...vehicles];
 
     if (filter === "Available") {
-      updatedVehicles = updatedVehicles.filter((v) => v.availability === "Yes");
+      updatedVehicles = updatedVehicles.filter((v) => v.availability === "Available");
     } else if (filter === "Not available") {
-      updatedVehicles = updatedVehicles.filter((v) => v.availability === "No");
+      updatedVehicles = updatedVehicles.filter((v) => v.availability === "Not available");
     } else if (filter === "Cars") {
       updatedVehicles = updatedVehicles.filter(
         (v) => v.type.toLowerCase() === "car"

@@ -8,7 +8,7 @@ function AddCar({ onAddVehicle, editingVehicle }) {
     type: "Car",
     name: "",
     price: "",
-    availability: "Yes",
+    availability: "Available",
     rating: "0.0",
     image: "",
     fuelType: "Petrol",
@@ -86,8 +86,6 @@ function AddCar({ onAddVehicle, editingVehicle }) {
           >
             <option value="Car">Car</option>
             <option value="Bike">Bike</option>
-            <option value="Van">Van</option>
-            <option value="Truck">Truck</option>
           </select>
         </div>
 
@@ -123,8 +121,8 @@ function AddCar({ onAddVehicle, editingVehicle }) {
             onChange={handleChange}
             required
           >
-            <option value="Yes">Available</option>
-            <option value="No">Not Available</option>
+            <option value="Available">Available</option>
+            <option value="Not available">Not Available</option>
           </select>
         </div>
 
@@ -165,7 +163,6 @@ function AddCar({ onAddVehicle, editingVehicle }) {
             <option value="Petrol">Petrol</option>
             <option value="Diesel">Diesel</option>
             <option value="Electric">Electric</option>
-            <option value="Hybrid">Hybrid</option>
           </select>
         </div>
 
