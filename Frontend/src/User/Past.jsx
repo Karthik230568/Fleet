@@ -51,8 +51,8 @@ function Past() {
 
         {/* Tabs */}
         <div className="tabs_past">
-          <NavLink to='/active' className="tab_past">Active</NavLink>
-          <NavLink to='/past' className="active_past">Past journey</NavLink>
+          <NavLink to='/home/active' className="tab_past">Active</NavLink>
+          <NavLink to='/home/past' className="active_past">Past journey</NavLink>
         </div>
 
         {/* Booking Cards */}
