@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import useAuthStore from "../../../store/AuthStore"; // Import Zustand store
 import './Auth.css';
 import fleetLogo from './Fleet Logo.png';
 
 export default function Signin() {
   const navigate = useNavigate();
+  const login = useAuthStore((state) => state.login); // Zustand login function
+  const errorFromStore = useAuthStore((state) => state.error); // Zustand error state
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -13,7 +17,7 @@ export default function Signin() {
   const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   // Form Submit Handler
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!isValidEmail(email)) {
@@ -25,9 +29,15 @@ export default function Signin() {
       return;
     }
 
-    setError("");
-    // Navigate to user home page after successful login
-    navigate("/home");
+    try {
+      setError(""); // Clear local error
+      const res = await login(email, password); // Call Zustand login function
+      console.log("Login successful:", res);
+      navigate("/home"); // Navigate to home page on success
+    } catch (err) {
+      console.error("Login failed:", err);
+      setError(errorFromStore || "Login failed. Please try again."); // Use Zustand error
+    }
   };
 
   const handleForgotPassword = (e) => {
@@ -47,7 +57,9 @@ export default function Signin() {
         <div className="form-section">
           <h2 className="auth-title">Sign In</h2>
 
-          {error && <div className="alert alert-danger">{error}</div>}
+          {(error || errorFromStore) && (
+            <div className="alert alert-danger">{error || errorFromStore}</div>
+          )}
 
           <form onSubmit={handleSubmit} className="auth-form">
             <div className="mb-3">
