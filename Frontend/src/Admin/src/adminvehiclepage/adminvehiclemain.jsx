@@ -1,80 +1,36 @@
 import "./adminvehicle.css";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, Routes, Route } from "react-router-dom";
 import Filter from "./filter";
 import VehicleCard from "./vehiclecard";
 import AddCar from "./addcar";
-import carData from "./cardata";
+import useVehicleStore from "../../../../store/vehicleStore";
 
 function Admincarspage() {
   const navigate = useNavigate();
-  const [vehicles, setVehicles] = useState(() => {
-    const savedVehicles = localStorage.getItem("vehicles");
-    return savedVehicles ? JSON.parse(savedVehicles) : carData;
-  });
-  const [filteredVehicles, setFilteredVehicles] = useState(vehicles);
+  const { vehicles, fetchVehicles, addVehicle, updateVehicle, deleteVehicle } =
+    useVehicleStore();
+  const [filteredVehicles, setFilteredVehicles] = useState([]);
   const [filter, setFilter] = useState("All");
   const [editingVehicle, setEditingVehicle] = useState(null);
 
-  // Save vehicles to localStorage whenever they change
+  // Fetch vehicles from the backend on component mount
   useEffect(() => {
-    localStorage.setItem("vehicles", JSON.stringify(vehicles));
-  }, [vehicles]);
-
-  const handleAddVehicle = () => {
-    setEditingVehicle(null);
-    navigate("add");
-  };
-
-  const handleNewVehicle = (newVehicle) => {
-    if (editingVehicle) {
-      // Update existing vehicle
-      setVehicles((prevVehicles) => {
-        const updatedVehicles = prevVehicles.map((v) =>
-          v === editingVehicle ? newVehicle : v
-        );
-        localStorage.setItem("vehicles", JSON.stringify(updatedVehicles));
-        return updatedVehicles;
-      });
-    } else {
-      // Add new vehicle
-      setVehicles((prevVehicles) => {
-        const updatedVehicles = [...prevVehicles, newVehicle];
-        localStorage.setItem("vehicles", JSON.stringify(updatedVehicles));
-        return updatedVehicles;
-      });
-    }
-    navigate("..");
-  };
-
-  const handleEditVehicle = (vehicle) => {
-    setEditingVehicle(vehicle);
-    navigate("add");
-  };
-
-  const handleDeleteVehicle = (vehicle) => {
-    if (window.confirm("Are you sure you want to delete this vehicle?")) {
-      setVehicles((prevVehicles) => {
-        const updatedVehicles = prevVehicles.filter((v) => v !== vehicle);
-        localStorage.setItem("vehicles", JSON.stringify(updatedVehicles));
-        return updatedVehicles;
-      });
-    }
-  };
-
-  // Function to update filter state
-  const handleFilterChange = (selectedFilter) => {
-    setFilter(selectedFilter);
-  };
+    fetchVehicles();
+  }, [fetchVehicles]);
 
   // Apply filtering & sorting logic
   useEffect(() => {
     let updatedVehicles = [...vehicles];
 
     if (filter === "Available") {
-      updatedVehicles = updatedVehicles.filter((v) => v.availability === "Available");
+      updatedVehicles = updatedVehicles.filter(
+        (v) => v.availability === "Available"
+      );
     } else if (filter === "Not available") {
-      updatedVehicles = updatedVehicles.filter((v) => v.availability === "Not available");
+      updatedVehicles = updatedVehicles.filter(
+        (v) => v.availability === "Not available"
+      );
     } else if (filter === "Cars") {
       updatedVehicles = updatedVehicles.filter(
         (v) => v.type.toLowerCase() === "car"
@@ -94,6 +50,37 @@ function Admincarspage() {
     setFilteredVehicles(updatedVehicles);
   }, [filter, vehicles]);
 
+  const handleAddVehicle = () => {
+    setEditingVehicle(null);
+    navigate("add");
+  };
+
+  const handleNewVehicle = async (newVehicle) => {
+    if (editingVehicle) {
+      // Update existing vehicle
+      await updateVehicle(editingVehicle.id, newVehicle);
+    } else {
+      // Add new vehicle
+      await addVehicle(newVehicle);
+    }
+    navigate("..");
+  };
+
+  const handleEditVehicle = (vehicle) => {
+    setEditingVehicle(vehicle);
+    navigate("add");
+  };
+
+  const handleDeleteVehicle = async (vehicle) => {
+    if (window.confirm("Are you sure you want to delete this vehicle?")) {
+      await deleteVehicle(vehicle.id);
+    }
+  };
+
+  const handleFilterChange = (selectedFilter) => {
+    setFilter(selectedFilter);
+  };
+
   return (
     <>
       <Routes>
@@ -112,7 +99,7 @@ function Admincarspage() {
                   />
                 ))}
                 <div className="add-card" onClick={handleAddVehicle}>
-                  <h2>+ Add Vehicle</h2> 
+                  <h2>+ Add Vehicle</h2>
                 </div>
               </div>
             </div>

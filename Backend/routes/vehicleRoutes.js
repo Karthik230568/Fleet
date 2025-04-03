@@ -1,57 +1,69 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { 
-    searchVehicles,
-    updateVehicleStatus,
-    markVehicleUnavailable
-} = require('../controllers/vehicleController');
-const { authenticateUser, authenticateAdmin } = require('../middleware/authMiddleware');
+const {
+  searchVehicles,
+  markVehicleUnavailable,
+  updateVehicleStatus,
+} = require("../controllers/vehicleController");
 
-// Search vehicles with filters
-router.get('/search', authenticateUser, searchVehicles);
+// Fetch all vehicles (with optional filters)
+router.get("/", searchVehicles);
 
-// Test endpoint for markVehicleUnavailable
-router.post('/:id/mark-unavailable', authenticateUser, authenticateAdmin, async (req, res, next) => {
-    try {
-        const { returnDate } = req.body;
-        const success = await markVehicleUnavailable(req.params.id, returnDate);
-        
-        if (success) {
-            res.status(200).json({
-                success: true,
-                message: 'Vehicle marked as unavailable'
-            });
-        } else {
-            res.status(400).json({
-                success: false,
-                error: 'Failed to mark vehicle as unavailable'
-            });
-        }
-    } catch (error) {
-        next(error);
-    }
+// Add a new vehicle
+router.post("/", async (req, res) => {
+  try {
+    const vehicleData = req.body;
+    const newVehicle = await Vehicle.create(vehicleData);
+    res.status(201).json(newVehicle);
+  } catch (error) {
+    res.status(500).json({ error: "Error adding vehicle" });
+  }
 });
 
-// Vehicle status management routes
-router.put('/:id/status', authenticateUser, async (req, res, next) => {
-    try {
-        const { status, bookingId } = req.body;
-        const success = await updateVehicleStatus(req.params.id, status, bookingId);
-        
-        if (success) {
-            res.status(200).json({
-                success: true,
-                message: `Vehicle status updated to ${status}`
-            });
-        } else {
-            res.status(400).json({
-                success: false,
-                error: 'Failed to update vehicle status'
-            });
-        }
-    } catch (error) {
-        next(error);
+// Update a vehicle's status
+router.put("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedData = req.body;
+    const updatedVehicle = await Vehicle.findByIdAndUpdate(id, updatedData, {
+      new: true,
+    });
+    if (!updatedVehicle) {
+      return res.status(404).json({ error: "Vehicle not found" });
     }
+    res.status(200).json(updatedVehicle);
+  } catch (error) {
+    res.status(500).json({ error: "Error updating vehicle" });
+  }
 });
 
-module.exports = router; 
+// Delete a vehicle
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedVehicle = await Vehicle.findByIdAndDelete(id);
+    if (!deletedVehicle) {
+      return res.status(404).json({ error: "Vehicle not found" });
+    }
+    res.status(200).json({ message: "Vehicle deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Error deleting vehicle" });
+  }
+});
+
+// Mark a vehicle as unavailable
+router.post("/:id/unavailable", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { returnDate, bookingId } = req.body;
+    const result = await markVehicleUnavailable(id, returnDate, bookingId);
+    if (!result) {
+      return res.status(404).json({ error: "Vehicle not found or error occurred" });
+    }
+    res.status(200).json({ message: "Vehicle marked as unavailable" });
+  } catch (error) {
+    res.status(500).json({ error: "Error marking vehicle unavailable" });
+  }
+});
+
+module.exports = router;
