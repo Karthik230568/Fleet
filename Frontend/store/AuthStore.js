@@ -32,6 +32,9 @@ const useAuthStore = create((set, get) => ({
     try {
       const { email, password } = get();
       const res=await axios.post("/api/auth/verify-otp", { email, otp, password });
+      if (res.data.success===false) {
+        return res.data;
+      }
       set({ isVerified: true });
       // If successful verification:
       return res.data;

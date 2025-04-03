@@ -6,11 +6,9 @@ const { generateOTP, sendOTP } = require('../utils/OTP');
 
 const signup = async (req, res, next) => {
     try {
-        const { email, password, confirmPassword } = req.body;
+        const { email } = req.body;
 
-        if (password !== confirmPassword) {
-            return res.status(400).json({ error: "Passwords do not match" });
-        }
+
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -88,7 +86,7 @@ const verifyOTP = async (req, res, next) => {
         const otpAge = (new Date() - otpRecord.createdAt) / 1000 / 60;
         if (otpAge > 10) {
             await OTP.deleteOne({ email });
-            return res.status(400).json({ error: "OTP has expired. Please request a new one." });
+            return res.status(400).json({ success: false, message: "OTP has expired. Please request a new one." });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -109,6 +107,7 @@ const verifyOTP = async (req, res, next) => {
         );
 
         res.status(201).json({ 
+            success: true,
             message: "User registered successfully!",
             token,
             user: {
