@@ -48,32 +48,34 @@ const useAuthStore = create((set, get) => ({
     },
 
   login: async (email, password) => {
-      try {
-        const res = await axios.post("/api/auth/login", { email, password });
-        set({
-          user: res.data.user,
-          token: res.data.token,
-          error: null,
-        });
-        return res.data; // Return response for further actions
-      } catch (error) {
-        console.error("Login error:", error.response?.data || error.message);
-        set({
-          user: null,
-          token: null,
-          error: error.response?.data?.error || "Login failed. Please try again.",
-        });
-        throw error; // Rethrow error for handling in the component
-      }
-    },
-
-    logout: () => {
+    try {
+      const res = await axios.post("/api/auth/login", { email, password });
+      // localStorage.setItem("authToken", res.data.token); // Store the token in localStorage
+      // console.log("Token stored in localStorage:", localStorage.getItem("authToken"));
+      set({
+        user: res.data.user,
+        token: res.data.token,
+        error: null,
+      });
+      return res.data; // Return response for further actions
+    } catch (error) {
+      console.error("Login error:", error.response?.data || error.message);
       set({
         user: null,
         token: null,
-        error: null,
+        error: error.response?.data?.error || "Login failed. Please try again.",
       });
-    },
+      throw error; // Rethrow error for handling in the component
+    }
+  },
+
+  logout: () => {
+    set({
+      user: null,
+      token: null,
+      error: null,
+    });
+  },
 
 }));
 export default useAuthStore;

@@ -1,7 +1,6 @@
 import { create } from "zustand";
-import axios from "axios";
 
-const useBookingStore = create((set) => ({
+const useBookingStore = create((set, get) => ({
   pickupDate: null,
   returnDate: null,
   bookingType: null,
@@ -17,11 +16,19 @@ const useBookingStore = create((set) => ({
   // Send booking details to the backend
   initializeBooking: async () => {
     try {
-      const { pickupDate, returnDate, bookingType, city } = get();
+      const { pickupDate, returnDate, bookingType, city } = get(); // Use `get` to access the current state
+
+      // Retrieve the token from localStorage
+    //   const token = localStorage.getItem("authToken");
+    //   if (!token) {
+    //     throw new Error("Authentication token is missing");
+    //   }
+
       const response = await fetch("/api/bookings/initialize", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+        //   Authorization: `Bearer ${token}`, // Include the token in the Authorization header
         },
         body: JSON.stringify({
           pickupDate,

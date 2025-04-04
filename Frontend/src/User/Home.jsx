@@ -1,7 +1,7 @@
 import './Home.css';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import useBookingStore from '../../../store/BookingStore'; // Import Zustand store
+import useBookingStore from './../../store/BookingStore.js'; // Import Zustand store
 
 function Home() {
   const navigate = useNavigate();

@@ -3,30 +3,33 @@ const Vehicle = require('../models/Vehicle');
 const { calculateTotalPayment } = require('../utils/calculatePayment');
 const { markVehicleUnavailable } = require('./vehicleController');
 const schedule = require('node-schedule');
-// Remove this line
-// const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const initializeBooking = async (req, res, next) => {
     try {
-        const { vehicleId, pickupDate, returnDate } = req.body;
+        const { pickupDate, returnDate, bookingType, city } = req.body;
 
-        const vehicle = await Vehicle.findById(vehicleId);
-        if (!vehicle) {
-            return res.status(404).json({
+        // Validate dates
+        const pickup = new Date(pickupDate);
+        const return_ = new Date(returnDate);
+        const now = new Date();
+
+        if (pickup <= now) {
+            return res.status(400).json({
                 success: false,
-                error: "Vehicle not found"
+                error: "Pickup date must be in the future",
             });
         }
 
-        const totalPrice = calculateTotalPayment(vehicle.price, pickupDate, returnDate);
+        if (return_ <= pickup) {
+            return res.status(400).json({
+                success: false,
+                error: "Return date must be after pickup date",
+            });
+        }
 
         res.status(200).json({
             success: true,
-            priceDetails: {
-                pricePerDay: vehicle.price,
-                totalPrice,
-                days: Math.ceil((new Date(returnDate) - new Date(pickupDate)) / (1000 * 60 * 60 * 24))
-            }
+            message: "Booking initialized successfully",
         });
     } catch (error) {
         next(error);
@@ -233,6 +236,65 @@ const confirmSelfDriveHomeDelivery = async (req, res, next) => {
         next(error);
     }
 };
+
+// const confirmBooking = async (req, res, next) => {
+//     try {
+//         const { vehicleId, pickupDate, returnDate, bookingType } = req.body;
+
+//         // Check if user is authenticated
+//         if (!req.user || !req.user._id) {
+//             return res.status(401).json({
+//                 success: false,
+//                 error: "User not authenticated",
+//             });
+//         }
+
+//         const userId = req.user._id;
+
+//         // Validate dates
+//         const pickup = new Date(pickupDate);
+//         const return_ = new Date(returnDate);
+
+//         if (pickup >= return_) {
+//             return res.status(400).json({
+//                 success: false,
+//                 error: "Return date must be after pickup date",
+//             });
+//         }
+
+//         const vehicle = await Vehicle.findById(vehicleId);
+//         if (!vehicle) {
+//             return res.status(404).json({
+//                 success: false,
+//                 error: "Vehicle not found",
+//             });
+//         }
+
+//         const totalPrice = calculateTotalPayment(vehicle.price, pickupDate, returnDate);
+
+//         const newBooking = new Booking({
+//             user: userId,
+//             vehicle: vehicleId,
+//             pickupDate: pickup,
+//             returnDate: return_,
+//             totalAmount: totalPrice,
+//             bookingType,
+//             status: "pending",
+//             bookingDate: new Date(),
+//         });
+
+//         await newBooking.save();
+
+//         res.status(200).json({
+//             success: true,
+//             message: "Booking confirmed successfully",
+//             booking: newBooking,
+//         });
+//     } catch (error) {
+//         next(error);
+//     }
+// };
+
 const getActiveBookings = async (req, res, next) => {
     try {
         const userId = req.params.userId;
