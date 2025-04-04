@@ -6,6 +6,9 @@ const useAuthStore = create((set, get) => ({
   password: "",
   isOtpSent: false,
   isVerified: false,
+  user: null,
+  token: null,
+  error: null,
   // Set email and password during signup
   setSignupData: (email, password) =>
     set({ email, password }),

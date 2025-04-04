@@ -24,14 +24,18 @@ export default function Signin() {
       setError("Invalid Email Format!");
       return;
     }
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters!");
-      return;
-    }
+    // if (password.length < 6) {
+    //   setError("Password must be at least 6 characters!");
+    //   return;
+    // }
 
     try {
       setError(""); // Clear local error
       const res = await login(email, password); // Call Zustand login function
+      if (res.status !== 200) {
+        setError(res.message); // Set error from response 
+        return;
+      }
       console.log("Login successful:", res);
       navigate("/home"); // Navigate to home page on success
     } catch (err) {

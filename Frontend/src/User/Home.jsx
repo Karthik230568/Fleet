@@ -1,25 +1,63 @@
-import './Home.css'
-import { NavLink } from 'react-router-dom';
+import './Home.css';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import useBookingStore from '../../../store/BookingStore'; // Import Zustand store
 
 function Home() {
-  const [bookingType, setBookingType] = useState(() => {
-    // Retrieve the bookingType from localStorage if it exists
+  const navigate = useNavigate();
+
+  // Zustand store actions and state
+  const {
+    setPickupDate,
+    setReturnDate,
+    setBookingType,
+    setCity,
+    initializeBooking,
+    error,
+  } = useBookingStore();
+
+  const [city, setLocalCity] = useState('');
+  const [pickupDate, setLocalPickupDate] = useState('');
+  const [pickupTime, setLocalPickupTime] = useState('');
+  const [returnDate, setLocalReturnDate] = useState('');
+  const [returnTime, setLocalReturnTime] = useState('');
+  const [bookingType, setLocalBookingType] = useState(() => {
     return localStorage.getItem('bookingType') || '';
   });
 
   const handleBookingTypeChange = (event) => {
     const selectedBookingType = event.target.value;
-    setBookingType(selectedBookingType);
-    // Store the selected bookingType in localStorage
+    setLocalBookingType(selectedBookingType);
+    setBookingType(selectedBookingType); // Update Zustand store
     localStorage.setItem('bookingType', selectedBookingType);
   };
 
+  const handleSearch = async () => {
+    try {
+      // Combine date and time for pickup and return
+      const fullPickupDate = `${pickupDate}T${pickupTime}`;
+      const fullReturnDate = `${returnDate}T${returnTime}`;
+
+      // Update Zustand store
+      setPickupDate(fullPickupDate);
+      setReturnDate(fullReturnDate);
+      setCity(city);
+
+      // Send data to the backend
+      const response = await initializeBooking();
+      console.log("Booking initialized successfully:", response);
+
+      // Navigate to the vehicles page with booking details
+      navigate('/home/vehicles', { state: { bookingType } });
+    } catch (error) {
+      console.error("Error during booking initialization:", error);
+    }
+  };
+
   useEffect(() => {
-    // Retrieve the bookingType from localStorage when the component mounts
     const storedBookingType = localStorage.getItem('bookingType');
     if (storedBookingType) {
-      setBookingType(storedBookingType);
+      setLocalBookingType(storedBookingType);
     }
   }, []);
 
@@ -31,8 +69,15 @@ function Home() {
             <img src="/BLogo.jpg" alt="🚗 FLEET" />
           </div>
           <div className="card_home">
-            <select className="select_home">
-              <option>Select City</option>
+            <select
+              className="select_home"
+              value={city}
+              onChange={(e) => setLocalCity(e.target.value)}
+            >
+              <option value="">Select City</option>
+              <option value="New York">New York</option>
+              <option value="Los Angeles">Los Angeles</option>
+              <option value="Chicago">Chicago</option>
             </select>
 
             <div className="Pickup_home">
@@ -41,8 +86,18 @@ function Home() {
             </div>
 
             <div className="input-group_home">
-              <input type="date" className="input_home" placeholder="Pickup Date" />
-              <input type="time" className="input_home" placeholder="Pickup Time" />
+              <input
+                type="date"
+                className="input_home"
+                value={pickupDate}
+                onChange={(e) => setLocalPickupDate(e.target.value)}
+              />
+              <input
+                type="time"
+                className="input_home"
+                value={pickupTime}
+                onChange={(e) => setLocalPickupTime(e.target.value)}
+              />
             </div>
 
             <div className="Return_home">
@@ -51,8 +106,18 @@ function Home() {
             </div>
 
             <div className="input-group_home">
-              <input type="date" className="input_home" placeholder="Return Date" />
-              <input type="time" className="input_home" placeholder="Return Time" />
+              <input
+                type="date"
+                className="input_home"
+                value={returnDate}
+                onChange={(e) => setLocalReturnDate(e.target.value)}
+              />
+              <input
+                type="time"
+                className="input_home"
+                value={returnTime}
+                onChange={(e) => setLocalReturnTime(e.target.value)}
+              />
             </div>
 
             <div className="radio-group_home">
@@ -76,17 +141,11 @@ function Home() {
               </label>
             </div>
 
-        
-        
-            <NavLink
-              to={{
-                pathname: '/home/vehicles',
-                state: { bookingType }
-              }}
-              className="button_home"
-            >
+            <button onClick={handleSearch} className="button_home">
               Search Results
-            </NavLink>
+            </button>
+
+            {error && <p className="error_message">{error}</p>}
           </div>
         </div>
       </div>
