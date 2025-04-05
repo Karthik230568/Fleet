@@ -13,7 +13,8 @@
   gap: 300px;
   flex-direction: row;
 }
-.profile_BLogo_home{
+
+.profile_BLogo_home {
   margin-top: 250px;
 }
 
@@ -22,7 +23,7 @@
 }
 
 .profile-card {
-  background:#e1d3fa;
+  background: #e1d3fa;
   padding: 20px;
   border-radius: 10px;
   margin-top: 150px;
@@ -31,21 +32,19 @@
   position: relative;
 }
 
-.profile-avatar-container {
+.profile-logo-container {
   display: flex;
   justify-content: center;
-  
+  margin-bottom: 20px;
 }
 
-.profile-avatar {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  color: black;
+.profile-logo {
+  width: 150px;
+  height: auto;
+  transition: all 0.3s ease;
 }
 
-
-.profile-edit-btn{
+.profile-edit-btn {
   position: relative;
   display: flex;
   align-self: flex-end;
@@ -58,44 +57,43 @@
   font-size: 16px;
 }
 
-
 .profile-input-container {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   position: relative;
-  
 }
-h6{
+
+h6 {
   margin: 0;
-  font-size:15px;
+  font-size: 15px;
   font-style: normal;
   font-weight: normal;
   color: black;
   text-align: start;
 }
+
 .profile-input-field {
   width: 96%;
   padding: 8px;
-  border: 1px solid  rgb(113, 85, 139);
+  border: 1px solid rgb(113, 85, 139);
   border-radius: 5px;
   font-size: 16px;
-  background-color:  rgb(113, 85, 139);
-  color:white;
-
+  background-color: rgb(113, 85, 139);
+  color: white;
 }
+
 .profile-input-field.disabled {
-  background-color:  rgb(113, 85, 139);
+  background-color: rgb(113, 85, 139);
   color: gray;
   opacity: 1;
 }
 
 .profile-input-field.editing {
-  background-color:  rgb(113, 85, 139);
-  color:white;
+  background-color: rgb(113, 85, 139);
+  color: white;
   border: 1px solid black;
 }
-
 
 .profile-save-button {
   background-color: #271944;
@@ -111,4 +109,159 @@ h6{
 
 .profile-save-button:hover {
   background-color: black;
+}
+
+/* Media Queries */
+@media (max-width: 1200px) {
+  .profile-container {
+    gap: 200px;
+  }
+
+  .profile_BLogo_home img {
+    width: 400px;
+  }
+
+  .profile-card {
+    width: 450px;
+  }
+
+  .profile-logo {
+    width: 130px;
+  }
+}
+
+@media (max-width: 992px) {
+  .profile-container {
+    gap: 150px;
+  }
+
+  .profile_BLogo_home img {
+    width: 350px;
+  }
+
+  .profile-card {
+    width: 400px;
+  }
+
+  .profile-logo {
+    width: 120px;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-container {
+    flex-direction: column;
+    gap: 50px;
+    align-items: center;
+  }
+
+  .profile_BLogo_home {
+    margin-top: 100px;
+  }
+
+  .profile_BLogo_home img {
+    width: 300px;
+  }
+
+  .profile-card {
+    margin-top: 0;
+    width: 90%;
+    max-width: 450px;
+  }
+
+  .profile-logo {
+    width: 110px;
+  }
+}
+
+@media (max-width: 576px) {
+  .profile_BLogo_home {
+    margin-top: 80px;
+  }
+
+  .profile_BLogo_home img {
+    width: 250px;
+  }
+
+  .profile-card {
+    padding: 15px;
+  }
+
+  .profile-logo {
+    width: 100px;
+  }
+
+  .profile-input-field {
+    font-size: 14px;
+  }
+
+  h6 {
+    font-size: 13px;
+  }
+
+  .profile-edit-btn {
+    font-size: 14px;
+    padding: 4px;
+  }
+
+  .profile-save-button {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 400px) {
+  .profile_BLogo_home img {
+    width: 200px;
+  }
+
+  .profile-card {
+    padding: 10px;
+  }
+
+  .profile-logo {
+    width: 90px;
+  }
+
+  .profile-input-field {
+    font-size: 12px;
+  }
+
+  h6 {
+    font-size: 12px;
+  }
+}
+
+/* For landscape orientation */
+@media (max-height: 500px) and (orientation: landscape) {
+  .profile-container {
+    flex-direction: row;
+    gap: 50px;
+  }
+
+  .profile_BLogo_home {
+    margin-top: 80px;
+  }
+
+  .profile_BLogo_home img {
+    width: 200px;
+  }
+
+  .profile-card {
+    margin-top: 80px;
+    padding: 15px;
+  }
+
+  .profile-logo {
+    width: 80px;
+  }
+
+  .profile-input-field {
+    padding: 6px;
+  }
+
+  .profile-save-button {
+    margin-top: 20px;
+    padding: 8px;
+  }
 }

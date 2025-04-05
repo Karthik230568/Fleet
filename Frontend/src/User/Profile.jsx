@@ -2,10 +2,9 @@ import { useState } from 'react'
 import './Profile.css'
 import { useNavigate } from 'react-router-dom';
 
-function Profile() {
 
+function Profile() {
   const navigate = useNavigate();
-  const [profilePic, setProfilePic] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
@@ -31,19 +30,15 @@ function Profile() {
 
   return (
     <div className="profile-main-container">
-    
-    
-    
       <div className="profile-container">
         <div className="profile_BLogo_home">
-          <img src="/BLogo.jpg" alt="🚗 FLEET" />
+      
         </div>
         <div className="profile-card">
-          <div className="profile-avatar-container">
-            <img src={"./Profile.png"} alt="Profile" className="profile-avatar" />
+          <div className="profile-logo-container">
+            
           </div>
-         
-         
+          
           <div className="profile-input-container">
             <button className="profile-edit-btn" onClick={handleEditClick}>✏️</button>
             </div>
@@ -100,18 +95,10 @@ function Profile() {
           {isEditing && (
             <button className="profile-save-button" onClick={handleSaveClick}>Save</button>
           )}
-
-          <button className="profile-save-button" onClick={
-            () => {
-              navigate ("/auth/signin");
-            }
-          }>Logout</button>
-
         </div>
       </div>
     </div>
   );
-  
 }
 
 export default Profile

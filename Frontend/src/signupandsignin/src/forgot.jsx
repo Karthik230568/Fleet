@@ -1,19 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import './Auth.css';
-import fleetLogo from './Fleet Logo.png';
+import "./Auth.css";
+import fleetLogo from "./Fleet Logo.png";
+import OTPVerification from "./otpverification";
+import useAuthStore from "./../../../store/AuthStore.js";
 
-export default function Adminsignin() {
+export default function Forgot() {
   const navigate = useNavigate();
+  const { setSignupData, sendOtp } = useAuthStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [showOtp, setShowOtp] = useState(false);
 
-  // Email Validation Function
   const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  // Form Submit Handler
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!isValidEmail(email)) {
@@ -24,16 +27,35 @@ export default function Adminsignin() {
       setError("Password must be at least 6 characters!");
       return;
     }
-
-    setError("");
-    // Navigate to admin dashboard after successful login
-    navigate("/admin");
+    if (password !== confirmPassword) {
+      setError("Passwords do not match!");
+      return;
+    }
+    try {
+      setSignupData(email, password);
+      const res = await sendOtp();
+      // if (res.status !== 200) {
+      //   setError(res.message);
+      //   console.log(res.message);
+      //   return;
+      // }
+      console.log(res);
+      setError("");
+      setShowOtp(true); 
+    }
+      catch (error) {
+        console.error("Error sending OTP:", error.response?.data || error.message);
+        setError("Failed to send OTP. Please try again.");
+      }
+      // Show OTP verification instead of navigating
+  
   };
 
-  const handleForgotPassword = (e) => {
-    e.preventDefault();
-    navigate("/auth/forgotpassword", { state: { isForgotPassword: true, isAdmin: true } });
-  };
+  if (showOtp) {
+    console.log("Navigating to OTP verification page...");
+    return <OTPVerification />;
+  }
+
 
   return (
     <div className="auth-container">
@@ -45,8 +67,8 @@ export default function Adminsignin() {
         </div>
 
         <div className="form-section">
-          <h2 className="auth-title">Admin Sign In</h2>
-          
+          <h2 className="auth-title">Reset Password</h2>
+
           {error && <div className="alert alert-danger">{error}</div>}
 
           <form onSubmit={handleSubmit} className="auth-form">
@@ -70,16 +92,25 @@ export default function Adminsignin() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <div className="forgot-password">
-                <a href="#" onClick={handleForgotPassword}>Forgot Password?</a>
-              </div>
             </div>
 
-            <button type="submit" className="btn">Sign In</button>
+            <div className="mb-3">
+              <label className="form-label">CONFIRM PASSWORD</label>
+              <input
+                type="password"
+                className="form-control"
+                placeholder="Confirm password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+            </div>
+
+            <button type="submit" className="btn">Send OTP</button>
           </form>
 
           <div className="auth-links">
-            <a href="/auth/signin">Back to User Sign In</a>
+            <span>Already Registered? </span>
+            <a href="/auth/signin">Sign in</a>
           </div>
         </div>
       </div>

@@ -27,4 +27,56 @@
 
 .admin-nav > * {
     pointer-events: auto;
+}
+
+/* Media Queries */
+@media screen and (max-width: 1024px) {
+    .admin-content {
+        padding: 10px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .admin-content {
+        padding: 8px;
+    }
+
+    .admin-nav {
+        height: 60px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .admin-layout {
+        flex-direction: column;
+    }
+
+    .admin-content {
+        padding: 5px;
+        margin-top: 60px;
+    }
+
+    .admin-nav {
+        height: 50px;
+    }
+}
+
+/* For very small screens */
+@media screen and (max-width: 320px) {
+    .admin-content {
+        padding: 3px;
+        margin-top: 50px;
+    }
+}
+
+/* For landscape orientation on mobile */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    .admin-nav {
+        height: 45px;
+    }
+
+    .admin-content {
+        margin-top: 45px;
+        padding: 5px;
+    }
 } 
