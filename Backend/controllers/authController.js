@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const OTP = require('../models/OTP');
 const { generateOTP, sendOTP } = require('../utils/OTP');
-
+ 
 const signup = async (req, res, next) => {
     try {
         const { email } = req.body;

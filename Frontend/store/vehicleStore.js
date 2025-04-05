@@ -1,44 +1,68 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const useVehicleStore = create((set) => ({
-  vehicles: [],
+const useVehicleStore = create((set, get) => ({
+  vehicles: [], // List of vehicles
+  error: null, // Error state
+
+  // Fetch all vehicles
   fetchVehicles: async () => {
     try {
-      const response = await axios.get("/api/vehicles"); // Backend API to fetch vehicles
-      set({ vehicles: response.data.vehicles });
+      const response = await axios.get("/api/admin/vehicles");
+      set({ vehicles: response.data.vehicles, error: null });
+      console.log("Fetched vehicles:", response.data.vehicles);
     } catch (error) {
-      console.error("Error fetching vehicles:", error);
+      console.error("Error fetching vehicles:", error.response?.data || error.message);
+      set({ error: error.response?.data?.error || "Failed to fetch vehicles" });
     }
   },
-  addVehicle: async (newVehicle) => {
+
+  // Add a new vehicle
+  addVehicle: async (vehicleData) => {
     try {
-      const response = await axios.post("/api/vehicles", newVehicle); // Backend API to add a vehicle
-      set((state) => ({ vehicles: [...state.vehicles, response.data] }));
-    } catch (error) {
-      console.error("Error adding vehicle:", error);
-    }
-  },
-  updateVehicle: async (vehicleId, updatedVehicle) => {
-    try {
-      await axios.put(`/api/vehicles/${vehicleId}`, updatedVehicle); // Backend API to update a vehicle
+      const response = await axios.post("/api/admin/vehicles", vehicleData);
       set((state) => ({
-        vehicles: state.vehicles.map((v) =>
-          v.id === vehicleId ? { ...v, ...updatedVehicle } : v
+        vehicles: [...state.vehicles, response.data.vehicle],
+        error: null,
+      }));
+      return response.data.vehicle;
+    } catch (error) {
+      console.error("Error adding vehicle:", error.response?.data || error.message);
+      set({ error: error.response?.data?.error || "Failed to add vehicle" });
+      throw error;
+    }
+  },
+
+  // Update an existing vehicle
+  updateVehicle: async (id, updates) => {
+    try {
+      const response = await axios.put(`/api/admin/vehicles/${id}`, updates);
+      set((state) => ({
+        vehicles: state.vehicles.map((vehicle) =>
+          vehicle._id === id ? response.data.vehicle : vehicle
         ),
+        error: null,
       }));
+      return response.data.vehicle;
     } catch (error) {
-      console.error("Error updating vehicle:", error);
+      console.error("Error updating vehicle:", error.response?.data || error.message);
+      set({ error: error.response?.data?.error || "Failed to update vehicle" });
+      throw error;
     }
   },
-  deleteVehicle: async (vehicleId) => {
+
+  // Remove a vehicle
+  removeVehicle: async (id) => {
     try {
-      await axios.delete(`/api/vehicles/${vehicleId}`); // Backend API to delete a vehicle
+      await axios.delete(`/api/admin/vehicles/${id}`);
       set((state) => ({
-        vehicles: state.vehicles.filter((v) => v.id !== vehicleId),
+        vehicles: state.vehicles.filter((vehicle) => vehicle._id !== id),
+        error: null,
       }));
     } catch (error) {
-      console.error("Error deleting vehicle:", error);
+      console.error("Error removing vehicle:", error.response?.data || error.message);
+      set({ error: error.response?.data?.error || "Failed to remove vehicle" });
+      throw error;
     }
   },
 }));

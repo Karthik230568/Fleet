@@ -18,27 +18,6 @@ const getAllVehicles = async (req, res, next) => {
     }
 };
 
-// const getVehicleById = async (req, res, next) => {
-//     try {
-//         const { id } = req.params;
-//         const vehicle = await Vehicle.findById(id)
-//             .select('name type price availability rating driver fuelType seatingCapacity registrationPlate vehicleId image city');
-        
-//         if (!vehicle) {
-//             return res.status(404).json({
-//                 success: false,
-//                 error: 'Vehicle not found'
-//             });
-//         }
-
-//         res.status(200).json({
-//             success: true,
-//             vehicle
-//         });
-//     } catch (error) {
-//         next(error);
-//     }
-// };
 
 const addVehicle = async (req, res, next) => {
     try {
@@ -347,3 +326,26 @@ module.exports = {
     getDriverProfile,
     updateDriverProfile
 };
+
+
+// const getVehicleById = async (req, res, next) => {
+//     try {
+//         const { id } = req.params;
+//         const vehicle = await Vehicle.findById(id)
+//             .select('name type price availability rating driver fuelType seatingCapacity registrationPlate vehicleId image city');
+        
+//         if (!vehicle) {
+//             return res.status(404).json({
+//                 success: false,
+//                 error: 'Vehicle not found'
+//             });
+//         }
+
+//         res.status(200).json({
+//             success: true,
+//             vehicle
+//         });
+//     } catch (error) {
+//         next(error);
+//     }
+// };
