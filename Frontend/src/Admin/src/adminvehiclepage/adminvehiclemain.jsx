@@ -5,11 +5,10 @@ import Filter from "./filter";
 import VehicleCard from "./vehiclecard";
 import AddCar from "./addcar";
 import useVehicleStore from "../../../../store/vehicleStore";
-
+ 
 function Admincarspage() {
   const navigate = useNavigate();
-  const { vehicles, fetchVehicles, addVehicle, updateVehicle, deleteVehicle } =
-    useVehicleStore();
+  const { vehicles, fetchVehicles, addVehicle, updateVehicle, removeVehicle } = useVehicleStore();
   const [filteredVehicles, setFilteredVehicles] = useState([]);
   const [filter, setFilter] = useState("All");
   const [editingVehicle, setEditingVehicle] = useState(null);
@@ -17,7 +16,7 @@ function Admincarspage() {
   // Fetch vehicles from the backend on component mount
   useEffect(() => {
     fetchVehicles();
-  }, [fetchVehicles]);
+  }, []);
 
   // Apply filtering & sorting logic
   useEffect(() => {
@@ -58,12 +57,13 @@ function Admincarspage() {
   const handleNewVehicle = async (newVehicle) => {
     if (editingVehicle) {
       // Update existing vehicle
-      await updateVehicle(editingVehicle.id, newVehicle);
+      await updateVehicle(editingVehicle._id, newVehicle);
     } else {
       // Add new vehicle
+      console.log("Adding new vehicle:", newVehicle);
       await addVehicle(newVehicle);
     }
-    navigate("..");
+    navigate("/admin/vehicles");
   };
 
   const handleEditVehicle = (vehicle) => {
@@ -73,7 +73,7 @@ function Admincarspage() {
 
   const handleDeleteVehicle = async (vehicle) => {
     if (window.confirm("Are you sure you want to delete this vehicle?")) {
-      await deleteVehicle(vehicle.id);
+      await removeVehicle(vehicle._id);
     }
   };
 

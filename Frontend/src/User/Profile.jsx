@@ -2,15 +2,14 @@ import { useState } from 'react'
 import './Profile.css'
 import { useNavigate } from 'react-router-dom';
 import Logo from "../../public/greylogo.png";
-
+import blacklogo from '../Admin/src/blacklogo.png';
 
 function Profile() {
-  const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
     phoneNumber: "",
-    email: "",
+   
     dateOfBirth: "",
     address: "",
   });
@@ -54,6 +53,25 @@ function Profile() {
               onChange={handleChange}
               disabled={!isEditing}
             />
+          <img src={blacklogo} alt="Fleet Logo" className="profile-logo" />
+          <h1 className="profile-title">FLEET</h1>
+          <p className="profile-tagline">DRIVE YOUR JOURNEY ANYTIME, ANYWHERE</p>
+        </div>
+        <div className="profile-card">
+          <div className="profile-input-container">
+            <button className="profile-edit-btn" onClick={handleEditClick}>✏️</button>
+          </div>
+          <h6>Full Name</h6>
+          <input
+            type="text"
+            name="fullName"
+            placeholder="Full Name"
+            className={`profile-input-field ${isEditing ? "editing" : "disabled"}`}
+            value={formData.fullName}
+            onChange={handleChange}
+            disabled={!isEditing}
+          />
+
           
           <h6 className='details'>Phone Number</h6>
           <input
@@ -65,6 +83,7 @@ function Profile() {
             onChange={handleChange}
             disabled={!isEditing}
           />
+
             <h6 className='details'>Email</h6>
           <input
             type="mail"
@@ -76,6 +95,8 @@ function Profile() {
             disabled={!isEditing}
           />
           <h6 className='details'>Date of Birth</h6>
+          
+          <h6>Date of Birth</h6>
           <input
             type="date"
             name="dateOfBirth"

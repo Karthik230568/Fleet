@@ -8,7 +8,8 @@ function AddCar({ onAddVehicle, editingVehicle }) {
     type: "Car",
     name: "",
     price: "",
-    availability: "Yes",
+    city: "Delhi",
+    availability: "Available",
     rating: "0.0",
     image: "",
     fuelType: "Petrol",
@@ -16,18 +17,16 @@ function AddCar({ onAddVehicle, editingVehicle }) {
     registrationPlate: "",
     vehicleId: "",
     driverName: "",
-    hasDriver: "no",
+    hasDriver: true,
     driverId: "",
   });
-  const [imagePreview, setImagePreview] = useState(null);
 
   useEffect(() => {
     if (editingVehicle) {
       setFormData({
         ...editingVehicle,
-        hasDriver: editingVehicle.driverName ? "yes" : "no"
+        hasDriver: editingVehicle.driverName ? true : false,
       });
-      setImagePreview(editingVehicle.image);
     }
   }, [editingVehicle]);
 
@@ -39,23 +38,14 @@ function AddCar({ onAddVehicle, editingVehicle }) {
     }));
   };
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.type === "image/jpeg") {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setFormData((prev) => ({
-            ...prev,
-            image: reader.result,
-          }));
-          setImagePreview(reader.result);
-        };
-        reader.readAsDataURL(file);
-      } else {
-        alert("Please upload a JPG image only");
-      }
-    }
+  const handleDriverChange = (e) => {
+    const value = e.target.value === "true";
+    setFormData((prevState) => ({
+      ...prevState,
+      hasDriver: value,
+      driverName: value ? prevState.driverName : "",
+      driverId: value ? prevState.driverId : "",
+    }));
   };
 
   const handleSubmit = (e) => {
@@ -66,31 +56,32 @@ function AddCar({ onAddVehicle, editingVehicle }) {
       price: formData.price,
       availability: formData.availability,
       rating: formData.rating,
+      city: formData.city,
       image: formData.image || "Images/default-car.png",
       fuelType: formData.fuelType,
       seatingCapacity: formData.seatingCapacity,
       registrationPlate: formData.registrationPlate,
       vehicleId: formData.vehicleId,
-      driverName: formData.hasDriver === "yes" ? formData.driverName : "",
-      driverId: formData.hasDriver === "yes" ? formData.driverId : "",
+      driverName: formData.hasDriver ? formData.driverName : "",
+      driverId: formData.hasDriver ? formData.driverId : "",
     };
     onAddVehicle(cardData);
     navigate("/admin/vehicles");
   };
 
   return (
-    <div className="form-container">
+    <div className="add-car-container">
       <h2>{editingVehicle ? "Edit Vehicle" : "Add New Vehicle"}</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="add-car-form">
         <div className="radio-container">
           <div className="radio-group">
             <label>
               <input
                 type="radio"
                 name="hasDriver"
-                value="yes"
-                checked={formData.hasDriver === "yes"}
-                onChange={handleChange}
+                value={true}
+                checked={formData.hasDriver === true}
+                onChange={handleDriverChange}
               />
               <span>With Driver</span>
             </label>
@@ -98,16 +89,16 @@ function AddCar({ onAddVehicle, editingVehicle }) {
               <input
                 type="radio"
                 name="hasDriver"
-                value="no"
-                checked={formData.hasDriver === "no"}
-                onChange={handleChange}
+                value={false}
+                checked={formData.hasDriver === false}
+                onChange={handleDriverChange}
               />
               <span>Without Driver</span>
             </label>
           </div>
         </div>
 
-        {formData.hasDriver === "yes" && (
+        {formData.hasDriver && (
           <>
             <div className="form-group">
               <label>Driver Name:</label>
@@ -181,8 +172,8 @@ function AddCar({ onAddVehicle, editingVehicle }) {
             onChange={handleChange}
             required
           >
-            <option value="Yes">Available</option>
-            <option value="No">Not Available</option>
+            <option value="Available">Available</option>
+            <option value="Not Available">Not Available</option>
           </select>
         </div>
 
@@ -252,20 +243,20 @@ function AddCar({ onAddVehicle, editingVehicle }) {
         </div>
 
         <div className="form-group">
-          <label>Vehicle Image (JPG only):</label>
-          <div className="image-upload-container">
-            <input
-              type="file"
-              accept=".jpg,.jpeg"
-              onChange={handleImageUpload}
-              className="image-upload-input"
-            />
-            {imagePreview && (
-              <div className="image-preview">
-                <img src={imagePreview} alt="Vehicle preview" />
-              </div>
-            )}
-          </div>
+          <label>Vehicle Image URL:</label>
+          <input
+            type="url"
+            name="image"
+            value={formData.image}
+            onChange={handleChange}
+            placeholder="Enter image URL"
+            required
+          />
+          {formData.image && (
+            <div className="image-preview">
+              <img src={formData.image} alt="Vehicle preview" />
+            </div>
+          )}
         </div>
 
         <button type="submit">

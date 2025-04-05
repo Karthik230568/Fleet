@@ -58,8 +58,15 @@ const vehicleSchema = new mongoose.Schema({
     },
     image: {
         type: String,
-        required: true
-    }
+        required: false
+    },
+    
+    bookings: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Booking' // Reference to the Booking model
+            }
+        ]
 }, {
     timestamps: true
 });

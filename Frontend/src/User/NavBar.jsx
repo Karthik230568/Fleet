@@ -1,16 +1,14 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import './NavBar.css';
 import Swal from 'sweetalert2';
 
 const NavBar = ({ isAdmin }) => {
-    const navigate = useNavigate();
-    
     const handleHelpButtonClick = e => {
         e.preventDefault();
         Swal.fire({
             title: 'Do you need help?',
-            text: 'You can contact us 24/7.',
+            text: 'You can contact us 24/7.\nEmail: fleet@gmail.com',
             icon: 'question',
             customClass: {
                 popup: 'custom-popup',

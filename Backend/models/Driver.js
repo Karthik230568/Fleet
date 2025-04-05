@@ -31,7 +31,8 @@ const driverSchema = new mongoose.Schema({
     },
     image: {
         type: String,
-        default: 'default-driver.jpg'
+        default: 'default-driver.jpg',
+        required: false
     }
 }, {
     timestamps: true

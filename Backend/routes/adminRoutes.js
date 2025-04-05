@@ -13,23 +13,27 @@ const {
     getDriverProfile,
     updateDriverProfile
 } = require('../controllers/adminController');
+
+const { register, login } = require('../controllers/adminauth');
 const { authenticateUser, authenticateAdmin } = require('../middleware/authMiddleware');
 
+router.post('/register', register);
+router.post('/login', login);
 // Vehicle routes
-router.get('/vehicles', authenticateUser, authenticateAdmin, getAllVehicles);
-router.post('/vehicles', authenticateUser, authenticateAdmin, addVehicle);
-router.put('/vehicles/:id', authenticateUser, authenticateAdmin, updateVehicle);
-router.delete('/vehicles/:id', authenticateUser, authenticateAdmin, removeVehicle);
+router.get('/vehicles',  getAllVehicles);
+router.post('/vehicles',  addVehicle);
+router.put('/vehicles/:id',  updateVehicle);
+router.delete('/vehicles/:id',  removeVehicle);
 
 // Driver routes
-router.post('/drivers', authenticateUser, authenticateAdmin, addDriver);
-router.delete('/drivers/:id', authenticateUser, authenticateAdmin, removeDriver);
-router.get('/drivers', authenticateUser, authenticateAdmin, getDrivers);
-router.get('/drivers/profile', authenticateUser, getDriverProfile);
-router.put('/drivers/profile', authenticateUser, updateDriverProfile);
+router.post('/drivers',  addDriver);
+router.delete('/drivers/:id',  removeDriver);
+router.get('/drivers',  getDrivers);
+router.get('/drivers/profile',  getDriverProfile);
+router.put('/drivers/profile',  updateDriverProfile);
 
 // Booking routes
-router.get('/bookings', authenticateUser, authenticateAdmin, getAllBookings);
-router.get('/bookings/date', authenticateUser, authenticateAdmin, viewBookingsByDate);
+router.get('/bookings',  getAllBookings);
+router.get('/bookings/date',  viewBookingsByDate);
 
 module.exports = router;

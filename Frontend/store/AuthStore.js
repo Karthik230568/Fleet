@@ -17,7 +17,7 @@ const useAuthStore = create((set, get) => ({
   sendOtp: async () => {
     try {
       const { email } = get();
-      const res=await axios.post("/api/auth/signup", { email });
+      const res = await axios.post("/api/auth/signup", { email });
       if (res.status !== 200) {
         return res.data;
       }
