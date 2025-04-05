@@ -53,9 +53,9 @@ function VehicleCard({ vehicle, bookingType }) {
       {showPopup && (
         <div className="popup-overlay">
           <div className="popup-content">
-            <h3>Price Details</h3>
-            <p>Price per day: ${vehicle.price}</p>
-            <p>Total Price: ${vehicle.price * 1} (for 1 day)</p>
+            <h3 className="p-r">Price Details</h3>
+            <p className="p-r">Price per day: ${vehicle.price}</p>
+            <p className="p-r">Total Price: ${vehicle.price * 1} (for 1 day)</p>
             <div className="popup-actions">
               <button onClick={handleConfirm} className="button_confirm">
                 Confirm

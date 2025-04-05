@@ -5,7 +5,7 @@ const carData = [
         price: "3000",
         availability: "Yes",
         rating: "4.2",
-        image: "/kia-pecanto.png",
+        image: "/kia-picanto.png",
         booked: true, // 🚗 Is this car booked?
         bookingStatus: "active", // 🟢 "active", "past", or "none"
         startDate : "25-03-2025",

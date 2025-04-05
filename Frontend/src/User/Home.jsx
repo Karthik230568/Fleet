@@ -66,7 +66,7 @@ function Home() {
       <div className="body_home">
         <div className="container_home">
           <div className="BLogo_home">
-            <img src="/BLogo.jpg" alt="🚗 FLEET" />
+            <img src="/greylogo.png" alt="🚗 FLEET" />
           </div>
           <div className="card_home">
             <select

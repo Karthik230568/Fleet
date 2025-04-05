@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./userpickup.css";
-import Logo from "./fulllogo.jpg";
+import Logo from "../../public/greylogo.png";
 import Map from "./map.jpg";
 import { useNavigate, useLocation } from "react-router-dom";
 

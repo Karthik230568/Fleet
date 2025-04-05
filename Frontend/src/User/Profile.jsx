@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './Profile.css'
 import { useNavigate } from 'react-router-dom';
+import Logo from "../../public/greylogo.png";
 
 
 function Profile() {
@@ -32,17 +33,18 @@ function Profile() {
     <div className="profile-main-container">
       <div className="profile-container">
         <div className="profile_BLogo_home">
-      
+        <img src={Logo} className="profile_logo-image" alt="Logo" />
         </div>
         <div className="profile-card">
           <div className="profile-logo-container">
+             
             
           </div>
           
           <div className="profile-input-container">
             <button className="profile-edit-btn" onClick={handleEditClick}>✏️</button>
             </div>
-            <h6>Full Name</h6>
+            <h6 className='details'>Full Name</h6>
             <input
               type="text"
               name="fullName"
@@ -53,7 +55,7 @@ function Profile() {
               disabled={!isEditing}
             />
           
-          <h6>Phone Number</h6>
+          <h6 className='details'>Phone Number</h6>
           <input
             type="tel"
             name="phoneNumber"
@@ -63,7 +65,7 @@ function Profile() {
             onChange={handleChange}
             disabled={!isEditing}
           />
-            <h6>Email</h6>
+            <h6 className='details'>Email</h6>
           <input
             type="mail"
             name="email"
@@ -73,7 +75,7 @@ function Profile() {
             onChange={handleChange}
             disabled={!isEditing}
           />
-          <h6>Date of Birth</h6>
+          <h6 className='details'>Date of Birth</h6>
           <input
             type="date"
             name="dateOfBirth"
@@ -82,7 +84,7 @@ function Profile() {
             onChange={handleChange}
             disabled={!isEditing}
           />
-          <h6>Address</h6>
+          <h6 className='details'>Address</h6>
           <input
             type="text"
             name="address"

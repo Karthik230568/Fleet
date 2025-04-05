@@ -1,6 +1,6 @@
 .sidebar {
   width: 400px;
-  background-color: #e1d3fa;
+  background-color: black;
   padding: 20px;
   color: #fff;
   height: calc(100vh - 60px);
@@ -40,7 +40,7 @@
 }
 
 .date.active {
-  background-color: #6c83f1;
+  background-color: #1e3c72;
   color: #fff;
 }
 
@@ -53,7 +53,7 @@
   padding: 10px;
   margin: 5px 0;
   border: none;
-  background-color: #2d1e46;
+  background-color: #1e3c72;
   color: #fff;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -62,11 +62,11 @@
 }
 
 .filter-btn:hover {
-  background-color: #b768e5;
+  background-color: grey;
 }
 
 .filter-btn:active {
-  background-color: #b768e5;
+  background-color: grey;
   transform: scale(0.98);
 }
 

@@ -2,13 +2,15 @@
   height: 100vh;
   width: 100vw;
   flex-direction: column;
-  background: #e1d3fa;
+  
   align-items: center;
 }
 
 .profile-container {
   display: flex;
   justify-content: center;
+  background: linear-gradient(180deg, #0a1825, #142134, #1e3c72);
+  height: 100vh;
   width: 100%;
   gap: 300px;
   flex-direction: row;
@@ -23,7 +25,7 @@
 }
 
 .profile-card {
-  background: #e1d3fa;
+  background: transparent;
   padding: 20px;
   border-radius: 10px;
   margin-top: 150px;
@@ -64,40 +66,45 @@
   position: relative;
 }
 
-h6 {
+.details {
   margin: 0;
   font-size: 15px;
   font-style: normal;
   font-weight: normal;
-  color: black;
+  margin-top: 10px;
+  margin-bottom: 2px;
+  margin-left: 10px;
+  color: white;
   text-align: start;
 }
 
 .profile-input-field {
   width: 96%;
   padding: 8px;
-  border: 1px solid rgb(113, 85, 139);
+  border: 1px solid black;
   border-radius: 5px;
   font-size: 16px;
-  background-color: rgb(113, 85, 139);
+  background-color: black;
   color: white;
 }
 
 .profile-input-field.disabled {
-  background-color: rgb(113, 85, 139);
+  background-color: black;
+  box-shadow: grey 0 0 3px 0;
   color: gray;
   opacity: 1;
 }
 
 .profile-input-field.editing {
-  background-color: rgb(113, 85, 139);
+  background-color: black;
   color: white;
+  box-shadow: grey 0 0 3px 0;
   border: 1px solid black;
 }
 
 .profile-save-button {
-  background-color: #271944;
-  color: white;
+  background-color: grey;
+  color:black;
   border: none;
   padding: 12px;
   border-radius: 5px;
@@ -108,7 +115,8 @@ h6 {
 }
 
 .profile-save-button:hover {
-  background-color: black;
+  color:white;
+  background: #0a1825;
 }
 
 /* Media Queries */

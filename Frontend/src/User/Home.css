@@ -1,7 +1,7 @@
 
 .body_home {
     font-family: Arial, sans-serif;
-    background-color: #e1d3fa; /* Soft purple */
+    background: linear-gradient(180deg, #0a1825, #142134, #1e3c72); /* Soft purple */
     width: 100vw;
     height: 100vh;
     display: flex;
@@ -24,14 +24,14 @@
     align-items: center;
     justify-content: space-between;
     min-height: 90vh;
-    background-color: #e1d3fa;
+    background-color: transparent;
     padding: 20px;
     gap: 500px;
 }
   
 .card_home {
     width: 100%;
-    background-color: #e1d3fa;
+    background-color: transparent;
     border-radius: 10px;
     padding: 20px;
   
@@ -42,8 +42,9 @@
     padding: 10px;
     margin-bottom: 25px;
     border-radius: 10px;
-    color: azure;
-    background-color: rgb(113, 85, 139);
+    color: white;
+    background-color: black;
+    box-shadow: grey 0 0 5px 0;
 }
   
 .input-group_home {
@@ -55,13 +56,14 @@
     flex: 1;
     padding: 9px;
     border-radius: 10px;
-    color: azure;
-    background-color: rgb(113, 85, 139);
+    color: white;
+    background-color: black;
+    box-shadow: grey 0 0 5px 0;
     border: 0px;
 }
 
 .input_home:hover{
-    box-shadow:  5px 5px 15px rgba(0, 0, 0, 0.4);
+    box-shadow:  5px 5px 15px grey;
 }
   
 .Pickup_home {
@@ -86,16 +88,18 @@
     margin-bottom: 40px;
 }
 .radio-group_home .radio-option1_home {
-    color: azure;
-    background: rgb(113, 85, 139);
+    color: white;
+    background: black;
     padding: 10px;
     padding-right: 78px;
     margin-right: 15px;
     border-radius: 10px;
+    box-shadow: grey 0 0 5px 0;
 }
 .radio-group_home .radio-option2_home {
     color: azure;
-    background: rgb(113, 85, 139);
+    background: black;
+    box-shadow: grey 0 0 5px 0;
     padding: 10px;
     padding-right: 68px;
     border-radius: 10px;
@@ -104,15 +108,16 @@
     width: 100%;
     padding: 10px;
     color: white;
-    background-color:rgb(113, 85, 139) ;
+    background-color: black;
+    box-shadow: grey 0 0 5px 0;
     border: none;
     border-radius: 10px;
     cursor: pointer;
     margin-top: 30px;
-    margin-left: 130px;
 }
 .button_home:hover{
-    background-color:black;
+    background-color:grey;
+    color: black;
     transform: scale(1.04);
     padding:11px;
 }
