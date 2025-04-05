@@ -9,6 +9,7 @@ const useVehicleStore = create((set, get) => ({
   fetchVehicles: async () => {
     try {
       const response = await axios.get("/api/admin/vehicles");
+      
       set({ vehicles: response.data.vehicles, error: null });
       console.log("Fetched vehicles:", response.data.vehicles);
     } catch (error) {
@@ -20,7 +21,9 @@ const useVehicleStore = create((set, get) => ({
   // Add a new vehicle
   addVehicle: async (vehicleData) => {
     try {
+      console.log("in store");
       const response = await axios.post("/api/admin/vehicles", vehicleData);
+      console.log(response)
       set((state) => ({
         vehicles: [...state.vehicles, response.data.vehicle],
         error: null,
