@@ -2,6 +2,7 @@ import './Home.css';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import useBookingStore from './../../store/BookingStore.js'; // Import Zustand store
+import blacklogo from "../Admin/src/blacklogo.png";
 
 function Home() {
   const navigate = useNavigate();
@@ -66,7 +67,9 @@ function Home() {
       <div className="body_home">
         <div className="container_home">
           <div className="BLogo_home">
-            <img src="/BLogo.jpg" alt="🚗 FLEET" />
+            <img src={blacklogo} alt="Fleet Logo" className="main-logo" />
+            <h1 className="title">FLEET</h1>
+            <p className="tagline">DRIVE YOUR JOURNEY ANYTIME, ANYWHERE</p>
           </div>
           <div className="card_home">
             <select

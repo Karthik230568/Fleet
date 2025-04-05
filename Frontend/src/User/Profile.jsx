@@ -1,15 +1,13 @@
 import { useState } from 'react'
 import './Profile.css'
-import { useNavigate } from 'react-router-dom';
-
+import blacklogo from '../Admin/src/blacklogo.png';
 
 function Profile() {
-  const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
     phoneNumber: "",
-    email: "",
+   
     dateOfBirth: "",
     address: "",
   });
@@ -32,26 +30,24 @@ function Profile() {
     <div className="profile-main-container">
       <div className="profile-container">
         <div className="profile_BLogo_home">
-      
+          <img src={blacklogo} alt="Fleet Logo" className="profile-logo" />
+          <h1 className="profile-title">FLEET</h1>
+          <p className="profile-tagline">DRIVE YOUR JOURNEY ANYTIME, ANYWHERE</p>
         </div>
         <div className="profile-card">
-          <div className="profile-logo-container">
-            
-          </div>
-          
           <div className="profile-input-container">
             <button className="profile-edit-btn" onClick={handleEditClick}>✏️</button>
-            </div>
-            <h6>Full Name</h6>
-            <input
-              type="text"
-              name="fullName"
-              placeholder="Full Name"
-              className={`profile-input-field ${isEditing ? "editing" : "disabled"}`}
-              value={formData.fullName}
-              onChange={handleChange}
-              disabled={!isEditing}
-            />
+          </div>
+          <h6>Full Name</h6>
+          <input
+            type="text"
+            name="fullName"
+            placeholder="Full Name"
+            className={`profile-input-field ${isEditing ? "editing" : "disabled"}`}
+            value={formData.fullName}
+            onChange={handleChange}
+            disabled={!isEditing}
+          />
           
           <h6>Phone Number</h6>
           <input
@@ -63,16 +59,7 @@ function Profile() {
             onChange={handleChange}
             disabled={!isEditing}
           />
-            <h6>Email</h6>
-          <input
-            type="mail"
-            name="email"
-            placeholder="Email"
-            className={`profile-input-field ${isEditing ? "editing" : "disabled"}`}
-            value={formData.email}
-            onChange={handleChange}
-            disabled={!isEditing}
-          />
+          
           <h6>Date of Birth</h6>
           <input
             type="date"
