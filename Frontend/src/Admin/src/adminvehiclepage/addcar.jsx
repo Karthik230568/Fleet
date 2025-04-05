@@ -19,9 +19,7 @@ function AddCar({ onAddVehicle, editingVehicle }) {
     driverName: "",
     hasDriver: true,
     driverId: "",
-  }
-);
-  const [imagePreview, setImagePreview] = useState(null);
+  });
 
   useEffect(() => {
     if (editingVehicle) {
@@ -29,7 +27,6 @@ function AddCar({ onAddVehicle, editingVehicle }) {
         ...editingVehicle,
         hasDriver: editingVehicle.driverName ? true : false,
       });
-      setImagePreview(editingVehicle.image);
     }
   }, [editingVehicle]);
 
@@ -49,25 +46,6 @@ function AddCar({ onAddVehicle, editingVehicle }) {
       driverName: value ? prevState.driverName : "",
       driverId: value ? prevState.driverId : "",
     }));
-  };
-
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.type === "image/jpeg" || file.type === "image/jpg") {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setFormData((prev) => ({
-            ...prev,
-            image: reader.result,
-          }));
-          setImagePreview(reader.result);
-        };
-        reader.readAsDataURL(file);
-      } else {
-        alert("Please upload a JPG image only");
-      }
-    }
   };
 
   const handleSubmit = (e) => {
@@ -265,20 +243,20 @@ function AddCar({ onAddVehicle, editingVehicle }) {
         </div>
 
         <div className="form-group">
-          <label>Vehicle Image (JPG only):</label>
-          <div className="image-upload-container">
-            <input
-              type="file"
-              accept=".jpg,.jpeg"
-              onChange={handleImageUpload}
-              className="image-upload-input"
-            />
-            {imagePreview && (
-              <div className="image-preview">
-                <img src={imagePreview} alt="Vehicle preview" />
-              </div>
-            )}
-          </div>
+          <label>Vehicle Image URL:</label>
+          <input
+            type="url"
+            name="image"
+            value={formData.image}
+            onChange={handleChange}
+            placeholder="Enter image URL"
+            required
+          />
+          {formData.image && (
+            <div className="image-preview">
+              <img src={formData.image} alt="Vehicle preview" />
+            </div>
+          )}
         </div>
 
         <button type="submit">

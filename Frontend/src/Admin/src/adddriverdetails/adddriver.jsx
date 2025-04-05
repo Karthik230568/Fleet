@@ -12,7 +12,7 @@ const AddDriver = ({ onAddDriver, editingDriver }) => {
     license: "",
     vehicleId: "",
     driverId: "",
-    image: null,
+    image: "",
   });
 
   useEffect(() => {
@@ -24,10 +24,10 @@ const AddDriver = ({ onAddDriver, editingDriver }) => {
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
-    const { name, value, type, files } = e.target;
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "file" ? files?.[0] || null : value,
+      [name]: value,
     }));
 
     // Remove error when user starts typing
@@ -50,7 +50,7 @@ const AddDriver = ({ onAddDriver, editingDriver }) => {
     license: (value) => (!value ? "License is required." : ""),
     vehicleId: (value) => (!value ? "Vehicle ID is required." : ""),
     driverId: (value) => (!value ? "Driver ID is required." : ""),
-    image: (value) => (!value && !editingDriver ? "Photo is required." : ""),
+    image: (value) => (!value && !editingDriver ? "Photo URL is required." : ""),
   };
 
   const handleSubmit = (e) => {
@@ -63,7 +63,7 @@ const AddDriver = ({ onAddDriver, editingDriver }) => {
       if (validate) {
         const error = validate(formData[key]);
         if (error) newErrors[key] = error;
-      } else if (formData[key] === "" || formData[key] === null) {
+      } else if (formData[key] === "") {
         newErrors[key] = `${key.replace(/([A-Z])/g, " $1")} is required.`;
       }
     });
@@ -82,14 +82,13 @@ const AddDriver = ({ onAddDriver, editingDriver }) => {
       license: formData.license,
       vehicleId: formData.vehicleId,
       driverId: formData.driverId,
-      image: formData.image instanceof File 
-        ? URL.createObjectURL(formData.image)
-        : formData.image || "Images/default-driver.png",
+      image: formData.image || "Images/default-driver.png",
     };
 
     // Call the parent component's handler
     if (typeof onAddDriver === 'function') {
       onAddDriver(driverData);
+      navigate("/admin/drivers");
     } else {
       console.error('onAddDriver is not a function');
     }
@@ -143,13 +142,12 @@ const AddDriver = ({ onAddDriver, editingDriver }) => {
             placeholder: "Enter driver ID",
           },
           {
-            label: "Photo",
-            type: "file",
+            label: "Photo URL",
+            type: "url",
             name: "image",
-            placeholder: "Upload photo",
-            accept: "image/*",
+            placeholder: "Enter photo URL",
           },
-        ].map(({ label, type, name, placeholder, accept }) => (
+        ].map(({ label, type, name, placeholder }) => (
           <div className="form-group" key={name}>
             <label>{label}:</label>
             <div>
@@ -157,14 +155,19 @@ const AddDriver = ({ onAddDriver, editingDriver }) => {
                 type={type}
                 name={name}
                 placeholder={placeholder}
-                value={type === "file" ? undefined : formData[name]}
+                value={formData[name] || ""}
                 onChange={handleChange}
-                accept={accept}
+                required
               />
               {errors[name] && <p className="error">{errors[name]}</p>}
             </div>
           </div>
         ))}
+        {formData.image && (
+          <div className="image-preview">
+            <img src={formData.image} alt="Driver preview" />
+          </div>
+        )}
         <button type="submit">
           {editingDriver ? "Update Driver" : "Add Driver"}
         </button>
