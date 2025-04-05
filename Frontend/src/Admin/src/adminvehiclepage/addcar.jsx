@@ -79,9 +79,9 @@ function AddCar({ onAddVehicle, editingVehicle }) {
   };
 
   return (
-    <div className="form-container">
+    <div className="add-car-container">
       <h2>{editingVehicle ? "Edit Vehicle" : "Add New Vehicle"}</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="add-car-form">
         <div className="radio-container">
           <div className="radio-group">
             <label>

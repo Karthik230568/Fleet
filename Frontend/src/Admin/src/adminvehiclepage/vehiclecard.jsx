@@ -13,7 +13,7 @@ function VehicleCard({ vehicle, onEdit, onDelete }) {
         <p>Price: ${vehicle.price}/day</p>
         <p>Availability: {vehicle.availability}</p>
         <p>Rating: {vehicle.rating} ⭐</p>
-        <p>Driver: </p>
+        <p>Driver: {vehicle.driverName} </p>
         <p>Fuel Type: {vehicle.fuelType}</p>
         <p>Seating Capacity: {vehicle.seatingCapacity}</p>
         <p>Registration Plate: {vehicle.registrationPlate}</p>
