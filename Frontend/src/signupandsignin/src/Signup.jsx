@@ -32,23 +32,18 @@ export default function Signup() {
       return;
     }
     try {
-      setSignupData(email, password);
+      setSignupData(email, password, confirmPassword);
       const res = await sendOtp();
-      // if (res.status !== 200) {
-      //   setError(res.message);
-      //   console.log(res.message);
-      //   return;
-      // }
-      console.log(res);
-      setError("");
-      setShowOtp(true); 
-    }
-      catch (error) {
-        console.error("Error sending OTP:", error.response?.data || error.message);
-        setError("Failed to send OTP. Please try again.");
+      if (res.success) {
+        setError("");
+        setShowOtp(true);
+      } else {
+        setError(res.message || "Failed to send OTP");
       }
-      // Show OTP verification instead of navigating
-  
+    } catch (error) {
+      console.error("Error sending email:", error);
+      setError(error.message || "Failed to send OTP. Please try again.");
+    }
   };
 
   if (showOtp) {

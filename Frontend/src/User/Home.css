@@ -1,4 +1,3 @@
-
 .body_home {
     font-family: Arial, sans-serif;
     background-color: #e1d3fa; /* Soft purple */
@@ -34,7 +33,7 @@
     background-color: #e1d3fa;
     border-radius: 10px;
     padding: 20px;
-  
+    gap: 2rem;
 }  
  
 .select_home {
@@ -44,11 +43,48 @@
     border-radius: 10px;
     color: azure;
     background-color: rgb(113, 85, 139);
+    border: 0px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 1em;
+    padding-right: 40px;
+}
+
+.select_home::-ms-expand {
+    display: none;
+}
+
+.select_home:hover {
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.4);
+}
+
+.select_home option {
+    background-color: rgb(113, 85, 139);
+    color: azure;
+    padding: 10px;
+}
+
+/* For Firefox */
+.select_home:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 azure;
+}
+
+/* For Edge */
+.select_home:focus::-ms-value {
+    background-color: rgb(113, 85, 139);
+    color: azure;
 }
   
 .input-group_home {
     display: flex;
     gap: 15px;
+    margin-bottom: 1.5rem;
 }
   
 .input_home {
@@ -58,10 +94,25 @@
     color: azure;
     background-color: rgb(113, 85, 139);
     border: 0px;
+    -webkit-appearance: none;
+}
+
+/* Remove grey background from date and time inputs */
+.input_home[type="date"],
+.input_home[type="time"] {
+    background-color: rgb(113, 85, 139);
+    color: azure;
+}
+
+/* Style the calendar and clock icons */
+.input_home[type="date"]::-webkit-calendar-picker-indicator,
+.input_home[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
 }
 
 .input_home:hover{
-    box-shadow:  5px 5px 15px rgba(0, 0, 0, 0.4);
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.4);
 }
   
 .Pickup_home {
@@ -83,7 +134,8 @@
   
 .radio-group_home {
     margin-top: 40px;
-    margin-bottom: 40px;
+    margin-bottom: 2rem;
+    position: relative;
 }
 .radio-group_home .radio-option1_home {
     color: azure;
@@ -115,4 +167,36 @@
     background-color:black;
     transform: scale(1.04);
     padding:11px;
+}
+
+.form-group {
+  position: relative;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.error-input {
+  border: 2px solid #ff3333 !important;
+}
+
+.error-message {
+  color: #ff3333;
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 5px;
+  position: absolute;
+  bottom: -20px;
+  left: 5px;
+  text-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2);
+}
+
+.store-error {
+  color: #ff3333;
+  text-align: center;
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: 500;
+  background-color: rgba(255, 51, 51, 0.1);
+  border: 1px solid #ff3333;
 }

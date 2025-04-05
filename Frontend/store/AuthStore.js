@@ -1,31 +1,82 @@
 import { create } from "zustand";
 import axios from "axios";
 
+// Configure axios defaults
+axios.defaults.headers.post['Content-Type'] = 'application/json';
+axios.defaults.withCredentials = true; // Enable sending cookies with requests
+
+// Create axios instance with default config
+const api = axios.create({
+  baseURL: '/api/auth', // This works with Vite proxy and matches backend route prefix
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
+
+// Add response interceptor for better error handling
+api.interceptors.response.use(
+  response => response,
+  error => {
+    console.error('API Error:', error);
+    if (error.response) {
+      // Server responded with error
+      const errorMessage = error.response.data.message || error.response.data.error || "Server error occurred";
+      return Promise.reject({ message: errorMessage });
+    } else if (error.request) {
+      // No response received
+      return Promise.reject({ message: "No response from server. Please try again." });
+    } else {
+      // Request setup error
+      return Promise.reject({ message: error.message });
+    }
+  }
+);
+
 const useAuthStore = create((set, get) => ({
   email: "",
   password: "",
+  confirmPassword: "",
   isOtpSent: false,
   isVerified: false,
   user: null,
   token: null,
   error: null,
   // Set email and password during signup
-  setSignupData: (email, password) =>
-    set({ email, password }),
+  setSignupData: (email, password, confirmPassword) => {
+    if (password !== confirmPassword) {
+      throw new Error('Passwords do not match');
+    }
+    set({ email, password, confirmPassword });
+  },
 
   // Send OTP request to backend
   sendOtp: async () => {
     try {
-      const { email } = get();
-      const res=await axios.post("/api/auth/signup", { email });
-      if (res.status !== 200) {
-        return res.data;
+      const { email, password, confirmPassword } = get();
+      
+      if (!email || !password) {
+        throw new Error('Email and password are required');
       }
-      // If OTP sent successfully:
-      set({ isOtpSent: true });
-      return res.data;
+
+      if (password !== confirmPassword) {
+        throw new Error('Passwords do not match');
+      }
+
+      const response = await api.post("/send-otp", { 
+        email,
+        password,
+        confirmPassword
+      });
+      
+      if (response.data.success) {
+        set({ isOtpSent: true });
+        return response.data;
+      } else {
+        throw new Error(response.data.message || 'Failed to send OTP');
+      }
     } catch (error) {
-      console.error("Error sending OTP:", error.response?.data || error.message);
+      console.error("Error sending OTP:", error);
       throw error;
     }
   },
@@ -34,48 +85,105 @@ const useAuthStore = create((set, get) => ({
   verifyOtp: async (otp) => {
     try {
       const { email, password } = get();
-      const res=await axios.post("/api/auth/verify-otp", { email, otp, password });
-      if (res.data.success===false) {
-        return res.data;
-      }
-      set({ isVerified: true });
-      // If successful verification:
-      return res.data;
-      
-     } catch(error){
-     throw error;
-     }
-    },
+      const response = await api.post("/verify-otp", { 
+        email, 
+        otp, 
+        password 
+      });
 
-  login: async (email, password) => {
-    try {
-      const res = await axios.post("/api/auth/login", { email, password });
-      // localStorage.setItem("authToken", res.data.token); // Store the token in localStorage
-      // console.log("Token stored in localStorage:", localStorage.getItem("authToken"));
-      set({
-        user: res.data.user,
-        token: res.data.token,
-        error: null,
-      });
-      return res.data; // Return response for further actions
+      if (response.data.success) {
+        set({ 
+          isVerified: true,
+          user: response.data.user,
+          token: response.data.token 
+        });
+        // Store token in localStorage
+        localStorage.setItem('token', response.data.token);
+        // Set token in axios default headers
+        api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+        return response.data;
+      } else {
+        throw new Error(response.data.message || "OTP verification failed");
+      }
     } catch (error) {
-      console.error("Login error:", error.response?.data || error.message);
-      set({
-        user: null,
-        token: null,
-        error: error.response?.data?.error || "Login failed. Please try again.",
-      });
-      throw error; // Rethrow error for handling in the component
+      console.error("Error verifying OTP:", error);
+      throw error;
     }
   },
 
-  logout: () => {
-    set({
-      user: null,
-      token: null,
-      error: null,
-    });
+  login: async (email, password) => {
+    try {
+      const response = await api.post("/login", { email, password });
+      
+      if (response.data.token) {
+        // Store token in localStorage
+        localStorage.setItem('token', response.data.token);
+        // Set token in axios default headers
+        api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+        
+        set({
+          user: response.data.user,
+          token: response.data.token,
+          error: null,
+        });
+        return response.data;
+      } else {
+        throw new Error("Login failed - no token received");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      set({
+        user: null,
+        token: null,
+        error: error.message || "Login failed. Please try again.",
+      });
+      throw error;
+    }
   },
 
+  logout: async () => {
+    try {
+      // First clear all stored data
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // Remove token from axios headers
+      delete api.defaults.headers.common['Authorization'];
+      
+      // Reset store state
+      set({
+        user: null,
+        token: null,
+        error: null,
+        email: "",
+        password: "",
+        confirmPassword: "",
+        isOtpSent: false,
+        isVerified: false,
+      });
+
+      // Clear the entire history and force navigation to signin
+      const signInUrl = '/auth/signin';
+      
+      // First, add a new entry to prevent going back
+      window.history.pushState(null, '', signInUrl);
+      
+      // Then clear the entire history
+      window.history.go(-(window.history.length - 1));
+      
+      // Finally, force a page reload to the signin page
+      setTimeout(() => {
+        window.location.href = signInUrl;
+        // Prevent any back navigation after reload
+        window.onbeforeunload = function() {
+          window.history.forward();
+        };
+      }, 0);
+      
+    } catch (error) {
+      console.error("Logout error:", error);
+      throw error;
+    }
+  },
 }));
 export default useAuthStore;
