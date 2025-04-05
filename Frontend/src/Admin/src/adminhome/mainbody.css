@@ -1,6 +1,6 @@
 /* Body.css */
 .body-container {
-  background-color: #e1d3fa;
+  background: linear-gradient(180deg, #0a1825, #142134, #1e3c72);
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -24,7 +24,7 @@
 }
 
 .main-logo {
-  width: 314px;
+  width: 450px;
   height: auto;
   margin-top: 50px;
   margin-bottom: -15px;
@@ -57,7 +57,8 @@
 }
 
 .main-button {
-  background-color: #5d4a7b;
+  background-color: black;
+  box-shadow: grey 0px 0px 7px 0px;
   color: #fff;
   font-size: 18px;
   padding: 12px 40px;
@@ -70,7 +71,8 @@
 }
 
 .main-button:hover {
-  background-color: #4b3a63;
+  background-color: grey;
+  color: black;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }

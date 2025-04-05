@@ -7,7 +7,7 @@
     flex: 1;
     padding: 0px;
     margin-left: 0px; /* Adjust this value based on your Nav width */
-    background-color: #e1d3fa;
+    background: linear-gradient(180deg, #0a1825, #142134, #1e3c72);
     min-height: 100vh;
     overflow-y: auto;
     position: relative;

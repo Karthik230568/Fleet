@@ -67,6 +67,8 @@ function Home() {
       <div className="body_home">
         <div className="container_home">
           <div className="BLogo_home">
+            <img src="/greylogo.png" alt="🚗 FLEET" />
+=======
             <img src={blacklogo} alt="Fleet Logo" className="main-logo" />
             <h1 className="title">FLEET</h1>
             <p className="tagline">DRIVE YOUR JOURNEY ANYTIME, ANYWHERE</p>

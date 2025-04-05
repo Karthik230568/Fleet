@@ -2,10 +2,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #271944;
+    background: black;
     color: white;
+    box-shadow: gray 0px 0px 20px 0px;
     width: 100%;
     visibility: inherit;
+    position: relative;
 }
 
 .logo_nav {
@@ -34,10 +36,10 @@
     padding-left: 30px;
     padding-right: 30px;
     border-radius: 30px;
-    background: #e1d3fa;
+    background: #1e3c72;
     cursor: pointer;
     font-weight: bold;
-    color: #2e223a;
+    color: white;
 
 }
 
@@ -47,32 +49,37 @@
     padding-left: 30px;
     padding-right: 30px;
     border-radius: 30px;
-    background: #e1d3fa;
+    background: #1e3c72;
     cursor: pointer;
     font-weight: bold;
-    color: #2e223a;
+    color: white;
 }
 
 .profile_nav {
     text-decoration: none;
     padding: 4px;
     border-radius: 50%;
-    background: #e1d3fa;
+    background: #1e3c72;
     cursor: pointer;
 }
 
 .help_nav.active {
-    background: rgb(113, 85, 139);
-    color: #e1d3fa;
+    background: grey;
+    color: black;
 }
 
 .help_nav:active {
-    color: #2e223a;
+    color: black;
+    background: grey;
+}
+.help_nav:hover {
+    background: grey;
+    color: black;
 }
 
 .booking_nav.active {
-    background: rgb(113, 85, 139);
-    color: #e1d3fa;
+    background: gray;
+    color: black;
     padding: 10px;
     padding-left: 30px;
     padding-right: 30px;
@@ -80,7 +87,7 @@
 }
 
 .booking_nav:active {
-    color: #2e223a;
+    color: grey;
 }
 
 .profile_nav {
@@ -88,7 +95,7 @@
 }
 
 .custom-button_nav {
-    background-color: #2e223a;
+    background-color: grey;
 }
 
 .logout_nav {
@@ -97,16 +104,16 @@
     padding-left: 30px;
     padding-right: 30px;
     border-radius: 30px;
-    background: #e1d3fa;
+    background: #1e3c72;
     cursor: pointer;
     font-weight: bold;
-    color: #2e223a;
+    color: white;
     border: none;
     transition: background-color 0.3s, color 0.3s;
 }
 
 .logout_nav:hover {
-    background: rgb(113, 85, 139);
-    color: #e1d3fa;
+    background:grey;
+    color: black;
 }
   

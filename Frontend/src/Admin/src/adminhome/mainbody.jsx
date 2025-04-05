@@ -1,5 +1,5 @@
 import React from 'react';
-import blacklogo from "../blacklogo.png";
+import blacklogo from "../../../../public/greylogo.png"; // Import logo
 import "./mainbody.css";
 import { useNavigate } from "react-router-dom";
 
@@ -11,8 +11,6 @@ function Mainbody() {
         {/* Left Section - Logo and Title */}
         <div className="left-section">
           <img src={blacklogo} alt="Fleet Logo" className="main-logo" />
-          <h1 className="title">FLEET</h1>
-          <p className="tagline">DRIVE YOUR JOURNEY ANYTIME, ANYWHERE</p>
         </div>
 
         {/* Right Section - Buttons */}

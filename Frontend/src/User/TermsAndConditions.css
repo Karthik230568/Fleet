@@ -1,6 +1,10 @@
-
+.app-container_tc{
+  background: linear-gradient(180deg, #0a1825, #142134, #1e3c72);
+  height:100vh;
+  padding-top: 30px;
+}
 .body_tc {
-  background:#e1d3fa;
+  background:transparent;
   
 }
 .container_tc {

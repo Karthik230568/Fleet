@@ -5,7 +5,7 @@ import Signup from './Signup.jsx';
 import Signin from './Signin.jsx';
 import Adminsignin from './Adminsignin.jsx';
 import Logo from './Logo.jsx';
-import Fleetlogo from './Fleet Logo.png';
+import Fleetlogo from '../../../public/greylogo.png';
 
 const Maincontent = () => {
   const location = useLocation();
