@@ -21,6 +21,7 @@ import Bookingtype from './User/Bookingtype.jsx';
 import './Admin/src/AdminLayout.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import './signupandsignin/src/App.css';
+import Forgot from './signupandsignin/src/forgot.jsx';
 
 // User Layout Component
 const UserLayout = () => {
@@ -71,6 +72,7 @@ const AuthLayout = () => {
       <Route path='signin' element={<Signin />} />
       <Route path='signup' element={<Signup />} />
       <Route path='adminsignin' element={<Adminsignin />} />
+      <Route path='forgotpassword' element={<Forgot />} />
     </Routes>
   );
 };

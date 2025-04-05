@@ -46,7 +46,7 @@ export default function Signin() {
 
   const handleForgotPassword = (e) => {
     e.preventDefault();
-    navigate("/auth/signup", { state: { isForgotPassword: true } });
+    navigate("/auth/forgotpassword", { state: { isForgotPassword: true } });
   };
 
   return (
