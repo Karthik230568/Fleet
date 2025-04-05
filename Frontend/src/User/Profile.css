@@ -18,7 +18,7 @@
   width: 100%;
   gap: 300px;
   flex-direction: row;
-  gap: 100px;
+  gap: 200px;
 }
 
 .profile_BLogo_home {
@@ -29,7 +29,7 @@
 }
 
 .profile_BLogo_home img {
-  width: 314px;
+  width: 600px;
   height: auto;
   margin-bottom: -15px;
   transition: all 0.3s ease;
@@ -119,7 +119,6 @@
   background-color: black;
   box-shadow: grey 0 0 3px 0;
   color: gray;
-  background-color: rgb(113, 85, 139);
   color: white;
   opacity: 1;
 }

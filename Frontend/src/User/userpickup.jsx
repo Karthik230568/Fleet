@@ -49,7 +49,7 @@ function Userpickup() {
         <div className="popup-overlay">
           <div className="popup-content">
             <h3>Booking Confirmed</h3>
-            <p>Your booking has been successfully confirmed!</p>
+            <p className="ppr">Your booking has been successfully confirmed!</p>
             <button onClick={handlePopupOk} className="popup-ok-button">
               OK
             </button>

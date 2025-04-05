@@ -35,33 +35,10 @@ function Profile() {
         <img src={Logo} className="profile_logo-image" alt="Logo" />
         </div>
         <div className="profile-card">
-          <div className="profile-logo-container">
-             
-            
-          </div>
-          
-          <div className="profile-input-container">
-            <button className="profile-edit-btn" onClick={handleEditClick}>✏️</button>
-            </div>
-            <h6 className='details'>Full Name</h6>
-            <input
-              type="text"
-              name="fullName"
-              placeholder="Full Name"
-              className={`profile-input-field ${isEditing ? "editing" : "disabled"}`}
-              value={formData.fullName}
-              onChange={handleChange}
-              disabled={!isEditing}
-            />
-          <img src={blacklogo} alt="Fleet Logo" className="profile-logo" />
-          <h1 className="profile-title">FLEET</h1>
-          <p className="profile-tagline">DRIVE YOUR JOURNEY ANYTIME, ANYWHERE</p>
-        </div>
-        <div className="profile-card">
           <div className="profile-input-container">
             <button className="profile-edit-btn" onClick={handleEditClick}>✏️</button>
           </div>
-          <h6>Full Name</h6>
+          <h6 className='details'>Full Name</h6>
           <input
             type="text"
             name="fullName"
@@ -95,8 +72,6 @@ function Profile() {
             disabled={!isEditing}
           />
           <h6 className='details'>Date of Birth</h6>
-          
-          <h6>Date of Birth</h6>
           <input
             type="date"
             name="dateOfBirth"

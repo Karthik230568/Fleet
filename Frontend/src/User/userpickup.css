@@ -21,6 +21,9 @@
   height: auto;
 }
 
+.ppr {
+  color: black;
+}
 .pickup_location {
   text-align: center;
   margin-left: 250px;
