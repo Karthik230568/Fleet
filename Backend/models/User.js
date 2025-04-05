@@ -39,7 +39,13 @@ const userSchema = new mongoose.Schema({
     isVerified: {
         type: Boolean,
         default: false
-    }
+    },
+    bookings: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Booking' // Reference to the Booking model
+        }
+    ]
 }, {
     timestamps: true
 });

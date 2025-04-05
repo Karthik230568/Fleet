@@ -29,8 +29,8 @@ router.delete('/vehicles/:id',  removeVehicle);
 router.post('/drivers',  addDriver);
 router.delete('/drivers/:id',  removeDriver);
 router.get('/drivers',  getDrivers);
-router.get('/drivers/profile', authenticateUser, getDriverProfile);
-router.put('/drivers/profile', authenticateUser, updateDriverProfile);
+router.get('/drivers/profile',  getDriverProfile);
+router.put('/drivers/profile',  updateDriverProfile);
 
 // Booking routes
 router.get('/bookings',  getAllBookings);
