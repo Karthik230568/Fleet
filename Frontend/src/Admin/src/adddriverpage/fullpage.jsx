@@ -1,47 +1,43 @@
 import "./adddriver.css";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, Routes, Route } from "react-router-dom";
-import driversData from "./driversdata";
 import DriverCard from "./drivercard";
 import AddDriver from "../adddriverdetails/adddriver";
+import useDriverStore from "../../../../store/driverStore"; // Import the driver store
 
 function Admindriverpage() {
   const navigate = useNavigate();
-  const [drivers, setDrivers] = useState(() => {
-    const savedDrivers = localStorage.getItem("drivers");
-    return savedDrivers ? JSON.parse(savedDrivers) : driversData;
-  });
+
+  // Zustand store actions and state
+  const { drivers, fetchDrivers, addDriver, updateDriverProfile, removeDriver, error } = useDriverStore();
+
   const [editingDriver, setEditingDriver] = useState(null);
 
+  // Fetch drivers from the backend on component mount
   useEffect(() => {
-    localStorage.setItem("drivers", JSON.stringify(drivers));
-  }, [drivers]);
+    fetchDrivers();
+  }, [fetchDrivers]);
 
   const handleAddDriver = () => {
     setEditingDriver(null);
     navigate("/admin/drivers/add");
   };
 
-  const handleNewDriver = (driverData) => {
-    if (editingDriver) {
-      // Update existing driver
-      setDrivers((prevDrivers) => {
-        const updatedDrivers = prevDrivers.map((d) =>
-          d.driverId === editingDriver.driverId ? driverData : d
-        );
-        localStorage.setItem("drivers", JSON.stringify(updatedDrivers));
-        return updatedDrivers;
-      });
-    } else {
-      // Add new driver
-      setDrivers((prevDrivers) => {
-        const updatedDrivers = [...prevDrivers, driverData];
-        localStorage.setItem("drivers", JSON.stringify(updatedDrivers));
-        return updatedDrivers;
-      });
+  const handleNewDriver = async (driverData) => {
+    try {
+      if (editingDriver) {
+        // Update existing driver
+        await updateDriverProfile(driverData);
+      } else {
+        // Add new driver
+        await addDriver(driverData);
+      }
+      setEditingDriver(null);
+      navigate("/admin/drivers");
+    } catch (error) {
+      console.error("Error handling driver:", error);
+      alert("Failed to save driver. Please try again.");
     }
-    setEditingDriver(null);
-    navigate("/admin/drivers");
   };
 
   const handleEditDriver = (driver) => {
@@ -49,13 +45,14 @@ function Admindriverpage() {
     navigate("/admin/drivers/add");
   };
 
-  const handleDeleteDriver = (driver) => {
+  const handleDeleteDriver = async (driverId) => {
     if (window.confirm("Are you sure you want to delete this driver?")) {
-      setDrivers((prevDrivers) => {
-        const updatedDrivers = prevDrivers.filter((d) => d !== driver);
-        localStorage.setItem("drivers", JSON.stringify(updatedDrivers));
-        return updatedDrivers;
-      });
+      try {
+        await removeDriver(driverId);
+      } catch (error) {
+        console.error("Error deleting driver:", error);
+        alert("Failed to delete driver. Please try again.");
+      }
     }
   };
 
@@ -65,12 +62,13 @@ function Admindriverpage() {
         path="/"
         element={
           <div className="driver-container">
+            {error && <p className="error_message">{error}</p>}
             {drivers.map((driver, index) => (
               <DriverCard
                 key={index}
                 {...driver}
                 onEdit={() => handleEditDriver(driver)}
-                onDelete={() => handleDeleteDriver(driver)}
+                onDelete={() => handleDeleteDriver(driver._id)}
               />
             ))}
             <DriverCard isAddCard={true} onAdd={handleAddDriver} />

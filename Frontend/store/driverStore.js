@@ -8,7 +8,7 @@ const useDriverStore = create((set, get) => ({
   // Fetch all drivers
   fetchDrivers: async () => {
     try {
-      const response = await axios.get("/api/drivers");
+      const response = await axios.get("/api/admin/drivers");
       set({ drivers: response.data.drivers, error: null });
       console.log("Fetched drivers:", response.data.drivers);
     } catch (error) {
@@ -20,7 +20,7 @@ const useDriverStore = create((set, get) => ({
   // Add a new driver
   addDriver: async (driverData) => {
     try {
-      const response = await axios.post("/api/drivers", driverData);
+      const response = await axios.post("/api/admin/drivers", driverData);
       set((state) => ({
         drivers: [...state.drivers, response.data.driver],
         error: null,
@@ -36,7 +36,7 @@ const useDriverStore = create((set, get) => ({
   // Remove a driver
   removeDriver: async (id) => {
     try {
-      await axios.delete(`/api/drivers/${id}`);
+      await axios.delete(`/api/admin/drivers/${id}`);
       set((state) => ({
         drivers: state.drivers.filter((driver) => driver._id !== id),
         error: null,
@@ -51,7 +51,7 @@ const useDriverStore = create((set, get) => ({
   // Get driver profile
   getDriverProfile: async () => {
     try {
-      const response = await axios.get("/api/drivers/profile");
+      const response = await axios.get("/api/admin/drivers/profile");
       return response.data.driver;
     } catch (error) {
       console.error("Error fetching driver profile:", error.response?.data || error.message);
@@ -63,7 +63,7 @@ const useDriverStore = create((set, get) => ({
   // Update driver profile
   updateDriverProfile: async (profileData) => {
     try {
-      const response = await axios.put("/api/drivers/profile", profileData);
+      const response = await axios.put("/api/admin/drivers/profile", profileData);
       set((state) => ({
         drivers: state.drivers.map((driver) =>
           driver._id === response.data.driver._id ? response.data.driver : driver
