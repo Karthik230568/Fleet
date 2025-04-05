@@ -58,7 +58,7 @@ const vehicleSchema = new mongoose.Schema({
     },
     image: {
         type: String,
-        required: true
+        required: false
     }
 }, {
     timestamps: true

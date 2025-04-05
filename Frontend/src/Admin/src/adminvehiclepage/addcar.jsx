@@ -8,7 +8,8 @@ function AddCar({ onAddVehicle, editingVehicle }) {
     type: "Car",
     name: "",
     price: "",
-    availability: "Yes",
+    city: "Delhi",
+    availability: "Available",
     rating: "0.0",
     image: "",
     fuelType: "Petrol",
@@ -16,16 +17,17 @@ function AddCar({ onAddVehicle, editingVehicle }) {
     registrationPlate: "",
     vehicleId: "",
     driverName: "",
-    hasDriver: "no",
+    hasDriver: true,
     driverId: "",
-  });
+  }
+);
   const [imagePreview, setImagePreview] = useState(null);
 
   useEffect(() => {
     if (editingVehicle) {
       setFormData({
         ...editingVehicle,
-        hasDriver: editingVehicle.driverName ? "yes" : "no"
+        hasDriver: editingVehicle.driverName ? true : false,
       });
       setImagePreview(editingVehicle.image);
     }
@@ -39,10 +41,20 @@ function AddCar({ onAddVehicle, editingVehicle }) {
     }));
   };
 
+  const handleDriverChange = (e) => {
+    const value = e.target.value === "true";
+    setFormData((prevState) => ({
+      ...prevState,
+      hasDriver: value,
+      driverName: value ? prevState.driverName : "",
+      driverId: value ? prevState.driverId : "",
+    }));
+  };
+
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.type === "image/jpeg") {
+      if (file.type === "image/jpeg" || file.type === "image/jpg") {
         const reader = new FileReader();
         reader.onloadend = () => {
           setFormData((prev) => ({
@@ -66,13 +78,14 @@ function AddCar({ onAddVehicle, editingVehicle }) {
       price: formData.price,
       availability: formData.availability,
       rating: formData.rating,
+      city: formData.city,
       image: formData.image || "Images/default-car.png",
       fuelType: formData.fuelType,
       seatingCapacity: formData.seatingCapacity,
       registrationPlate: formData.registrationPlate,
       vehicleId: formData.vehicleId,
-      driverName: formData.hasDriver === "yes" ? formData.driverName : "",
-      driverId: formData.hasDriver === "yes" ? formData.driverId : "",
+      driverName: formData.hasDriver ? formData.driverName : "",
+      driverId: formData.hasDriver ? formData.driverId : "",
     };
     onAddVehicle(cardData);
     navigate("/admin/vehicles");
@@ -88,9 +101,9 @@ function AddCar({ onAddVehicle, editingVehicle }) {
               <input
                 type="radio"
                 name="hasDriver"
-                value="yes"
-                checked={formData.hasDriver === "yes"}
-                onChange={handleChange}
+                value={true}
+                checked={formData.hasDriver === true}
+                onChange={handleDriverChange}
               />
               <span>With Driver</span>
             </label>
@@ -98,16 +111,16 @@ function AddCar({ onAddVehicle, editingVehicle }) {
               <input
                 type="radio"
                 name="hasDriver"
-                value="no"
-                checked={formData.hasDriver === "no"}
-                onChange={handleChange}
+                value={false}
+                checked={formData.hasDriver === false}
+                onChange={handleDriverChange}
               />
               <span>Without Driver</span>
             </label>
           </div>
         </div>
 
-        {formData.hasDriver === "yes" && (
+        {formData.hasDriver && (
           <>
             <div className="form-group">
               <label>Driver Name:</label>
@@ -181,8 +194,8 @@ function AddCar({ onAddVehicle, editingVehicle }) {
             onChange={handleChange}
             required
           >
-            <option value="Yes">Available</option>
-            <option value="No">Not Available</option>
+            <option value="Available">Available</option>
+            <option value="Not Available">Not Available</option>
           </select>
         </div>
 
