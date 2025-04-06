@@ -75,6 +75,14 @@ export default function Signin() {
                 placeholder="Enter email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    document.getElementById("password").focus();
+                  }
+                }}
+                id="email"
+                autoComplete="email"
                 required
               />
             </div>
@@ -87,6 +95,14 @@ export default function Signin() {
                 placeholder="Enter password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleSubmit(e); // Trigger form submission
+                  }
+                }}
+                id="password"
+                autoComplete="current-password"
                 required
               />
               <div className="forgot-password">

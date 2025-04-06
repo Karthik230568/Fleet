@@ -31,18 +31,20 @@ export default function Signup() {
       setError("Passwords do not match!");
       return;
     }
+    setShowOtp(true);
     try {
       setSignupData(email, password, confirmPassword);
       const res = await sendOtp();
-      if (res.success) {
-        setError("");
-        setShowOtp(true);
-      } else {
+      if (!res.success) {
         setError(res.message || "Failed to send OTP");
+        setShowOtp(false);
+      } else {
+        setError("");
       }
     } catch (error) {
       console.error("Error sending email:", error);
       setError(error.message || "Failed to send OTP. Please try again.");
+      setShowOtp(false); // Revert if an error occurs
     }
   };
 
@@ -73,6 +75,14 @@ export default function Signup() {
                 placeholder="Enter email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    document.getElementById("password").focus();
+                  }
+                }}
+                id="email"
+                autoComplete="email"
               />
             </div>
 
@@ -84,6 +94,13 @@ export default function Signup() {
                 placeholder="Enter password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    document.getElementById("confirmPassword").focus();
+                  }
+                }}
+                id="password"
               />
             </div>
 
@@ -95,6 +112,13 @@ export default function Signup() {
                 placeholder="Confirm password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleSubmit(e); // Trigger form submission
+                  }
+                }}
+                id="confirmPassword"
               />
             </div>
 

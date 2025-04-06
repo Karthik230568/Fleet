@@ -1,20 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import './Auth.css';
 import fleetLogo from '../../../public/greylogo.png';
+import useAdminAuthStore from "../../../store/AdminAuthStore";
 
 export default function Adminsignin() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Email Validation Function
+  const { login, isAuthenticated, error: storeError, checkAuth } = useAdminAuthStore();
+
+  // Only run checkAuth once on first render
+  useEffect(() => {
+    if (checkAuth()) {
+      navigate("/admin");
+    }
+  }, []);
+
+  // Redirect after successful login
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/admin");
+    }
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (storeError) {
+      setError(storeError);
+    }
+  }, [storeError]);
+
   const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  // Form Submit Handler
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
 
     if (!isValidEmail(email)) {
       setError("Invalid Email Format!");
@@ -25,14 +48,14 @@ export default function Adminsignin() {
       return;
     }
 
-    setError("");
-    // Navigate to admin dashboard after successful login
-    navigate("/admin");
-  };
-
-  const handleForgotPassword = (e) => {
-    e.preventDefault();
-    navigate("/auth/forgotpassword", { state: { isForgotPassword: true, isAdmin: true } });
+    try {
+      setIsLoading(true);
+      await login(email, password);
+    } catch (err) {
+      setError(err.message || "Login failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -44,9 +67,7 @@ export default function Adminsignin() {
 
         <div className="form-section">
           <h2 className="auth-title">Admin Sign In</h2>
-          
           {error && <div className="alert alert-danger">{error}</div>}
-
           <form onSubmit={handleSubmit} className="auth-form">
             <div className="mb-3">
               <label className="form-label">EMAIL</label>
@@ -68,12 +89,11 @@ export default function Adminsignin() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <div className="forgot-password">
-                <a href="#" onClick={handleForgotPassword}>Forgot Password?</a>
-              </div>
             </div>
 
-            <button type="submit" className="btn">Sign In</button>
+            <button type="submit" className="btn" disabled={isLoading}>
+              {isLoading ? "Signing In..." : "Sign In"}
+            </button>
           </form>
 
           <div className="auth-links">
