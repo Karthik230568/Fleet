@@ -145,27 +145,31 @@ z-index: 999;
 }
 
 /* Popup Styling */
-.popup {
-position: fixed;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-background: white;
-padding: 30px;
-width: 500px;
-border-radius: 10px;
-box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-z-index: 1000;
+.popup_r {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Changed to grey */
+  padding: 30px;
+  width: 500px;
+  border-radius: 10px;
+  background-color: black;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  border: white 1px solid;
+  z-index: 1000;
+  color: white; /* Ensure text is visible on grey background */
 }
 
 .popup-content {
 display: flex;
 flex-direction: column;
 align-items: center;
+background-color: black;
+color: white;
 }
 
 .rateNow {
-  color: #271944;
+  color: white;
 }
 
 .star-rating {

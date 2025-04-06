@@ -70,7 +70,7 @@ function Past() {
 
         {/* Rating Popup */}
         {showPopup && (
-          <div className="popup">
+          <div className="popup_r">
             <div className="popup-content">
               <h3 className="rateNow">Rate {selectedBooking?.name}</h3>
 
