@@ -7,19 +7,11 @@ axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 const useVehicleStore = create((set, get) => ({
   vehicles: [], // List of vehicles
-<<<<<<< HEAD
   searchResults: [], // Search results
   error: null, // Error state
 
   // Search vehicles
   searchVehicles: async (searchParams) => {
-=======
-  searchCriteria: {},
-  error: null, // Error state
-  loading: false,
-  // Fetch all vehicles for admin
-  fetchVehicles: async () => {
->>>>>>> 0619c3e7d71a65ddaa3a4144c0cdf6af6fa29760
     try {
       const { pickupDate, returnDate, withDriver, city } = searchParams;
       
@@ -56,7 +48,6 @@ const useVehicleStore = create((set, get) => ({
     }
   },
 
-<<<<<<< HEAD
   // Fetch all vehicles (admin only)
   fetchVehicles: async () => {
     try {
@@ -79,9 +70,6 @@ const useVehicleStore = create((set, get) => ({
   },
 
   // Add a new vehicle (admin only)
-=======
-  // Add a new vehicle for admin
->>>>>>> 0619c3e7d71a65ddaa3a4144c0cdf6af6fa29760
   addVehicle: async (vehicleData) => {
     try {
       const response = await axios.post("/admin/vehicles", vehicleData);
@@ -102,11 +90,7 @@ const useVehicleStore = create((set, get) => ({
     }
   },
 
-<<<<<<< HEAD
   // Update an existing vehicle (admin only)
-=======
-  // Update an existing vehicle admin
->>>>>>> 0619c3e7d71a65ddaa3a4144c0cdf6af6fa29760
   updateVehicle: async (id, updates) => {
     try {
       const response = await axios.put(`/admin/vehicles/${id}`, updates);
@@ -129,11 +113,7 @@ const useVehicleStore = create((set, get) => ({
     }
   },
 
-<<<<<<< HEAD
   // Remove a vehicle (admin only)
-=======
-  // Remove a vehicle admin
->>>>>>> 0619c3e7d71a65ddaa3a4144c0cdf6af6fa29760
   removeVehicle: async (id) => {
     try {
       const response = await axios.delete(`/admin/vehicles/${id}`);

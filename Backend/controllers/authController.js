@@ -27,40 +27,10 @@ const signup = async (req, res, next) => {
         // Check if user already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-<<<<<<< HEAD
-            if (existingUser.isVerified) {
-                return res.status(400).json({ 
-                    success: false,
-                    message: "Email is already registered. Please login instead." 
-                });
-            } else {
-                // User exists but not verified - allow them to try again
-                // Delete any existing OTP
-                await OTP.deleteOne({ email });
-                
-                // Generate and save new OTP
-                const otp = generateOTP();
-                await OTP.create({ 
-                    email, 
-                    otp,
-                    createdAt: new Date() 
-                });
-
-                // Send OTP
-                await sendOTP(email, otp);
-                console.log(`New OTP sent to ${email} for unverified user`);
-
-                return res.status(200).json({ 
-                    success: true,
-                    message: "OTP sent successfully. Please verify your email." 
-                });
-            }
-=======
             return res.status(400).json({ 
                 success: false,
                 message: "User already exists.." 
             });
->>>>>>> 0619c3e7d71a65ddaa3a4144c0cdf6af6fa29760
         }
 
         // Create unverified user
