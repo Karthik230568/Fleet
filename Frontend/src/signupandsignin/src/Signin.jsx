@@ -31,16 +31,19 @@ export default function Signin() {
 
     try {
       setError(""); // Clear local error
-      const res = await login(email, password); // Call Zustand login function
-      if (res.status !== 200) {
-        setError(res.message); // Set error from response 
-        return;
+      const response = await login(email, password);
+      
+      // Check if we have a user and token
+      if (response && response.token && response.user) {
+        console.log("Login successful:", response);
+        // Navigate to home page with trailing slash
+        navigate("/home/");
+      } else {
+        setError("Login failed - invalid response from server");
       }
-      console.log("Login successful:", res);
-      navigate("/home"); // Navigate to home page on success
     } catch (err) {
       console.error("Login failed:", err);
-      setError(errorFromStore || "Login failed. Please try again."); // Use Zustand error
+      setError(err.message || errorFromStore || "Login failed. Please try again.");
     }
   };
 
@@ -59,8 +62,8 @@ export default function Signin() {
         <div className="form-section">
           <h2 className="auth-title">Sign In</h2>
 
-          {(error || errorFromStore) && (
-            <div className="alert alert-danger">{error || errorFromStore}</div>
+          {error && (
+            <div className="alert alert-danger">{error}</div>
           )}
 
           <form onSubmit={handleSubmit} className="auth-form">
@@ -72,6 +75,7 @@ export default function Signin() {
                 placeholder="Enter email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
 
@@ -83,6 +87,7 @@ export default function Signin() {
                 placeholder="Enter password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
               />
               <div className="forgot-password">
                 <a href="#" onClick={handleForgotPassword}>Forgot Password?</a>

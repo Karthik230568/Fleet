@@ -1,3 +1,4 @@
+
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
@@ -6,29 +7,66 @@ const { generateOTP, sendOTP } = require('../utils/OTP');
  
 const signup = async (req, res, next) => {
     try {
-        const { email } = req.body;
+        const { email, password, confirmPassword } = req.body;
 
-
-
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ message: "User already exists" });
+        // Validate inputs
+        if (!email || !password || !confirmPassword) {
+            return res.status(400).json({
+                success: false,
+                message: "All fields are required"
+            });
         }
 
+        // Validate password match
+        if (password !== confirmPassword) {
+            return res.status(400).json({
+                success: false,
+                message: "Passwords do not match"
+            });
+        }
+
+        // Check if user already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ 
+                success: false,
+                message: "User already exists" 
+            });
+        }
+
+        // Delete any existing OTP for this email
+        await OTP.deleteOne({ email });
+
+        // Generate and save new OTP
         const otp = generateOTP();
         await OTP.create({ 
             email, 
             otp,
+            password, // Store password temporarily
             createdAt: new Date() 
         });
 
-        await sendOTP(email, otp);
-        console.log(`OTP sent to ${email}`); // For debugging 
+        // Send OTP
+        try {
+            await sendOTP(email, otp);
+            console.log(`OTP sent to ${email}`);
 
-        res.status(200).json({ message: "OTP sent to email. Please verify." });
+            res.status(200).json({ 
+                success: true,
+                message: "OTP sent successfully. Please check your email." 
+            });
+        } catch (emailError) {
+            // If email sending fails, clean up the OTP record
+            await OTP.deleteOne({ email });
+            console.error('Email sending error:', emailError);
+            throw new Error('Failed to send verification code: ' + emailError.message);
+        }
     } catch (error) {
         console.error('Signup error:', error);
-        next(error);
+        res.status(500).json({ 
+            success: false,
+            message: error.message || "Failed to send OTP. Please try again." 
+        });
     }
 };
 
@@ -78,10 +116,8 @@ const verifyOTP = async (req, res, next) => {
 
         const otpRecord = await OTP.findOne({ email, otp });
         if (!otpRecord) {
-
             return res.status(400).json({success: false, message: "Invalid or expired OTP" });
         }
-
 
         const otpAge = (new Date() - otpRecord.createdAt) / 1000 / 60;
         if (otpAge > 10) {
@@ -184,5 +220,5 @@ module.exports = {
     verifyOTP, 
     resendOTP, 
     forgotPassword, 
-    resetPassword 
+    resetPassword
 };

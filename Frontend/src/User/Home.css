@@ -68,6 +68,7 @@
 .input-group_home {
     display: flex;
     gap: 15px;
+    margin-bottom: 1.5rem;
 }
   
 .input_home {

@@ -7,9 +7,12 @@ const NavBar = ({ isAdmin }) => {
     const handleHelpButtonClick = e => {
         e.preventDefault();
         Swal.fire({
-            title: 'Do you need help?',
-            text: 'You can contact us 24/7.\nEmail: fleet@gmail.com',
-            icon: 'question',
+            title: 'Need Help?',
+            html: `
+                <p>Email: fleet@gmail.com</p>
+                <p>Contact us anytime</p>
+            `,
+            icon: 'info',
             customClass: {
                 popup: 'custom-popup',
                 title: 'custom-title',
