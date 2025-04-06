@@ -42,7 +42,6 @@ const signup = async (req, res, next) => {
         await OTP.create({ 
             email, 
             otp,
-            password, // Store password temporarily
             createdAt: new Date() 
         });
 
