@@ -1,11 +1,11 @@
 import './Home.css';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import useBookingStore from '../../store/BookingStore';
+// import useBookingStore from '../../store/BookingStore';
 
 function Home() {
   const navigate = useNavigate();
-  const { setBookingData, initializeBooking, error: storeError } = useBookingStore();
+  // const { setBookingData, initializeBooking, error: storeError } = useBookingStore();
 
   const [formData, setFormData] = useState({
     city: '',
@@ -94,6 +94,7 @@ function Home() {
       console.error("Error during search:", error);
     }
   };
+  
 
   return (
     <div className="body_home">
