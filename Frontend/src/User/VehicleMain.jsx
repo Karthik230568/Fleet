@@ -3,109 +3,39 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation, Routes, Route } from "react-router-dom";
 import Filter from "./Filter";
 import VehicleCard from "./VehicleCard";
-import carData from "./CarData";
+import useVehicleStore from "../../store/vehicleStore"; // Import the VehicleStore
 
 function Usercarspage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { vehicles, searchVehicles, loading, error } = useVehicleStore(); // Access the store
   const [bookingType, setBookingType] = useState(() => {
-    // Retrieve the bookingType from location state or localStorage
-    return location.state?.bookingType || localStorage.getItem('bookingType') || 'driver';
+    return location.state?.bookingType || localStorage.getItem("bookingType") || "driver";
   });
 
+  const [filter, setFilter] = useState("All");
+
   useEffect(() => {
-    // Store the bookingType in localStorage whenever it changes
     if (bookingType) {
-      localStorage.setItem('bookingType', bookingType);
+      localStorage.setItem("bookingType", bookingType);
     }
   }, [bookingType]);
 
-
-
-  const [vehicles, setVehicles] = useState(() => {
-    const savedVehicles = localStorage.getItem("vehicles");
-    return savedVehicles ? JSON.parse(savedVehicles) : carData;
-  });
-  const [filteredVehicles, setFilteredVehicles] = useState(vehicles);
-  const [filter, setFilter] = useState("All");
-  const [editingVehicle, setEditingVehicle] = useState(null);
-
-  // Save vehicles to localStorage whenever they change
+  // Fetch vehicles when the component mounts or filter changes
   useEffect(() => {
-    localStorage.setItem("vehicles", JSON.stringify(vehicles));
-  }, [vehicles]);
+    const fetchVehicles = async () => {
+      try {
+        await searchVehicles({ filter }); // Pass the filter to the searchVehicles action
+      } catch (err) {
+        console.error("Error fetching vehicles:", err);
+      }
+    };
+    fetchVehicles();
+  }, [filter, searchVehicles]);
 
-  const handleAddVehicle = () => {
-    setEditingVehicle(null);
-    navigate("/admincarspage/add");
-  };
-
-  const handleNewVehicle = (newVehicle) => {
-    if (editingVehicle) {
-      // Update existing vehicle
-      setVehicles((prevVehicles) => {
-        const updatedVehicles = prevVehicles.map((v) =>
-          v === editingVehicle ? newVehicle : v
-        );
-        localStorage.setItem("vehicles", JSON.stringify(updatedVehicles));
-        return updatedVehicles;
-      });
-    } else {
-      // Add new vehicle
-      setVehicles((prevVehicles) => {
-        const updatedVehicles = [...prevVehicles, newVehicle];
-        localStorage.setItem("vehicles", JSON.stringify(updatedVehicles));
-        return updatedVehicles;
-      });
-    }
-  };
-
-  const handleEditVehicle = (vehicle) => {
-    setEditingVehicle(vehicle);
-    navigate("/admincarspage/add");
-  };
-
-  const handleDeleteVehicle = (vehicle) => {
-    if (window.confirm("Are you sure you want to delete this vehicle?")) {
-      setVehicles((prevVehicles) => {
-        const updatedVehicles = prevVehicles.filter((v) => v !== vehicle);
-        localStorage.setItem("vehicles", JSON.stringify(updatedVehicles));
-        return updatedVehicles;
-      });
-    }
-  };
-
-  // Function to update filter state
   const handleFilterChange = (selectedFilter) => {
     setFilter(selectedFilter);
   };
-
-  // Apply filtering & sorting logic
-  useEffect(() => {
-    let updatedVehicles = [...vehicles];
-
-    if (filter === "Available") {
-      updatedVehicles = updatedVehicles.filter((v) => v.availability === "Yes");
-    } else if (filter === "Not available") {
-      updatedVehicles = updatedVehicles.filter((v) => v.availability === "No");
-    } else if (filter === "Cars") {
-      updatedVehicles = updatedVehicles.filter(
-        (v) => v.type.toLowerCase() === "car"
-      );
-    } else if (filter === "Bikes") {
-      updatedVehicles = updatedVehicles.filter(
-        (v) => v.type.toLowerCase() === "bike"
-      );
-    } else if (filter === "Price") {
-      updatedVehicles.sort((a, b) => Number(a.price) - Number(b.price));
-    } else if (filter === "Rating") {
-      updatedVehicles.sort(
-        (a, b) => parseFloat(b.rating) - parseFloat(a.rating)
-      );
-    }
-
-    setFilteredVehicles(updatedVehicles);
-  }, [filter, vehicles]);
 
   return (
     <Routes>
@@ -114,8 +44,10 @@ function Usercarspage() {
         element={
           <div className="main_v">
             <Filter onFilterChange={handleFilterChange} />
+            {loading && <p>Loading vehicles...</p>}
+            {error && <p>Error: {error}</p>}
             <div className="card-container_v">
-              {filteredVehicles.map((vehicle, index) => (
+              {vehicles.map((vehicle, index) => (
                 <VehicleCard
                   key={index}
                   vehicle={vehicle}

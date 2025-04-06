@@ -3,9 +3,10 @@ import axios from "axios";
 
 const useVehicleStore = create((set, get) => ({
   vehicles: [], // List of vehicles
+  searchCriteria: {},
   error: null, // Error state
-
-  // Fetch all vehicles
+  loading: false,
+  // Fetch all vehicles for admin
   fetchVehicles: async () => {
     try {
       const response = await axios.get("/api/admin/vehicles");
@@ -18,7 +19,7 @@ const useVehicleStore = create((set, get) => ({
     }
   },
 
-  // Add a new vehicle
+  // Add a new vehicle for admin
   addVehicle: async (vehicleData) => {
     try {
       console.log("in store");
@@ -36,7 +37,7 @@ const useVehicleStore = create((set, get) => ({
     }
   },
 
-  // Update an existing vehicle
+  // Update an existing vehicle admin
   updateVehicle: async (id, updates) => {
     try {
       const response = await axios.put(`/api/admin/vehicles/${id}`, updates);
@@ -54,7 +55,7 @@ const useVehicleStore = create((set, get) => ({
     }
   },
 
-  // Remove a vehicle
+  // Remove a vehicle admin
   removeVehicle: async (id) => {
     try {
       await axios.delete(`/api/admin/vehicles/${id}`);
@@ -68,6 +69,74 @@ const useVehicleStore = create((set, get) => ({
       throw error;
     }
   },
+
+  // Fetch vehicles for user
+  searchVehicles: async (criteria) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await axios.get("/api/vehicles/", {
+        params: criteria,
+      });
+
+      set({
+        vehicles: response.data.vehicles,
+        searchCriteria: response.data.searchCriteria,
+        error: null,
+        loading: false,
+      });
+    } catch (error) {
+      console.error("Error searching vehicles:", error);
+      set({
+        vehicles: [],
+        searchCriteria: {},
+        error: error.response?.data?.message || "Failed to fetch vehicles",
+        loading: false,
+      });
+    }
+  },
+
+  // update vehicle status for booking
+  updateVehicleStatus: async (vehicleId, status, bookingId) => {
+    try {
+      const response = await axios.put(`/api/vehicles/${vehicleId}/status`, {
+        status,
+        bookingId,
+      });
+
+      // Update the local state for the vehicle
+      const updatedVehicles = get().vehicles.map((vehicle) =>
+        vehicle.id === vehicleId ? { ...vehicle, availability: status } : vehicle
+      );
+
+      set({ vehicles: updatedVehicles });
+      return response.data;
+    } catch (error) {
+      console.error("Error updating vehicle status:", error);
+      throw error.response?.data?.message || "Failed to update vehicle status";
+    }
+  },
+
+  // Mark vehicle as unavailable for booking
+  markVehicleUnavailable: async (vehicleId, returnDate, bookingId) => {
+    try {
+      const response = await axios.post(`/api/vehicles/${vehicleId}/unavailable`, {
+        returnDate,
+        bookingId,
+      });
+
+      // Update the local state for the vehicle
+      const updatedVehicles = get().vehicles.map((vehicle) =>
+        vehicle.id === vehicleId ? { ...vehicle, availability: "Not available" } : vehicle
+      );
+
+      set({ vehicles: updatedVehicles });
+      return response.data;
+    } catch (error) {
+      console.error("Error marking vehicle unavailable:", error);
+      throw error.response?.data?.message || "Failed to mark vehicle unavailable";
+    }
+  },
+
 }));
 
 export default useVehicleStore;
