@@ -1,10 +1,10 @@
 const express = require('express');
 const cors = require('cors');
-const connectDB = require('./config/db');
+const { connectDB } = require('./config/db');
 const app = express();
 
-// Connect to MongoDB
-connectDB();
+// Connect to MongoDB will be handled in server.js
+// Remove the connectDB() call here since it's now handled in server.js
 
 // Import routes
 const authRoutes = require('./routes/authRoutes');
@@ -15,8 +15,15 @@ const adminRoutes = require('./routes/adminRoutes');
 const adminAuthRoutes = require('./routes/adminAuthRoutes');
 const ratingRoutes = require('./routes/ratingRoutes');
 
-// Middleware
-app.use(cors());
+// CORS configuration
+app.use(cors({
+    origin: 'http://localhost:5173', // Your frontend URL
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Body parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -37,7 +44,7 @@ app.use((err, _req, res, _next) => {
     if (err.name === 'ValidationError') {
         return res.status(400).json({
             success: false,
-            error: Object.values(err.errors).map(e => e.message)
+            message: Object.values(err.errors).map(e => e.message).join(', ')
         });
     }
 
@@ -45,7 +52,7 @@ app.use((err, _req, res, _next) => {
     if (err.code === 11000) {
         return res.status(400).json({
             success: false,
-            error: 'Duplicate field value entered'
+            message: 'Duplicate field value entered'
         });
     }
 
@@ -53,21 +60,21 @@ app.use((err, _req, res, _next) => {
     if (err.name === 'JsonWebTokenError') {
         return res.status(401).json({
             success: false,
-            error: 'Invalid token'
+            message: 'Invalid token'
         });
     }
 
     if (err.name === 'TokenExpiredError') {
         return res.status(401).json({
             success: false,
-            error: 'Token expired'
+            message: 'Token expired'
         });
     }
 
     // Default error
     res.status(500).json({
         success: false,
-        error: err.message || 'Something went wrong!'
+        message: err.message || 'Something went wrong!'
     });
 });
 

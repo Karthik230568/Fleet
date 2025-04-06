@@ -21,6 +21,7 @@ const Bookingtype = () => {
   };
 
   return (
+    <div className="bookingtype_body">
     <div className="bookingtype-container">
       <h2 className="bookingtype">Booking Type</h2>
       
@@ -43,12 +44,13 @@ const Bookingtype = () => {
             {deliveryOption === 'Pickup' && (
               <div >
                 {/* Add any additional UI elements for "Own Driving" option here */}
-                <p>"You have selected Pickup. Please visit our store to collect your vehicle."</p>
+                <p >"You have selected Pickup. Please visit our store to collect your vehicle."</p>
               </div>
             )}
       <button onClick={handleConfirm} className="bookingtype_confirm-button">
         Confirm
       </button>
+    </div>
     </div>
   );
 };

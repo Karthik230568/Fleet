@@ -1,6 +1,6 @@
 .pickup_body {
   padding-top: 10vh; /* To prevent overlap with NavBar */
-  background-color: #E1D3FA;
+  background: linear-gradient(180deg, #0a1825, #142134, #1e3c72);
   /* Light purple background */
   display: flex;
   align-items: center;
@@ -17,13 +17,16 @@
 }
 
 .pickup_logo-image {
-  width: 350px;
+  width: 450px;
   height: auto;
 }
 
+.ppr {
+  color: black;
+}
 .pickup_location {
   text-align: center;
-  margin-left: 350px;
+  margin-left: 250px;
   display: flex;
   flex-direction: column;
 
@@ -33,7 +36,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: rgb(113,85,139);
+  background-color: black;
   padding: 14px;
   border-radius: 8px;
   margin-bottom: 12px;
@@ -59,17 +62,18 @@
 
   width: 40%;
   padding: 8px;
-  border: 1px solid  rgb(113, 85, 139);
+  border: 1px solid  black;
   border-radius: 5px;
   font-size: 16px;
-  background-color:  rgb(113, 85, 139);
+  background-color: black;
   color:white;
   align-self: self-end;
+  box-shadow: grey 0 0 5px 0;
 
 }
 
 .pickup_next-button:hover {
-  background-color: #271944;
+  background-color: grey;
 }
 
 .pickup_next-button:active {

@@ -1,17 +1,17 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #e6daf0;
+    background: linear-gradient(180deg, #0a1825, #142134, #1e3c72);
     font-family: Arial, sans-serif;
-    min-height: 100vh;
+    height:100vh;
     overflow-y: auto;
   
 }
 
 .main_v {
-    min-height: 100vh;
-    padding-bottom: 2rem;
+    padding-bottom: 100px;
     overflow-y: auto;
+    height: 100vh;
 }
 
 .filter-container_v {
@@ -26,7 +26,7 @@ body {
 .filter-option_v {
     display: flex;
     align-items: center;
-    background-color: #6b5a84;
+    background-color: black;
     padding: 8px 15px;
     border-radius: 20px;
     font-size: 14px;
@@ -68,7 +68,7 @@ body {
 }
 
 .filter-option_v:hover {
-    background-color: #5a3e85;
+    background-color: black;
 }
 
 .card-container_v {
@@ -82,12 +82,12 @@ body {
 }
 
 .vehicle-card_v {
-    background-color: #6b5a84;
+    background-color: black;
     color: white;
     padding: 20px;
     border-radius: 15px;
     text-align: left;
-    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: grey 0 0 7px 0;
     display: flex;
     flex-direction: column;
     min-height: 450px;
@@ -166,7 +166,7 @@ body {
 }
 
 .book-btn_vb {
-    background-color: #4CAF50;
+    background-color: #1e3c72;
     color: white;
 }
 
@@ -306,7 +306,7 @@ body {
     font-size: 1.1rem;
     cursor: pointer;
     background-color: #c4c4c4;
-    color: #333;
+    color: #1e3c72;
     min-width: 120px;
 }
 
@@ -325,6 +325,11 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    color: black;
+  }
+
+  .p-r {
+    color: black;
   }
   
   .popup-content {
@@ -366,5 +371,12 @@ body {
   
   .button_confirm:hover, .button_cancel:hover {
     opacity: 0.9;
+  }
+  .button_vehicles{
+    background-color: #1e3c72;
+    color : white;
+  }
+  .filter-option_v{
+    background-color: black;
   }
   

@@ -2,7 +2,7 @@
   height: 100vh;
   width: 100vw;
   flex-direction: column;
-  background: #e1d3fa;
+  
   align-items: center;
   display: flex;
   justify-content: center;
@@ -13,7 +13,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 100px;
+  background: linear-gradient(180deg, #0a1825, #142134, #1e3c72);
+  height: 100vh;
+  width: 100%;
+  gap: 300px;
+  flex-direction: row;
+  gap: 200px;
 }
 
 .profile_BLogo_home {
@@ -24,7 +29,7 @@
 }
 
 .profile_BLogo_home img {
-  width: 314px;
+  width: 600px;
   height: auto;
   margin-bottom: -15px;
   transition: all 0.3s ease;
@@ -48,7 +53,7 @@
 }
 
 .profile-card {
-  background: #e1d3fa;
+  background: transparent;
   padding: 20px;
   border-radius: 10px;
   text-align: center;
@@ -88,40 +93,46 @@
   position: relative;
 }
 
-h6 {
+.details {
   margin: 0;
   font-size: 15px;
   font-style: normal;
   font-weight: normal;
-  color: black;
+  margin-top: 10px;
+  margin-bottom: 2px;
+  margin-left: 10px;
+  color: white;
   text-align: start;
 }
 
 .profile-input-field {
   width: 96%;
   padding: 8px;
-  border: 1px solid rgb(113, 85, 139);
+  border: 1px solid black;
   border-radius: 5px;
   font-size: 16px;
-  background-color: rgb(113, 85, 139);
+  background-color: black;
   color: white;
 }
 
 .profile-input-field.disabled {
-  background-color: rgb(113, 85, 139);
+  background-color: black;
+  box-shadow: grey 0 0 3px 0;
+  color: gray;
   color: white;
   opacity: 1;
 }
 
 .profile-input-field.editing {
-  background-color: rgb(113, 85, 139);
+  background-color: black;
   color: white;
+  box-shadow: grey 0 0 3px 0;
   border: 1px solid black;
 }
 
 .profile-save-button {
-  background-color: #271944;
-  color: white;
+  background-color: grey;
+  color:black;
   border: none;
   padding: 12px;
   border-radius: 5px;
@@ -132,7 +143,96 @@ h6 {
 }
 
 .profile-save-button:hover {
-  background-color: black;
+  color:white;
+  background: #0a1825;
+}
+
+.profile-photo-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.profile-photo {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 3px solid #6C63FF;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.profile-photo.editable {
+  cursor: pointer;
+}
+
+.profile-photo.editable:hover {
+  transform: scale(1.05);
+}
+
+.profile-photo.editable:hover .photo-overlay {
+  opacity: 1;
+}
+
+.photo-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.photo-overlay span {
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.photo-overlay svg {
+  width: 32px;
+  height: 32px;
+  color: white;
+}
+
+.remove-photo-btn {
+  position: absolute;
+  top: 0;
+  right: 25%;
+  background: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.3s ease;
+  z-index: 2;
+}
+
+.remove-photo-btn:hover {
+  background: #cc0000;
 }
 
 /* Media Queries */
@@ -227,6 +327,26 @@ h6 {
   .profile-save-button {
     font-size: 14px;
     padding: 10px;
+  }
+
+  .profile-photo {
+    width: 120px;
+    height: 120px;
+  }
+
+  .photo-overlay span {
+    font-size: 12px;
+  }
+
+  .photo-overlay svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .remove-photo-btn {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
   }
 }
 

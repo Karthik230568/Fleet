@@ -42,6 +42,37 @@ const TermsAndConditions = () => {
             </li>
           </ul>
         </section>
+        <section>
+  <h2 className="h2_tc">2. Rental Policies</h2>
+  <ul className="ul_tc">
+    <li className="li_tc">
+      The vehicle must be returned in the same condition as it was rented, excluding normal wear and tear.
+    </li>
+    <li className="li_tc">
+      Smoking and the consumption of alcohol are strictly prohibited inside the vehicle.
+    </li>
+    <li className="li_tc">
+      The customer is responsible for any traffic violations or fines incurred during the rental period.
+    </li>
+    <li className="li_tc">
+      Fuel charges are not included in the rental price unless explicitly stated.
+    </li>
+  </ul>
+</section>
+<section>
+  <h2 className="h2_tc">4. Liability</h2>
+  <ul className="ul_tc">
+    <li className="li_tc">
+      The Fleet platform is not responsible for any personal belongings left in the vehicle.
+    </li>
+    <li className="li_tc">
+      The customer is liable for any damage caused to the vehicle during the rental period.
+    </li>
+    <li className="li_tc">
+      Insurance coverage is subject to the terms of the policy provided at the time of booking.
+    </li>
+  </ul>
+</section>
 
         {/* Other sections remain unchanged */}
 

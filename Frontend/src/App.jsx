@@ -22,6 +22,9 @@ import './Admin/src/AdminLayout.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import './signupandsignin/src/App.css';
 import Forgot from './signupandsignin/src/forgot.jsx';
+import { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import useAuthStore from '../store/AuthStore';
 
 // User Layout Component
 const UserLayout = () => {
@@ -78,6 +81,52 @@ const AuthLayout = () => {
 };
 
 function App() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { token } = useAuthStore();
+
+  // Handle initial authentication check
+  useEffect(() => {
+    const publicRoutes = ['/auth/signin', '/auth/signup', '/auth/forgotpassword', '/auth/adminsignin'];
+    const currentPath = location.pathname;
+    
+    if (!publicRoutes.includes(currentPath) && !token) {
+      // Clear history stack
+      window.history.replaceState(null, '', '/auth/signin');
+      window.location.href = '/auth/signin';
+    }
+  }, [location.pathname, token]);
+
+  // Prevent back navigation globally
+  useEffect(() => {
+    const preventBackNavigation = (e) => {
+      if (!token) {
+        // If no token, prevent navigation and redirect to signin
+        window.history.forward();
+        window.location.href = '/auth/signin';
+      }
+    };
+
+    // Add multiple event listeners to catch all navigation attempts
+    window.history.pushState(null, '', window.location.href);
+    window.addEventListener('popstate', preventBackNavigation);
+    window.addEventListener('beforeunload', () => {
+      if (!token) {
+        window.history.forward();
+      }
+    });
+
+    // Disable back button
+    window.addEventListener('load', () => {
+      window.history.pushState(null, '', window.location.href);
+    });
+
+    return () => {
+      window.removeEventListener('popstate', preventBackNavigation);
+      window.removeEventListener('beforeunload', preventBackNavigation);
+    };
+  }, [token]);
+
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/auth" replace />} />

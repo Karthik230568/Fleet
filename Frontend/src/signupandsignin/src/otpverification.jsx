@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Auth.css";
-import fleetLogo from "./Fleet Logo.png";
+import fleetLogo from "../../../public/greylogo.png"; // Import logo
 import useAuthStore from "./../../../store/AuthStore.js";
 
 export default function OTPVerification() {
@@ -88,8 +88,6 @@ export default function OTPVerification() {
       <div className="auth-box">
         <div className="logo-section">
           <img src={fleetLogo} alt="Fleet Logo" />
-          <div className="brand">FLEET</div>
-          <div className="tagline">DRIVE YOUR JOURNEY ANYTIME, ANYWHERE</div>
         </div>
 
         <div className="form-section">

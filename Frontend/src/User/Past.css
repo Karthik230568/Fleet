@@ -8,7 +8,7 @@
 /* Full-screen container */
 .body_past {
   font-family: Arial, sans-serif;
-  background-color: #e1d3fa; /* Soft purple */
+  background: linear-gradient(180deg, #0a1825, #142134, #1e3c72); 
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -22,7 +22,7 @@
   display: flex;
   justify-content: center;
   padding: 15px;
-  background: #e1d3fa;
+  background: transparent;
   width: 100%;
   margin-top: 10px;
   margin-bottom: 10px;
@@ -44,8 +44,8 @@
 
 .active_past {
   font-weight: bold;
-  border-bottom: 3px solid #271944;
-  color: #271944;
+  border-bottom: 3px solid white;
+  color: white;
   border-radius: 0;
   background-color: transparent;
   border-top: 0;
@@ -58,7 +58,7 @@
 }
 
 .active_past:hover {
-  border-bottom: 3px solid #271944;
+  border-bottom: 3px solid white;
 }
 
 
@@ -72,13 +72,14 @@
 
 /* Booking Card */
 .booking-card_past {
-  background: rgb(113, 85, 139);
+  background: black;
   padding: 20px;
   border-radius: 12px;
   width: 80%;
   max-width: 750px;
   color: white;
   margin-bottom: 20px;
+  box-shadow:  grey 0px 0px 20px 0px;
 }
 
 .details_past {
@@ -120,14 +121,14 @@
   border: none;
   border-radius: 20px;
   cursor: pointer;
-  background: #AEB2B8;
-  color: #271944;
+  background: #1e3c72;
+  color: white;
   font-weight: bolder;
   margin-left: 35px;
 }
 
 .rating-btn_past:hover {
-  background-color: #271944;
+  background-color: grey;
   color: white;
 }
 
