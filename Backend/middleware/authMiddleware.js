@@ -41,7 +41,13 @@ const authenticateAdmin = (req, res, next) => {
             });
         }
         
-        req.user = { _id: decoded.userId, isAdmin: true };
+        // For hardcoded admin, we don't have a userId from database
+        // Instead we use the admin email from the token
+        req.user = { 
+            email: decoded.email,
+            isAdmin: true 
+        };
+        
         next();
     } catch (error) {
         return res.status(401).json({

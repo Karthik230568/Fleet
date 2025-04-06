@@ -1,4 +1,3 @@
-// const Admin = require('../models/Administrator');
 const Vehicle = require('../models/Vehicle');
 const Booking = require('../models/Booking');
 const Driver = require('../models/Driver');

@@ -1,5 +1,5 @@
 import NavBar from './User/NavBar.jsx';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import Home from './User/Home.jsx';
 import Active from './User/Active.jsx';
 import Past from './User/Past.jsx';
@@ -18,13 +18,14 @@ import Signin from './signupandsignin/src/Signin.jsx';
 import Signup from './signupandsignin/src/Signup.jsx';
 import Adminsignin from './signupandsignin/src/Adminsignin.jsx';
 import Bookingtype from './User/Bookingtype.jsx';
+import Forgot from './signupandsignin/src/forgot.jsx';
 import './Admin/src/AdminLayout.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import './signupandsignin/src/App.css';
-import Forgot from './signupandsignin/src/forgot.jsx';
+
 import { useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 import useAuthStore from '../store/AuthStore';
+import useAdminAuthStore from '../store/AdminAuthStore'; // ✅ Added
 
 // User Layout Component
 const UserLayout = () => {
@@ -41,7 +42,7 @@ const UserLayout = () => {
         <Route path='userpickup' element={<Userpickup />} />
         <Route path='userpayment' element={<Userpayment />} />
         <Route path='vehicles' element={<Usercarspage />} />
-        <Route path='bookingtype' element={<Bookingtype />}></Route>
+        <Route path='bookingtype' element={<Bookingtype />} />
       </Routes>
     </>
   );
@@ -83,40 +84,51 @@ const AuthLayout = () => {
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { token } = useAuthStore();
 
-  // Handle initial authentication check
+  const { token: userToken } = useAuthStore();
+  const { token: adminToken } = useAdminAuthStore();
+
+  // ✅ Redirect users/admins if unauthenticated and trying to access private routes
   useEffect(() => {
-    const publicRoutes = ['/auth/signin', '/auth/signup', '/auth/forgotpassword', '/auth/adminsignin'];
+    const publicRoutes = [
+      '/auth/signin',
+      '/auth/signup',
+      '/auth/forgotpassword',
+      '/auth/adminsignin'
+    ];
+
     const currentPath = location.pathname;
-    
-    if (!publicRoutes.includes(currentPath) && !token) {
-      // Clear history stack
-      window.history.replaceState(null, '', '/auth/signin');
-      window.location.href = '/auth/signin';
-    }
-  }, [location.pathname, token]);
+    const isPublic = publicRoutes.includes(currentPath);
+    const isAdminRoute = currentPath.startsWith('/admin');
+    const isUserRoute = currentPath.startsWith('/home');
 
-  // Prevent back navigation globally
-  useEffect(() => {
-    const preventBackNavigation = (e) => {
-      if (!token) {
-        // If no token, prevent navigation and redirect to signin
-        window.history.forward();
+    if (!isPublic) {
+      if (isAdminRoute && !adminToken) {
+        window.history.replaceState(null, '', '/auth/adminsignin');
+        window.location.href = '/auth/adminsignin';
+      } else if (isUserRoute && !userToken) {
+        window.history.replaceState(null, '', '/auth/signin');
         window.location.href = '/auth/signin';
+      }
+    }
+  }, [location.pathname, userToken, adminToken]);
+
+  // ✅ Prevent back navigation if unauthenticated
+  useEffect(() => {
+    const preventBackNavigation = () => {
+      const currentPath = location.pathname;
+      const isAdminRoute = currentPath.startsWith('/admin');
+      const isUserRoute = currentPath.startsWith('/home');
+
+      if ((isAdminRoute && !adminToken) || (isUserRoute && !userToken)) {
+        window.history.forward();
+        window.location.href = isAdminRoute ? '/auth/adminsignin' : '/auth/signin';
       }
     };
 
-    // Add multiple event listeners to catch all navigation attempts
     window.history.pushState(null, '', window.location.href);
     window.addEventListener('popstate', preventBackNavigation);
-    window.addEventListener('beforeunload', () => {
-      if (!token) {
-        window.history.forward();
-      }
-    });
-
-    // Disable back button
+    window.addEventListener('beforeunload', preventBackNavigation);
     window.addEventListener('load', () => {
       window.history.pushState(null, '', window.location.href);
     });
@@ -125,7 +137,7 @@ function App() {
       window.removeEventListener('popstate', preventBackNavigation);
       window.removeEventListener('beforeunload', preventBackNavigation);
     };
-  }, [token]);
+  }, [userToken, adminToken, location.pathname]);
 
   return (
     <Routes>
