@@ -9,10 +9,6 @@ const otpSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    password: {
-        type: String,
-        required: true
-    },
     createdAt: {
         type: Date,
         default: Date.now,
@@ -21,3 +17,5 @@ const otpSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('OTP', otpSchema);
+
+
