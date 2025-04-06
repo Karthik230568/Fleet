@@ -43,18 +43,19 @@ function BookingCard1({ booking, updateBooking }) {
       </div>
       <div className="cancle_active">
         <button className="cancel-btn" onClick={handleCancel}>Cancel</button>
-      </div>
-
-      {/* Popup */}
+        {/* Popup */}
       {showPopup && (
-        <div className="popup-overlay">
-          <div className="popup-content">
+        <div className="popup-overlay_c">
+          <div className="popup-content_c">
             <h3>Ride Cancelled</h3>
             <p>Your ride has been successfully cancelled.</p>
             <button onClick={handlePopupClose} className="popup-close-btn">OK</button>
           </div>
         </div>
       )}
+      </div>
+
+      
     </div>
   );
 }

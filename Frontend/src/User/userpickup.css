@@ -79,3 +79,58 @@
 .pickup_next-button:active {
   background-color:black;
 }
+
+/* Popup Overlay */
+.popup-overlay_p {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Popup Content */
+.popup-content_p {
+  background: black; /* Same as price details */
+  color: white;
+  padding: 30px;
+  width: 400px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  border: 1px solid white;
+}
+
+/* Popup Heading */
+.popup-content_p h3 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  color: white;
+}
+
+/* Popup Paragraph */
+.popup-content_p .ppr {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  color: white;
+}
+
+/* Popup OK Button */
+.popup-ok-button {
+  padding: 10px 20px;
+  background-color: #1e3c72; /* Same as price details button */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.popup-ok-button:hover {
+  background-color: grey; /* Hover effect */
+}

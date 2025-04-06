@@ -1,24 +1,33 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import useVehicleStore from "../../store/vehicleStore"; // Import the VehicleStore
 import "./Vehicle.css";
-import { useNavigate } from 'react-router-dom';
 
 function VehicleCard({ vehicle, bookingType }) {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
+  const { markVehicleUnavailable } = useVehicleStore(); // Access the store action
 
   const handleBookNow = () => {
     setShowPopup(true); // Show the popup when "Book Now" is clicked
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     setShowPopup(false); // Close the popup
-    if (bookingType === 'driver') {
-      navigate('/home/userpickup', {state: { vehicle, bookingType } });
-    }
-    else if (bookingType === 'own') {
-      navigate('/home/bookingtype', { state: { bookingType } });
-    } else {
-      navigate('/home/tandc', { state: { bookingType } });
+    try {
+      // Mark the vehicle as unavailable
+      await markVehicleUnavailable(vehicle.id, new Date().toISOString(), null);
+
+      if (bookingType === "driver") {
+        navigate("/home/userpickup", { state: { vehicle, bookingType } });
+      } else if (bookingType === "own") {
+        navigate("/home/bookingtype", { state: { bookingType } });
+      } else {
+        navigate("/home/tandc", { state: { bookingType } });
+      }
+    } catch (error) {
+      console.error("Error booking vehicle:", error);
+      alert("Failed to book the vehicle. Please try again.");
     }
   };
 
@@ -52,7 +61,7 @@ function VehicleCard({ vehicle, bookingType }) {
       {/* Popup */}
       {showPopup && (
         <div className="popup-overlay">
-          <div className="popup-content">
+          <div className="popup-content_v">
             <h3 className="p-r">Price Details</h3>
             <p className="p-r">Price per day: ${vehicle.price}</p>
             <p className="p-r">Total Price: ${vehicle.price * 1} (for 1 day)</p>

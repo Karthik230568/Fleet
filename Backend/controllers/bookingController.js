@@ -51,31 +51,31 @@ const confirmBookingWithDriver = async (req, res, next) => {
         const userId = req.user._id;
 
         // Validate dates
-        const pickup = new Date(pickupDate);
-        const return_ = new Date(returnDate);
-        const now = new Date();
+        // const pickup = new Date(pickupDate);
+        // const return_ = new Date(returnDate);
+        // const now = new Date();
 
-        if (pickup <= now) {
-            return res.status(400).json({
-                success: false,
-                error: "Pickup date must be in the future"
-            });
-        }
+        // if (pickup <= now) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         error: "Pickup date must be in the future"
+        //     });
+        // }
 
-        if (return_ <= pickup) {
-            return res.status(400).json({
-                success: false,
-                error: "Return date must be after pickup date"
-            });
-        }
+        // if (return_ <= pickup) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         error: "Return date must be after pickup date"
+        //     });
+        // }
 
-        const vehicle = await Vehicle.findById(vehicleId);
-        if (!vehicle) {
-            return res.status(404).json({
-                success: false,
-                error: "Vehicle not found"
-            });
-        }
+        // const vehicle = await Vehicle.findById(vehicleId);
+        // if (!vehicle) {
+        //     return res.status(404).json({
+        //         success: false,
+        //         error: "Vehicle not found"
+        //     });
+        // }
 
         const totalPrice = calculateTotalPayment(vehicle.price, pickupDate, returnDate);
 
@@ -93,7 +93,7 @@ const confirmBookingWithDriver = async (req, res, next) => {
         });
 
         await newBooking.save();
-
+        
         const statusUpdated = await markVehicleUnavailable(vehicleId, returnDate, newBooking._id);
         
         if (!statusUpdated) {
@@ -150,7 +150,7 @@ const confirmSelfDriveStorePickup = async (req, res, next) => {
         });
 
         await newBooking.save();
-
+        
         const statusUpdated = await markVehicleUnavailable(vehicleId, returnDate, newBooking._id);
         
         if (!statusUpdated) {
@@ -215,7 +215,7 @@ const confirmSelfDriveHomeDelivery = async (req, res, next) => {
         });
 
         await newBooking.save();
-
+        
         const statusUpdated = await markVehicleUnavailable(vehicleId, returnDate, newBooking._id);
         
         if (!statusUpdated) {

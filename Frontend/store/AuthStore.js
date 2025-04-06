@@ -47,6 +47,9 @@ const useAuthStore = create((set, get) => ({
     if (password !== confirmPassword) {
       throw new Error('Passwords do not match');
     }
+    // Store in sessionStorage for persistence
+    sessionStorage.setItem('signupEmail', email);
+    sessionStorage.setItem('signupPassword', password);
     set({ email, password, confirmPassword });
   },
 
@@ -84,11 +87,18 @@ const useAuthStore = create((set, get) => ({
   // Verify OTP
   verifyOtp: async (otp) => {
     try {
-      const { email, password } = get();
+      // Get data from sessionStorage if state is empty
+      const email = get().email || sessionStorage.getItem('signupEmail');
+      const password = get().password || sessionStorage.getItem('signupPassword');
+      
+      if (!email || !password) {
+        throw new Error('Session expired. Please try signing up again.');
+      }
+
       const response = await api.post("/verify-otp", { 
         email, 
-        otp, 
-        password 
+        otp,
+        password  // Include password in verification request
       });
 
       if (response.data.success) {
@@ -97,6 +107,9 @@ const useAuthStore = create((set, get) => ({
           user: response.data.user,
           token: response.data.token 
         });
+        // Clear signup data from sessionStorage
+        sessionStorage.removeItem('signupEmail');
+        sessionStorage.removeItem('signupPassword');
         // Store token in localStorage
         localStorage.setItem('token', response.data.token);
         // Set token in axios default headers
@@ -185,5 +198,41 @@ const useAuthStore = create((set, get) => ({
       throw error;
     }
   },
+
+  // Forgot Password - Request OTP
+  forgotPassword: async (email) => {
+    try {
+      const response = await api.post("/forgot-password", { email });
+      if (response.data.message) {
+        set({ email }); // Store email for reset password step
+        return response.data;
+      } else {
+        throw new Error("Failed to send password reset OTP");
+      }
+    } catch (error) {
+      console.error("Forgot password error:", error);
+      throw error;
+    }
+  },
+
+  // Reset Password with OTP
+  resetPassword: async (email, otp, newPassword) => {
+    try {
+      const response = await api.post("/reset-password", {
+        email,
+        otp,
+        newPassword
+      });
+      
+      if (response.data.success) {
+        return response.data;
+      } else {
+        throw new Error(response.data.error || "Failed to reset password");
+      }
+    } catch (error) {
+      console.error("Reset password error:", error);
+      throw error;
+    }
+  }
 }));
 export default useAuthStore;

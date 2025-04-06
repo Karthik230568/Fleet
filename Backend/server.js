@@ -1,7 +1,9 @@
 require('dotenv').config();
 require('events').EventEmitter.defaultMaxListeners = 15; // Increase max listeners
-const app = require('./app');
+const express = require('express');
 const { connectDB, isConnected } = require('./config/db');
+const User = require('./models/User');
+const app = require('./app');
 const port = process.env.PORT || 5000;
 
 // Function to retry MongoDB connection
@@ -55,15 +57,19 @@ const startServer = async () => {
             process.exit(1);
         }
 
+        // Recreate indexes to fix the username unique constraint
+        await User.recreateIndexes();
+        console.log('Indexes recreated successfully');
+
         // Start the server
         const server = app.listen(port, '0.0.0.0', () => {
             console.log(`
-🚀 Server Status:
-📡 Port: ${port}
-🌐 URL: http://localhost:${port}
-💾 MongoDB: Connected
-🔐 JWT Secret: ${process.env.JWT_SECRET ? 'Configured' : 'Missing'}
-📧 Email: ${process.env.gmail ? 'Configured' : 'Missing'}
+Server Status:
+Port: ${port}
+URL: http://localhost:${port}
+MongoDB: Connected
+JWT Secret: ${process.env.JWT_SECRET ? 'Configured' : 'Missing'}
+Email: ${process.env.gmail ? 'Configured' : 'Missing'}
             `);
         });
 

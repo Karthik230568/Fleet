@@ -148,7 +148,7 @@ const AddDriver = ({ onAddDriver, editingDriver }) => {
             placeholder: "Enter photo URL",
           },
         ].map(({ label, type, name, placeholder }) => (
-          <div className="form-group" key={name}>
+          <div className="form-group_d" key={name}>
             <label>{label}:</label>
             <div>
               <input
