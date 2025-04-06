@@ -1,8 +1,7 @@
 import './Home.css';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import useBookingStore from './../../store/BookingStore.js'; // Import Zustand store
-import blacklogo from "../Admin/src/blacklogo.png";
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import useBookingStore from '../../store/BookingStore';
 
 function Home() {
   const navigate = useNavigate();
@@ -97,13 +96,13 @@ function Home() {
   };
 
   return (
-    <>
-      <div className="body_home">
-        <div className="container_home">
-          <div className="BLogo_home">
-            <img src="/greylogo.png" alt="🚗 FLEET" />
-          </div>
-          <div className="card_home">
+    <div className="body_home">
+      <div className="container_home">
+        <div className="BLogo_home">
+          <img src="/BLogo.jpg" alt="🚗 FLEET" />
+        </div>
+        <div className="card_home">
+          <div className="form-group">
             <select
               className={`select_home ${formErrors.city ? 'error-input' : ''}`}
               name="city"
