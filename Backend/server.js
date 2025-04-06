@@ -64,12 +64,12 @@ const startServer = async () => {
         // Start the server
         const server = app.listen(port, '0.0.0.0', () => {
             console.log(`
-🚀 Server Status:
-📡 Port: ${port}
-🌐 URL: http://localhost:${port}
-💾 MongoDB: Connected
-🔐 JWT Secret: ${process.env.JWT_SECRET ? 'Configured' : 'Missing'}
-📧 Email: ${process.env.gmail ? 'Configured' : 'Missing'}
+Server Status:
+Port: ${port}
+URL: http://localhost:${port}
+MongoDB: Connected
+JWT Secret: ${process.env.JWT_SECRET ? 'Configured' : 'Missing'}
+Email: ${process.env.gmail ? 'Configured' : 'Missing'}
             `);
         });
 

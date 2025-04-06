@@ -27,6 +27,7 @@ const signup = async (req, res, next) => {
         // Check if user already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
+<<<<<<< HEAD
             if (existingUser.isVerified) {
                 return res.status(400).json({ 
                     success: false,
@@ -54,6 +55,12 @@ const signup = async (req, res, next) => {
                     message: "OTP sent successfully. Please verify your email." 
                 });
             }
+=======
+            return res.status(400).json({ 
+                success: false,
+                message: "User already exists.." 
+            });
+>>>>>>> 0619c3e7d71a65ddaa3a4144c0cdf6af6fa29760
         }
 
         // Create unverified user
