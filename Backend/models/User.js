@@ -8,6 +8,11 @@ const userSchema = new mongoose.Schema({
         trim: true,
         lowercase: true
     },
+    username: {
+        type: String,
+        trim: true,
+        default: null
+    },
     password: {
         type: String,
         required: true
@@ -43,11 +48,36 @@ const userSchema = new mongoose.Schema({
     bookings: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Booking' // Reference to the Booking model
+            ref: 'Booking'
         }
     ]
 }, {
     timestamps: true
 });
 
-module.exports = mongoose.model('User', userSchema);
+// Drop existing indexes and create new ones
+userSchema.statics.recreateIndexes = async function() {
+    try {
+        // Drop all existing indexes except _id
+        const indexes = await this.collection.indexes();
+        for (let index of indexes) {
+            if (index.name !== '_id_') {
+                await this.collection.dropIndex(index.name);
+                console.log(`Dropped index: ${index.name}`);
+            }
+        }
+    } catch (error) {
+        console.log('Error dropping indexes:', error);
+    }
+    
+    // Create only the email unique index
+    await this.collection.createIndex({ email: 1 }, { 
+        unique: true,
+        background: true 
+    });
+    console.log('Created email index');
+};
+
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;

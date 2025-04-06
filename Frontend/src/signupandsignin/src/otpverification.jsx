@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Auth.css";
 import fleetLogo from "../../../public/greylogo.png"; // Import logo
-import useAuthStore from "./../../../store/AuthStore.js";
+import useAuthStore from "../../../store/AuthStore.js";
 
 export default function OTPVerification() {
   const navigate = useNavigate();
@@ -58,17 +58,20 @@ export default function OTPVerification() {
   const handleVerifyOtp = async () => {
     try {
       const enteredOtp = otp.join("");
+      if (!enteredOtp || enteredOtp.length !== 6) {
+        setMessage("Please enter a valid 6-digit OTP");
+        return;
+      }
       const res = await verifyOtp(enteredOtp);
-      console.log(res);
-      // if (!res.success) {
-      //   setMessage(res.message);
-      //   return;
-      // }
-      setMessage("OTP Verified Successfully!");
-      setTimeout(() => navigate("/home"), 1000);
+      if (res.success) {
+        setMessage("OTP Verified Successfully!");
+        setTimeout(() => navigate("/home"), 1000);
+      } else {
+        setMessage(res.message || "OTP verification failed");
+      }
     } catch (error) {
-      console.log(error);
-      setMessage("Invalid OTP. Please try again.");
+      console.error("Error verifying OTP:", error);
+      setMessage(error.message || "Invalid OTP. Please try again.");
     }
   };
 
