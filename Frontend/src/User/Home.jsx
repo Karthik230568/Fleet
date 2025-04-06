@@ -56,7 +56,7 @@ function Home() {
   };
 
   useEffect(() => {
-    const storedBookingType = localStorage.getItem('bookingType');
+    const storedBookingType  = localStorage.getItem('bookingType');
     if (storedBookingType) {
       setLocalBookingType(storedBookingType);
     }
