@@ -17,14 +17,14 @@
   letter-spacing: 1px;
 }
 
-.form-group {
+.form-group_d {
   display: flex;
   padding: 10px;
   align-items: center;
   margin-bottom: 15px;
 }
 
-.form-group label {
+.form-group_d label {
   flex: 1;
   color: #fff;
   margin-right: 15px;
@@ -32,15 +32,15 @@
   font-weight: 500;
 }
 
-.form-group div {
+.form-group_d div {
   flex: 2;
   display: flex;
   flex-direction: column;
   position: relative;
 }
 
-.form-group input,
-.form-group select {
+.form-group_d input,
+.form-group_d select {
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -49,13 +49,13 @@
   color: #000;
 }
 
-.form-group input:focus {
+.form-group_d input:focus {
   outline: none;
   border-color: #4CAF50;
   box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
 }
 
-.form-group input[type="file"] {
+.form-group_d input[type="file"] {
   padding: 7px;
   background-color: white;
 }
@@ -124,21 +124,21 @@ button[type="submit"]:active {
     margin-bottom: 20px;
   }
 
-  .form-group {
+  .form-group_d {
     flex-direction: column;
     align-items: flex-start;
     padding: 8px;
   margin-bottom: 12px;
   }
 
-  .form-group label {
+  .form-group_d label {
     margin-right: 0;
     margin-bottom: 8px;
     flex: none;
     width: 100%;
   }
 
-  .form-group div {
+  .form-group_d div {
     flex: none;
     width: 100%;
   }
@@ -162,12 +162,12 @@ button[type="submit"]:active {
     letter-spacing: normal;
   }
 
-  .form-group {
+  .form-group_d {
     padding: 5px;
     margin-bottom: 10px;
   }
 
-  .form-group input {
+  .form-group_d input {
     padding: 8px;
     font-size: 13px;
   width: 100%;

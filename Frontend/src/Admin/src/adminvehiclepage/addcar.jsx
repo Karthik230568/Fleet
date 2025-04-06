@@ -100,7 +100,7 @@ function AddCar({ onAddVehicle, editingVehicle }) {
 
         {formData.hasDriver && (
           <>
-            <div className="form-group">
+            <div className="form-group_a">
               <label>Driver Name:</label>
               <input
                 type="text"
@@ -111,7 +111,7 @@ function AddCar({ onAddVehicle, editingVehicle }) {
                 required
               />
             </div>
-            <div className="form-group">
+            <div className="form-group_a">
               <label>Driver ID:</label>
               <input
                 type="text"
@@ -125,7 +125,7 @@ function AddCar({ onAddVehicle, editingVehicle }) {
           </>
         )}
 
-        <div className="form-group">
+        <div className="form-group_a">
           <label>Vehicle Type:</label>
           <select
             name="type"
@@ -140,7 +140,7 @@ function AddCar({ onAddVehicle, editingVehicle }) {
           </select>
         </div>
 
-        <div className="form-group">
+        <div className="form-group_a">
           <label>Vehicle Name:</label>
           <input
             type="text"
@@ -152,7 +152,7 @@ function AddCar({ onAddVehicle, editingVehicle }) {
           />
         </div>
 
-        <div className="form-group">
+        <div className="form-group_a">
           <label>Price per Day:</label>
           <input
             type="number"
@@ -164,7 +164,7 @@ function AddCar({ onAddVehicle, editingVehicle }) {
           />
         </div>
 
-        <div className="form-group">
+        <div className="form-group_a">
           <label>Availability:</label>
           <select
             name="availability"
@@ -177,7 +177,7 @@ function AddCar({ onAddVehicle, editingVehicle }) {
           </select>
         </div>
 
-        <div className="form-group">
+        <div className="form-group_a">
           <label>Initial Rating:</label>
           <input
             type="number"
@@ -191,7 +191,7 @@ function AddCar({ onAddVehicle, editingVehicle }) {
           />
         </div>
 
-        <div className="form-group">
+        <div className="form-group_a">
           <label>Fuel Type:</label>
           <select
             name="fuelType"
@@ -206,7 +206,7 @@ function AddCar({ onAddVehicle, editingVehicle }) {
           </select>
         </div>
 
-        <div className="form-group">
+        <div className="form-group_a">
           <label>Seating Capacity:</label>
           <input
             type="number"
@@ -218,7 +218,7 @@ function AddCar({ onAddVehicle, editingVehicle }) {
           />
         </div>
 
-        <div className="form-group">
+        <div className="form-group_a">
           <label>Registration Plate:</label>
           <input
             type="text"
@@ -230,7 +230,7 @@ function AddCar({ onAddVehicle, editingVehicle }) {
           />
         </div>
 
-        <div className="form-group">
+        <div className="form-group_a">
           <label>Vehicle ID:</label>
           <input
             type="text"
@@ -242,7 +242,7 @@ function AddCar({ onAddVehicle, editingVehicle }) {
           />
         </div>
 
-        <div className="form-group">
+        <div className="form-group_a">
           <label>Vehicle Image URL:</label>
           <input
             type="url"

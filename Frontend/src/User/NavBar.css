@@ -117,3 +117,18 @@
     color: black;
 }
   
+
+.custom-popup {
+    background-color: black !important;
+    color: white !important;
+    border: white 1px solid !important;
+}
+
+.custom-title {
+    color: white !important;
+}
+
+.custom-button {
+    background-color: white !important;
+    color: black !important;
+}
