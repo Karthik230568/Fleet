@@ -6,18 +6,40 @@ import { create } from 'zustand';
 
 const useBookingStore = create((set) => ({
   bookingData: {
+    // Home.jsx fields:
     city: '',
     pickupDate: '',
     pickupTime: '',
     returnDate: '',
     returnTime: '',
     withDriver: false,
-    ownDriving: false
+    ownDriving: false,
+    // VehicleCard.jsx fields:
+    name: '', // name of the vehicle
+    type: '',
+    price: '',
+    availability: '', // will be unavailable from VehicleCard.jsx, Ramith??
+    rating: '', // type??
+    driverName: '',
+    driverId: '',
+    seatingCapacity: '',
+    registrationPlate: '',
+    vehicleId: ''
   },
   error: null,
 
   setBookingData: (data) => set({ bookingData: data }),
 
+   // function to update just part of the bookingData
+   updateBookingData: (newData) =>
+   set((state) => ({
+     bookingData: {
+       ...state.bookingData,
+       ...newData,
+     },
+   })),
+
+  //to finalize booking
   initializeBooking: async () => {
     const { bookingData } = useBookingStore.getState();
     try {

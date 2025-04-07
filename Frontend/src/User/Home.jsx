@@ -1,11 +1,17 @@
 import './Home.css';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+// to interact with the booking store
 import useBookingStore from '../../store/BookingStore';
 
 function Home() {
   const navigate = useNavigate();
-  const { setBookingData, initializeBooking, error: storeError } = useBookingStore();
+
+  //below line is wtong because it is calling initializeBooking.
+  // const { setBookingData, initializeBooking, error: storeError } = useBookingStore();
+  
+  // Since we only want to save partial data, and not send it to the backend yet, we removed initializeBooking and use updateBookingData instead of setBookingData
+  const { updateBookingData, error: storeError } = useBookingStore();
 
 // Defining state for form data and putting default values
 // Default values are set to the next day and the day after tomorrow
@@ -95,12 +101,16 @@ function Home() {
         return; // Stop if validation fails
       }
 
-      await setBookingData(formData);
-      const success = await initializeBooking();
+      updateBookingData(formData); // Save this step's inputs
+      navigate('/home/vehicles');  // Move to the next step
 
-      if (success) {
-        navigate('/home/vehicles');
-      }
+      // below part is incorrect 
+      // await setBookingData(formData);
+      // const success = await initializeBooking();
+
+      // if (success) {
+      //   navigate('/home/vehicles');
+      // }
     } catch (error) {
       console.error("Error during search:", error);
     }

@@ -3,10 +3,16 @@ import { useNavigate } from "react-router-dom";
 import useVehicleStore from "../../store/vehicleStore"; // Import the VehicleStore
 import "./Vehicle.css";
 
+// Import the BookingStore to update booking data
+import useBookingStore from '../../store/BookingStore';
+
 function VehicleCard({ vehicle, bookingType }) {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const { markVehicleUnavailable } = useVehicleStore(); // Access the store action
+
+  // Access the booking store to update booking data
+  const { updateBookingData} = useBookingStore();
 
   const handleBookNow = () => {
     setShowPopup(true); // Show the popup when "Book Now" is clicked
@@ -18,6 +24,10 @@ function VehicleCard({ vehicle, bookingType }) {
       // Mark the vehicle as unavailable
       await markVehicleUnavailable(vehicle.id, new Date().toISOString(), null);
 
+      // Update the booking data in the store once confirm is selected.
+      updateBookingData(vehicle);
+
+      // Navigate to the appropriate page based on booking type
       if (bookingType === "driver") {
         navigate("/home/userpickup", { state: { vehicle, bookingType } });
       } else if (bookingType === "own") {
