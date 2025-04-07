@@ -191,6 +191,7 @@ const AddDriver = ({ onAddDriver, editingDriver }) => {
             type="button" 
             onClick={() => navigate("/admin/drivers")}
             disabled={isSubmitting}
+            className="cancel-button"
           >
             Cancel
           </button>

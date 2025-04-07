@@ -4,7 +4,7 @@ import "./adddriver.css";
 function DriverCard(props) {
   if (props.isAddCard) {
     return (
-      <div className=" add-card" onClick={props.onAdd}>
+      <div className=" add-card-driver" onClick={props.onAdd}>
         <h2>+ Add Driver</h2>
       </div>
     );
