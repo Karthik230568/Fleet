@@ -100,26 +100,33 @@
   color: white;
 }
 
+/* Date and Time Labels Container */
 .Pickup_home, .Return_home {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   color: white;
   margin-bottom: 10px;
   font-size: 14px;
+  width: 100%;
+  gap: 15px;
 }
 
-.Return_home {
-  margin-top: 20px;
+.Pickup_home p,
+.Return_home p {
+  margin: 0;
+  padding-left: 5px;
 }
 
+/* Input Groups */
 .input-group_home {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 15px;
   margin-bottom: 20px;
+  width: 100%;
 }
 
 .form-group {
-  flex: 1;
   position: relative;
 }
 
@@ -127,70 +134,74 @@
   width: 100%;
   padding: 12px;
   border-radius: 8px;
-  color: white;
   background-color: #1e3c72;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: 16px;
-  box-sizing: border-box;
+  color: white;
+  font-size: 14px;
 }
 
-.input_home::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-  cursor: pointer;
-}
-
+/* Radio Group */
 .radio-group_home {
   display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
   gap: 15px;
-  margin: 30px 0;
 }
 
 .radio-option1_home,
 .radio-option2_home {
   flex: 1;
-  color: white;
-  background-color: #1e3c72;
   padding: 12px;
+  background-color: #1e3c72;
   border-radius: 8px;
+  color: white;
+  text-align: center;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
   transition: all 0.3s ease;
+}
+
+.radio-option1_home:hover,
+.radio-option2_home:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .radio-option1_home input,
 .radio-option2_home input {
-  margin: 0;
+  margin-right: 8px;
 }
 
+/* Search Button */
 .button_home {
   width: 100%;
-  padding: 14px;
-  background-color: #1e3c72;
-  color: white;
+  padding: 12px;
+  margin-top: 20px;
   border: none;
   border-radius: 8px;
-  cursor: pointer;
+  background-color: #1e3c72;
+  color: white;
   font-size: 16px;
-  font-weight: 500;
+  cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .button_home:hover {
-  background-color: #2a4a82;
-  transform: translateY(-2px);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
+/* Error Messages */
 .error-message {
-  color: #ff6b6b;
+  color: #ef4444;
   font-size: 12px;
-  margin-top: 4px;
-  text-align: left;
+  margin-top: 5px;
 }
 
 .error-input {
-  border: 1px solid #ff6b6b !important;
+  border-color: #ef4444 !important;
+}
+
+.store-error {
+  margin-top: 15px;
+  text-align: center;
 }
 
 /* Media Queries */
@@ -256,7 +267,16 @@
   }
 
   .card_home {
-    padding: 20px;
+    padding: 25px;
+  }
+
+  .Pickup_home, .Return_home {
+    font-size: 13px;
+    gap: 10px;
+  }
+
+  .input-group_home {
+    gap: 10px;
   }
 }
 
@@ -278,24 +298,27 @@
     width: 200px;
   }
 
-  .input-group_home {
-    flex-direction: column;
-    gap: 10px;
+  .card_home {
+    padding: 20px;
   }
 
   .Pickup_home, .Return_home {
-    justify-content: flex-start;
-    gap: 120px;
+    font-size: 12px;
+    gap: 8px;
+  }
+
+  .input-group_home {
+    gap: 8px;
   }
 
   .radio-group_home {
     flex-direction: column;
+    gap: 10px;
   }
 
-  .select_home,
-  .input_home,
-  .button_home {
-    font-size: 14px;
+  .radio-option1_home,
+  .radio-option2_home {
+    padding: 10px;
   }
 }
 
@@ -309,14 +332,19 @@
   }
 
   .Pickup_home, .Return_home {
-    gap: 80px;
+    font-size: 11px;
+    gap: 5px;
+  }
+
+  .input-group_home {
+    gap: 5px;
   }
 }
 
 /* For landscape orientation on mobile */
 @media (max-height: 600px) and (orientation: landscape) {
   .container_home {
-    padding: 60px 20px 20px;
+    padding-top: 20px;
   }
 
   .BLogo_home {

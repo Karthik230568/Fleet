@@ -22,7 +22,7 @@ function VehicleCard({ vehicle, bookingType }) {
     setShowPopup(false); // Close the popup
     try {
       // Mark the vehicle as unavailable
-      await markVehicleUnavailable(vehicle.id, new Date().toISOString(), null);
+      await markVehicleUnavailable(vehicle._id, new Date().toISOString(), null);
 
       // Update the booking data in the store once confirm is selected.
       updateBookingData(vehicle);
@@ -56,11 +56,12 @@ function VehicleCard({ vehicle, bookingType }) {
         <p>Price: ${vehicle.price}/day</p>
         <p>Availability: {vehicle.availability}</p>
         <p>Rating: {vehicle.rating} ⭐</p>
-        <p>Driver: {vehicle.driverName}</p>
+        {vehicle.driverName && <p>Driver: {vehicle.driverName}</p>}
         <p>Fuel Type: {vehicle.fuelType}</p>
         <p>Seating Capacity: {vehicle.seatingCapacity}</p>
         <p>Registration Plate: {vehicle.registrationPlate}</p>
         <p>Vehicle ID: {vehicle.vehicleId}</p>
+        <p>City: {vehicle.city}</p>
       </div>
       <div className="vehicle-actions">
         <button onClick={handleBookNow} className="button_vehicles">

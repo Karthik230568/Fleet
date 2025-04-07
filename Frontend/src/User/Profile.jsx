@@ -151,31 +151,10 @@ function Profile() {
     <div className="profile-main-container">
       <div className="profile-container">
         <div className="profile_BLogo_home">
-          <img src="/BLogo.jpg" alt="🚗 FLEET" />
+          <img src="/greylogo.png" alt="🚗 FLEET" />
         </div>
         <div className="profile-card">
           <div className="profile-photo-container">
-            <div 
-              className={`profile-photo ${isEditing ? 'editable' : ''}`} 
-              onClick={handleImageClick}
-              style={{
-                backgroundImage: `url(${profileImage || '/user-profile.png'})`,
-                cursor: isEditing ? 'pointer' : 'default'
-              }}
-            >
-              {isEditing && (
-                <div className="photo-overlay">
-                  <span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                      <circle cx="12" cy="13" r="4"/>
-                    </svg>
-                    <br />
-                    Click to Upload Photo
-                  </span>
-                </div>
-              )}
-            </div>
             <input
               type="file"
               ref={fileInputRef}
@@ -210,7 +189,7 @@ function Profile() {
           {error && <div className="error-message">{error}</div>}
 
           <div className="profile-input-container">
-            <h6>Full Name</h6>
+            <h6 className='details'>Full Name</h6>
             <input
               type="text"
               name="fullName"
@@ -224,7 +203,7 @@ function Profile() {
           </div>
 
           <div className="profile-input-container">
-            <h6>Phone Number</h6>
+            <h6 className='details'>Phone Number</h6>
             <input
               type="tel"
               name="phoneNumber"
@@ -238,7 +217,7 @@ function Profile() {
           </div>
 
           <div className="profile-input-container">
-            <h6>Email</h6>
+            <h6 className='details'>Email</h6>
             <input
               type="email"
               name="email"
@@ -246,13 +225,13 @@ function Profile() {
               className={`profile-input-field ${isEditing ? "editing" : "disabled"} ${formErrors.email ? 'error-input' : ''}`}
               value={formData.email}
               onChange={handleChange}
-              disabled={!isEditing}
+              disabled={true}
             />
             {formErrors.email && <div className="error-message">{formErrors.email}</div>}
           </div>
 
           <div className="profile-input-container">
-            <h6>Date of Birth</h6>
+            <h6 className='details'>Date of Birth</h6>
             <input
               type="date"
               name="dateOfBirth"
@@ -264,7 +243,7 @@ function Profile() {
           </div>
 
           <div className="profile-input-container">
-            <h6>Address</h6>
+            <h6 className='details'>Address</h6>
             <input
               type="text"
               name="address"
@@ -282,8 +261,7 @@ function Profile() {
                 Save Changes
               </button>
               <button
-                className="profile-save-button"
-                style={{ backgroundColor: '#e1d3fa', color: 'black' }}
+                className="profile-cancel-button"
                 onClick={() => {
                   setIsEditing(false);
                   setFormData({

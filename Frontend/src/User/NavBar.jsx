@@ -1,9 +1,12 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import './NavBar.css';
 import Swal from 'sweetalert2';
 
 const NavBar = ({ isAdmin }) => {
+    const location = useLocation();
+    const isBookingPage = location.pathname.includes('/home/active') || location.pathname.includes('/home/past');
+
     const handleHelpButtonClick = e => {
         e.preventDefault();
         Swal.fire({
@@ -37,10 +40,9 @@ const NavBar = ({ isAdmin }) => {
                     {!isAdmin ? (
                         <>
                             <NavLink to='/home/help' className="help_nav" onClick={handleHelpButtonClick}>Help</NavLink>
-                            <NavLink to='/home/active' className="booking_nav">Booking</NavLink>
+                            <NavLink to='/home/active' className={isBookingPage ? "booking_nav active" : "booking_nav"}>Booking</NavLink>
                             <NavLink to='/auth' className="logout_nav">Logout</NavLink>
                             <NavLink to='/home/profile' className="profile_nav">👤</NavLink>
-                            
                         </>
                     ) : (
                         <>

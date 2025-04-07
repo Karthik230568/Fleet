@@ -312,6 +312,51 @@ const updateDriverProfile = async (req, res, next) => {
     }
 };
 
+// Update a driver by ID
+const updateDriver = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { name, age, phone, license, vehicleId, driverId, image, address } = req.body;
+
+        // Create update object with provided fields
+        const updateData = {};
+        
+        if (name) updateData.name = name;
+        if (age) updateData.age = age;
+        if (phone) updateData.phone = phone;
+        if (license) updateData.license = license;
+        if (driverId) updateData.driverId = driverId;
+        if (address) updateData.address = address;
+        if (image) updateData.image = image;
+        
+        // Handle vehicleId separately as it can be null
+        if (vehicleId !== undefined) {
+            updateData.vehicleId = vehicleId || "";
+        }
+
+        const driver = await Driver.findByIdAndUpdate(
+            id,
+            updateData,
+            { new: true }
+        );
+
+        if (!driver) {
+            return res.status(404).json({
+                success: false,
+                error: 'Driver not found'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Driver updated successfully',
+            driver
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getAllVehicles,
     addVehicle,
@@ -323,7 +368,8 @@ module.exports = {
     removeDriver,
     getDrivers,
     getDriverProfile,
-    updateDriverProfile
+    updateDriverProfile,
+    updateDriver
 };
 
 
