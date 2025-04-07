@@ -103,18 +103,38 @@ function Home() {
         return; // Stop if validation fails
       }
 
-      updateBookingData(formData); // Save this step's inputs
-      navigate('/home/vehicles');  // Move to the next step
-
-      // below part is incorrect 
-      // await setBookingData(formData);
-      // const success = await initializeBooking();
-
-      // if (success) {
-      //   navigate('/home/vehicles');
-      // }
+      // Log the form data before updating the store
+      console.log("Form data before updating store:", formData);
+      
+      // Ensure city is properly set
+      const updatedFormData = {
+        ...formData,
+        city: formData.city || "Kanpur"
+      };
+      
+      console.log("Updated form data:", updatedFormData);
+      
+      // Update the booking store with the form data and wait for the result
+      const success = await updateBookingData(updatedFormData);
+      
+      // Log the booking store state after updating
+      console.log("Booking store state after update:", useBookingStore.getState().bookingData);
+      console.log("Save to database result:", success);
+      
+      // Store the booking type in localStorage for persistence
+      localStorage.setItem("bookingType", updatedFormData.withDriver ? "driver" : "own");
+      
+      // Navigate to the vehicles page regardless of database save result
+      // This allows the app to work even if the backend is not ready
+      navigate('/home/vehicles');
+      
     } catch (error) {
       console.error("Error during search:", error);
+      // Show error to user but don't prevent navigation
+      setFormErrors(prev => ({
+        ...prev,
+        submit: "Error saving booking data. You can still proceed to view vehicles."
+      }));
     }
   };
   
@@ -226,6 +246,7 @@ function Home() {
           </button>
 
           {storeError && <div className="error-message store-error">{storeError}</div>}
+          {formErrors.submit && <div className="error-message submit-error">{formErrors.submit}</div>}
         </div>
       </div>
     </div>

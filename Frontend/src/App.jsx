@@ -41,7 +41,7 @@ const UserLayout = () => {
         <Route path='tandc' element={<TermsAndConditions />} />
         <Route path='userpickup' element={<Userpickup />} />
         <Route path='userpayment' element={<Userpayment />} />
-        <Route path='vehicles' element={<Usercarspage />} />
+        <Route path='vehicles/*' element={<Usercarspage />} />
         <Route path='bookingtype' element={<Bookingtype />} />
       </Routes>
     </>

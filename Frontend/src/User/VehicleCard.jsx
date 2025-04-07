@@ -45,10 +45,13 @@ function VehicleCard({ vehicle, bookingType }) {
     setShowPopup(false); // Close the popup
   };
 
+  // Log vehicle data for debugging
+  console.log("Rendering vehicle card:", vehicle);
+
   return (
     <div className="vehicle-card_v">
       <div className="vehicle-image_v">
-        <img src={vehicle.image} alt={vehicle.name} />
+        <img src={vehicle.image || "Images/default-car.png"} alt={vehicle.name} />
       </div>
       <div className="vehicle-details_v">
         <h3>{vehicle.name}</h3>
