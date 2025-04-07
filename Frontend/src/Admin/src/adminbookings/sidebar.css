@@ -3,9 +3,9 @@
   background-color: black;
   padding: 20px;
   color: #fff;
-  height: calc(100vh - 60px);
+  height: auto;
   position: fixed;
-  top: 20px;
+  top: 80px;
   left: 0;
   overflow-y: auto;
   transition: all 0.3s ease;
