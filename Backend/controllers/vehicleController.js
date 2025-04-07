@@ -4,51 +4,27 @@ const Booking = require('../models/Booking');
 
 const searchVehicles = async (req, res, next) => {
     try {
-        const { pickupDate, returnDate, withDriver, city, filter = 'All' } = req.query;
+        const { city, pickupDate, returnDate, withDriver, filter = 'All' } = req.query;
+        
+        console.log('Received search parameters:', { 
+            city, 
+            pickupDate, 
+            returnDate, 
+            withDriver, 
+            filter 
+        });
 
-        let query = {
-            city: city,
-            availability: 'Available'
-        };
-
-        // Validate dates if provided
-        if (pickupDate && returnDate) {
-            query.bookings = {
-                $not: {
-                    $elemMatch: {
-                        pickupDate: { $lte: new Date(returnDate) },
-                        returnDate: { $gte: new Date(pickupDate) },
-                        status: { $in: ['active', 'pending'] }
-                    }
-                }
-            };
+        // Only filter by city for display
+        let query = {};
+        if (city) {
+            query.city = city;
+            console.log('Filtering vehicles by city:', city);
         }
 
-        // Handle withDriver parameter
-        if (withDriver === 'true') {
-            query.driverName = { $exists: true, $ne: null };
-        } else if (withDriver === 'false') {
-            query.driverName = { $exists: false };
-        }
-
+        console.log('Database query:', JSON.stringify(query, null, 2));
+        
         let vehicles = await Vehicle.find(query);
-
-        if (filter !== 'All') {
-            switch (filter) {
-                case 'Cars':
-                    vehicles = vehicles.filter(v => v.type.toLowerCase() === 'car');
-                    break;
-                case 'Bikes':
-                    vehicles = vehicles.filter(v => v.type.toLowerCase() === 'bike');
-                    break;
-                case 'Price':
-                    vehicles.sort((a, b) => a.price - b.price);
-                    break;
-                case 'Rating':
-                    vehicles.sort((a, b) => b.rating - a.rating);
-                    break;
-            }
-        }
+        console.log('Found vehicles:', vehicles.length);
 
         const formattedVehicles = vehicles.map(vehicle => ({
             id: vehicle._id,
@@ -66,19 +42,26 @@ const searchVehicles = async (req, res, next) => {
             city: vehicle.city
         }));
 
+        // Log all available cities in the database
+        const allCities = await Vehicle.distinct('city');
+        console.log('Available cities in database:', allCities);
+
+        // Store all search parameters in the response
         res.status(200).json({
             success: true,
             count: formattedVehicles.length,
             vehicles: formattedVehicles,
             searchCriteria: {
+                city,
                 pickupDate,
                 returnDate,
                 withDriver,
-                city
+                filter
             }
         });
 
     } catch (error) {
+        console.error('Error in searchVehicles:', error);
         next(error);
     }
 };

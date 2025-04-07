@@ -387,3 +387,74 @@ body {
     background-color: black;
   }
   
+.filter-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
+.filter-container button {
+  padding: 8px 16px;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-container button:hover {
+  background-color: #e0e0e0;
+}
+
+.filter-container button.active {
+  background-color: #4CAF50;
+  color: white;
+  border-color: #4CAF50;
+}
+
+.debug-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.debug-stats {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+}
+
+.debug-stats p {
+  font-weight: bold;
+  margin: 0;
+}
+
+.debug-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.debug-table th, .debug-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.debug-table th {
+  background-color: #f2f2f2;
+}
+
+.debug-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.debug-table tr:hover {
+  background-color: #f1f1f1;
+}
+  
