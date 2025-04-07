@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useVehicleStore from "../../store/vehicleStore"; // Import the VehicleStore
+import useVehicleStore from "../../store/userVehicleStore"; // Import the VehicleStore
 import "./Vehicle.css";
 
 // Import the BookingStore to update booking data
@@ -28,9 +28,9 @@ function VehicleCard({ vehicle, bookingType }) {
       updateBookingData(vehicle);
 
       // Navigate to the appropriate page based on booking type
-      if (bookingType === "driver") {
+      if (bookingType ) {
         navigate("/home/userpickup", { state: { vehicle, bookingType } });
-      } else if (bookingType === "own") {
+      } else if (!bookingType) {
         navigate("/home/bookingtype", { state: { bookingType } });
       } else {
         navigate("/home/tandc", { state: { bookingType } });
