@@ -26,7 +26,7 @@ function Home() {
     dayAfterTomorrow.setDate(now.getDate() + 2); // Day after tomorrow
   
     return {
-      city: 'New York',
+      city: 'Kanpur',
       pickupDate: nextDay.toISOString().split('T')[0], // Next day's date in YYYY-MM-DD format
       pickupTime: now.toTimeString().split(' ')[0].slice(0, 5), // Current time in HH:MM format
       returnDate: dayAfterTomorrow.toISOString().split('T')[0], // Day after tomorrow's date in YYYY-MM-DD format
@@ -134,9 +134,9 @@ function Home() {
               onChange={handleInputChange}
             >
               <option value="">Select City</option>
-              <option value="New York">New York</option>
-              <option value="Los Angeles">Los Angeles</option>
-              <option value="Chicago">Chicago</option>
+              <option value="Kanpur">Kanpur</option>
+              <option value="Hyderabad">Hyderabad</option>
+              <option value="Lucknow">Lucknow</option>
             </select>
             {formErrors.city && <div className="error-message">{formErrors.city}</div>}
           </div>
