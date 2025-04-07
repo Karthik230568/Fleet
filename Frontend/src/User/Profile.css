@@ -96,11 +96,11 @@
   margin: 0;
   font-size: 15px;
   font-style: normal;
-  font-weight: normal;
+  font-weight: bold;
   margin-top: 10px;
   margin-bottom: 2px;
   margin-left: 10px;
-  color: white;
+  color: grey;
   text-align: start;
 }
 
@@ -142,6 +142,23 @@
 }
 
 .profile-save-button:hover {
+  color:white;
+  background: #0a1825;
+}
+
+.profile-cancel-button {
+  background-color: black;
+  color:white;
+  border: none;
+  padding: 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  width: 100%;
+  margin-top: 30px;
+}
+
+.profile-cancel-button:hover {
   color:white;
   background: #0a1825;
 }
