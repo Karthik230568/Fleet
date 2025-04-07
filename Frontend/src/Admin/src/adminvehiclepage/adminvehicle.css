@@ -293,18 +293,39 @@ body {
 .form-group_a input,
 .form-group_a select {
   flex: 1;
-  padding: 0.75rem;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  background-color: #c4c4c4;
-  max-width: 400px;
+  padding: 12px;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.form-group_a input::placeholder {
+  color: #888;
+  opacity: 1;
 }
 
 .form-group_a input:focus,
 .form-group_a select:focus {
   outline: none;
-  background-color: #d3d3d3;
+  border-color: #4CAF50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+.form-group_a select option {
+  background-color: #1a1a1a;
+  color: #ffffff;
+  padding: 12px;
+}
+
+.form-group_a input:-webkit-autofill,
+.form-group_a input:-webkit-autofill:hover,
+.form-group_a input:-webkit-autofill:focus,
+.form-group_a input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #1a1a1a inset !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
 .upload-btn {
@@ -634,14 +655,4 @@ body {
   .add-car-card {
     min-height: 300px;
   }
-}
-
-/* Remove autofill background color */
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px #c4c4c4 inset !important;
-    -webkit-text-fill-color: #000 !important;
-    transition: background-color 5000s ease-in-out 0s;
 }

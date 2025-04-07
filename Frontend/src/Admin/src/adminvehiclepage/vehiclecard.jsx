@@ -10,10 +10,11 @@ function VehicleCard({ vehicle, onEdit, onDelete }) {
       <div className="vehicle-details">
         <h3>{vehicle.name}</h3>
         <p>Type: {vehicle.type}</p>
-        <p>Price: ${vehicle.price}/day</p>
+        <p>Price: INR {vehicle.price}/day</p>
         <p>Availability: {vehicle.availability}</p>
         <p>Rating: {vehicle.rating} ⭐</p>
-        <p>Driver: {vehicle.driverName} </p>
+        <p>Driver: {vehicle.hasDriver ? vehicle.driverName : "No Driver"}</p>
+        <p>City: {vehicle.city}</p>
         <p>Fuel Type: {vehicle.fuelType}</p>
         <p>Seating Capacity: {vehicle.seatingCapacity}</p>
         <p>Registration Plate: {vehicle.registrationPlate}</p>

@@ -26,6 +26,8 @@ function AddCar({ onAddVehicle, editingVehicle }) {
       setFormData({
         ...editingVehicle,
         hasDriver: editingVehicle.driverName ? true : false,
+        driverName: editingVehicle.driverName || "",
+        driverId: editingVehicle.driverId || "",
       });
     }
   }, [editingVehicle]);
@@ -43,13 +45,26 @@ function AddCar({ onAddVehicle, editingVehicle }) {
     setFormData((prevState) => ({
       ...prevState,
       hasDriver: value,
-      driverName: value ? prevState.driverName : "",
-      driverId: value ? prevState.driverId : "",
+      driverName: value ? (prevState.driverName || "") : "",
+      driverId: value ? (prevState.driverId || "") : "",
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Validate driver information if hasDriver is true
+    if (formData.hasDriver) {
+      if (!formData.driverName.trim()) {
+        alert("Please enter driver name");
+        return;
+      }
+      if (!formData.driverId.trim()) {
+        alert("Please enter driver ID");
+        return;
+      }
+    }
+
     const cardData = {
       type: formData.type,
       name: formData.name,
@@ -62,11 +77,18 @@ function AddCar({ onAddVehicle, editingVehicle }) {
       seatingCapacity: formData.seatingCapacity,
       registrationPlate: formData.registrationPlate,
       vehicleId: formData.vehicleId,
-      driverName: formData.hasDriver ? formData.driverName : "",
-      driverId: formData.hasDriver ? formData.driverId : "",
+      hasDriver: formData.hasDriver,
+      driverName: formData.hasDriver ? formData.driverName.trim() : "No Driver",
+      driverId: formData.hasDriver ? formData.driverId.trim() : "",
     };
-    onAddVehicle(cardData);
-    navigate("/admin/vehicles");
+
+    try {
+      onAddVehicle(cardData);
+      navigate("/admin/vehicles");
+    } catch (error) {
+      console.error("Error adding vehicle:", error);
+      alert("Failed to add vehicle. Please try again.");
+    }
   };
 
   return (
@@ -137,6 +159,21 @@ function AddCar({ onAddVehicle, editingVehicle }) {
             <option value="Bike">Bike</option>
             <option value="Van">Van</option>
             <option value="Truck">Truck</option>
+          </select>
+        </div>
+
+        <div className="form-group_a">
+          <label>City:</label>
+          <select
+            name="city"
+            value={formData.city}
+            onChange={handleChange}
+            required
+          >
+            <option value="Kanpur">Kanpur</option>
+            <option value="Hyderabad">Hyderabad</option>
+            <option value="Lucknow">Lucknow</option>
+            
           </select>
         </div>
 
