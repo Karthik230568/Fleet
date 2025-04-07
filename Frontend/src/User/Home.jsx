@@ -1,7 +1,9 @@
 import './Home.css';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+
 // to interact with the booking store
+
 import useBookingStore from '../../store/BookingStore';
 
 function Home() {

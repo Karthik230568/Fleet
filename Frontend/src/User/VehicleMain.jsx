@@ -1,42 +1,31 @@
 import "./Vehicle.css";
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation, Routes, Route } from "react-router-dom";
+import { useLocation, Routes, Route } from "react-router-dom";
 import Filter from "./Filter";
 import VehicleCard from "./VehicleCard";
 import useVehicleStore from "../../store/vehicleStore"; // Import the VehicleStore
+import useBookingStore from "../../store/BookingStore"; // Import the BookingStore
 
 function Usercarspage() {
   const location = useLocation();
-  const navigate = useNavigate();
-  const { vehicles, searchVehicles, loading, error } = useVehicleStore(); // Access the store
-  const [bookingType, setBookingType] = useState(() => {
-    return location.state?.bookingType || localStorage.getItem("bookingType") || "driver";
-  });
+  const { vehicles, searchVehicles, loading, error } = useVehicleStore(); // Access the vehicle store
+  const { bookingData } = useBookingStore(); // Access the booking data from BookingStore
 
   const [filter, setFilter] = useState("All");
-  const [searchParams, setSearchParams] = useState({
-    city: location.state?.city || "",
-    pickupDate: location.state?.pickupDate || "",
-    returnDate: location.state?.returnDate || "",
-    withDriver: bookingType === "driver" ? "driver" : "own",
-    filter: "All"
-  });
 
-  useEffect(() => {
-    if (bookingType) {
-      localStorage.setItem("bookingType", bookingType);
-      setSearchParams(prev => ({
-        ...prev,
-        withDriver: bookingType === "driver" ? "driver" : "own"
-      }));
-    }
-  }, [bookingType]);
+  // Initialize search parameters from BookingStore
+  const [searchParams, setSearchParams] = useState({
+    city: bookingData.city || location.state?.city || "",
+    pickupDate: bookingData.pickupDate || location.state?.pickupDate || "",
+    returnDate: bookingData.returnDate || location.state?.returnDate || "",
+    withDriver: bookingData.withDriver ? "driver" : "own",
+    filter: "All",
+  });
 
   // Fetch vehicles when the component mounts or search parameters change
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
-        // Always fetch vehicles when the component mounts
         await searchVehicles(searchParams);
       } catch (err) {
         console.error("Error fetching vehicles:", err);
@@ -47,17 +36,17 @@ function Usercarspage() {
 
   const handleFilterChange = (selectedFilter) => {
     setFilter(selectedFilter);
-    setSearchParams(prev => ({
+    setSearchParams((prev) => ({
       ...prev,
-      filter: selectedFilter
+      filter: selectedFilter,
     }));
   };
 
   // Apply client-side filtering based on the selected filter
   const filteredVehicles = React.useMemo(() => {
     if (filter === "All") return vehicles;
-    
-    return vehicles.filter(vehicle => {
+
+    return vehicles.filter((vehicle) => {
       if (filter === "Available") return vehicle.availability === "Available";
       if (filter === "Not available") return vehicle.availability === "Not available";
       if (filter === "Cars") return vehicle.type.toLowerCase() === "car";
@@ -83,7 +72,7 @@ function Usercarspage() {
                 <VehicleCard
                   key={vehicle._id}
                   vehicle={vehicle}
-                  bookingType={bookingType}
+                  bookingType={searchParams.withDriver}
                 />
               ))}
             </div>
