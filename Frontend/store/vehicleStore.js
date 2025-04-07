@@ -5,57 +5,63 @@ import axios from "axios";
 axios.defaults.baseURL = '/api';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
+// Add auth token to requests
+axios.interceptors.request.use((config) => {
+  // Check if it's an admin route
+  if (config.url.startsWith('/admin')) {
+    const adminToken = localStorage.getItem('adminToken');
+    if (adminToken) {
+      config.headers.Authorization = `Bearer ${adminToken}`;
+    }
+  } else {
+    // For user routes
+    const userToken = localStorage.getItem('token');
+    if (userToken) {
+      config.headers.Authorization = `Bearer ${userToken}`;
+    }
+  }
+  return config;
+}, (error) => {
+  return Promise.reject(error);
+});
+
+// Helper function to normalize vehicle data format
+const normalizeVehicle = (vehicle) => {
+  return {
+    _id: vehicle._id || vehicle.id,
+    name: vehicle.name,
+    type: vehicle.type,
+    price: vehicle.price,
+    availability: vehicle.availability,
+    rating: vehicle.rating,
+    driverName: vehicle.driverName || "",
+    driverId: vehicle.driverId || "",
+    fuelType: vehicle.fuelType,
+    seatingCapacity: vehicle.seatingCapacity,
+    registrationPlate: vehicle.registrationPlate,
+    vehicleId: vehicle.vehicleId,
+    city: vehicle.city,
+    image: vehicle.image || "Images/default-car.png"
+  };
+};
+
 const useVehicleStore = create((set, get) => ({
   vehicles: [], // List of vehicles
   searchResults: [], // Search results
   error: null, // Error state
-
-  // Search vehicles
-  searchVehicles: async (searchParams) => {
-    try {
-      const { pickupDate, returnDate, withDriver, city } = searchParams;
-      
-      // Format dates to match backend expectations
-      const formattedPickupDate = new Date(pickupDate).toISOString();
-      const formattedReturnDate = new Date(returnDate).toISOString();
-
-      const response = await axios.get("/vehicles", { 
-        params: {
-          pickupDate: formattedPickupDate,
-          returnDate: formattedReturnDate,
-          withDriver: withDriver === 'driver',
-          city,
-          filter: 'All' // Default filter
-        }
-      });
-      
-      if (response.data.success) {
-        set({ 
-          searchResults: response.data.vehicles,
-          error: null 
-        });
-        return response.data.vehicles;
-      } else {
-        throw new Error(response.data.error || "Failed to search vehicles");
-      }
-    } catch (error) {
-      console.error("Error searching vehicles:", error.response?.data || error.message);
-      set({ 
-        searchResults: [],
-        error: error.response?.data?.error || "Failed to search vehicles" 
-      });
-      throw error;
-    }
-  },
+  loading: false, // Loading state
 
   // Fetch all vehicles (admin only)
   fetchVehicles: async () => {
+    set({ loading: true, error: null });
     try {
       const response = await axios.get("/admin/vehicles");
       
       if (response.data.success) {
-        set({ vehicles: response.data.vehicles, error: null });
-        return response.data.vehicles;
+        // Normalize vehicle data
+        const normalizedVehicles = response.data.vehicles.map(normalizeVehicle);
+        set({ vehicles: normalizedVehicles, error: null });
+        return normalizedVehicles;
       } else {
         throw new Error(response.data.error || "Failed to fetch vehicles");
       }
@@ -66,20 +72,36 @@ const useVehicleStore = create((set, get) => ({
         error: error.response?.data?.error || "Failed to fetch vehicles" 
       });
       throw error;
+    } finally {
+      set({ loading: false });
     }
   },
 
   // Add a new vehicle (admin only)
   addVehicle: async (vehicleData) => {
+    set({ loading: true, error: null });
     try {
-      const response = await axios.post("/admin/vehicles", vehicleData);
+      // Ensure required fields are present
+      const vehicleToAdd = {
+        ...vehicleData,
+        availability: vehicleData.availability || "Available",
+        rating: vehicleData.rating || 0.0,
+        city: vehicleData.city || "Delhi",
+        image: vehicleData.image || "Images/default-car.png"
+      };
+
+      const response = await axios.post("/admin/vehicles", vehicleToAdd);
       
       if (response.data.success) {
+        // Normalize the new vehicle data
+        const normalizedVehicle = normalizeVehicle(response.data.vehicle);
+        
+        // Update the vehicles list with the new vehicle
         set((state) => ({
-          vehicles: [...state.vehicles, response.data.vehicle],
+          vehicles: [...state.vehicles, normalizedVehicle],
           error: null,
         }));
-        return response.data.vehicle;
+        return normalizedVehicle;
       } else {
         throw new Error(response.data.error || "Failed to add vehicle");
       }
@@ -87,22 +109,34 @@ const useVehicleStore = create((set, get) => ({
       console.error("Error adding vehicle:", error.response?.data || error.message);
       set({ error: error.response?.data?.error || "Failed to add vehicle" });
       throw error;
+    } finally {
+      set({ loading: false });
     }
   },
 
   // Update an existing vehicle (admin only)
   updateVehicle: async (id, updates) => {
+    set({ loading: true, error: null });
     try {
-      const response = await axios.put(`/admin/vehicles/${id}`, updates);
+      console.log("Updating vehicle with ID:", id);
+      console.log("Update data:", updates);
+      
+      // Make sure we're using the correct ID format
+      const vehicleId = id;
+      
+      const response = await axios.put(`/admin/vehicles/${vehicleId}`, updates);
       
       if (response.data.success) {
+        // Normalize the updated vehicle data
+        const normalizedVehicle = normalizeVehicle(response.data.vehicle);
+        
         set((state) => ({
           vehicles: state.vehicles.map((vehicle) =>
-            vehicle._id === id ? response.data.vehicle : vehicle
+            vehicle._id === vehicleId ? normalizedVehicle : vehicle
           ),
           error: null,
         }));
-        return response.data.vehicle;
+        return normalizedVehicle;
       } else {
         throw new Error(response.data.error || "Failed to update vehicle");
       }
@@ -110,11 +144,14 @@ const useVehicleStore = create((set, get) => ({
       console.error("Error updating vehicle:", error.response?.data || error.message);
       set({ error: error.response?.data?.error || "Failed to update vehicle" });
       throw error;
+    } finally {
+      set({ loading: false });
     }
   },
 
   // Remove a vehicle (admin only)
   removeVehicle: async (id) => {
+    set({ loading: true, error: null });
     try {
       const response = await axios.delete(`/admin/vehicles/${id}`);
       
@@ -130,76 +167,137 @@ const useVehicleStore = create((set, get) => ({
       console.error("Error removing vehicle:", error.response?.data || error.message);
       set({ error: error.response?.data?.error || "Failed to remove vehicle" });
       throw error;
+    } finally {
+      set({ loading: false });
     }
   },
 
-  // Fetch vehicles for user
-  searchVehicles: async (criteria) => {
+  // Search vehicles for users
+  searchVehicles: async (searchParams) => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.get("/api/vehicles/", {
-        params: criteria,
-      });
+      const { pickupDate, returnDate, withDriver, city, filter = 'All' } = searchParams;
+      
+      // Format dates to match backend expectations
+      const formattedPickupDate = pickupDate ? new Date(pickupDate).toISOString() : undefined;
+      const formattedReturnDate = returnDate ? new Date(returnDate).toISOString() : undefined;
 
-      set({
-        vehicles: response.data.vehicles,
-        searchCriteria: response.data.searchCriteria,
-        error: null,
-        loading: false,
-      });
+      // If no search parameters are provided, fetch all available vehicles
+      if (!pickupDate && !returnDate && !withDriver && !city) {
+        // Use the admin endpoint to get all vehicles when no search parameters are provided
+        const response = await axios.get("/admin/vehicles");
+        
+        if (response.data.success) {
+          // Normalize vehicle data
+          const normalizedVehicles = response.data.vehicles.map(normalizeVehicle);
+          
+          set({ 
+            vehicles: normalizedVehicles,
+            searchResults: normalizedVehicles,
+            error: null 
+          });
+          return normalizedVehicles;
+        } else {
+          throw new Error(response.data.error || "Failed to fetch vehicles");
+        }
+      } else {
+        // Use search parameters
+        const response = await axios.get("/vehicles", { 
+          params: {
+            pickupDate: formattedPickupDate,
+            returnDate: formattedReturnDate,
+            withDriver: withDriver === 'driver',
+            city,
+            filter
+          }
+        });
+        
+        if (response.data.success) {
+          // Normalize vehicle data
+          const normalizedVehicles = response.data.vehicles.map(normalizeVehicle);
+          
+          set({ 
+            vehicles: normalizedVehicles,
+            searchResults: normalizedVehicles,
+            error: null 
+          });
+          return normalizedVehicles;
+        } else {
+          throw new Error(response.data.error || "Failed to search vehicles");
+        }
+      }
     } catch (error) {
-      console.error("Error searching vehicles:", error);
-      set({
+      console.error("Error searching vehicles:", error.response?.data || error.message);
+      set({ 
         vehicles: [],
-        searchCriteria: {},
-        error: error.response?.data?.message || "Failed to fetch vehicles",
-        loading: false,
+        searchResults: [],
+        error: error.response?.data?.error || "Failed to search vehicles" 
       });
+      throw error;
+    } finally {
+      set({ loading: false });
     }
   },
 
-  // update vehicle status for booking
+  // Update vehicle status for booking
   updateVehicleStatus: async (vehicleId, status, bookingId) => {
+    set({ loading: true, error: null });
     try {
-      const response = await axios.put(`/api/vehicles/${vehicleId}/status`, {
+      const response = await axios.put(`/vehicles/${vehicleId}/status`, {
         status,
         bookingId,
       });
 
-      // Update the local state for the vehicle
-      const updatedVehicles = get().vehicles.map((vehicle) =>
-        vehicle.id === vehicleId ? { ...vehicle, availability: status } : vehicle
-      );
-
-      set({ vehicles: updatedVehicles });
-      return response.data;
+      if (response.data.success) {
+        // Update the local state for the vehicle
+        set((state) => ({
+          vehicles: state.vehicles.map((vehicle) =>
+            vehicle._id === vehicleId ? { ...vehicle, availability: status } : vehicle
+          ),
+          error: null
+        }));
+        return response.data;
+      } else {
+        throw new Error(response.data.error || "Failed to update vehicle status");
+      }
     } catch (error) {
       console.error("Error updating vehicle status:", error);
-      throw error.response?.data?.message || "Failed to update vehicle status";
+      set({ error: error.response?.data?.error || "Failed to update vehicle status" });
+      throw error;
+    } finally {
+      set({ loading: false });
     }
   },
 
   // Mark vehicle as unavailable for booking
   markVehicleUnavailable: async (vehicleId, returnDate, bookingId) => {
+    set({ loading: true, error: null });
     try {
-      const response = await axios.post(`/api/vehicles/${vehicleId}/unavailable`, {
+      const response = await axios.post(`/vehicles/${vehicleId}/unavailable`, {
         returnDate,
         bookingId,
       });
 
-      // Update the local state for the vehicle
-      const updatedVehicles = get().vehicles.map((vehicle) =>
-        vehicle.id === vehicleId ? { ...vehicle, availability: "Not available" } : vehicle
-      );
-
-      set({ vehicles: updatedVehicles });
-      return response.data;
+      if (response.data.success) {
+        // Update the local state for the vehicle
+        set((state) => ({
+          vehicles: state.vehicles.map((vehicle) =>
+            vehicle._id === vehicleId ? { ...vehicle, availability: "Not available" } : vehicle
+          ),
+          error: null
+        }));
+        return response.data;
+      } else {
+        throw new Error(response.data.error || "Failed to mark vehicle unavailable");
+      }
     } catch (error) {
       console.error("Error marking vehicle unavailable:", error);
-      throw error.response?.data?.message || "Failed to mark vehicle unavailable";
+      set({ error: error.response?.data?.error || "Failed to mark vehicle unavailable" });
+      throw error;
+    } finally {
+      set({ loading: false });
     }
   },
-
 }));
 
 export default useVehicleStore;

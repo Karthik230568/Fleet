@@ -5,18 +5,36 @@ import Filter from "./filter";
 import VehicleCard from "./vehiclecard";
 import AddCar from "./addcar";
 import useVehicleStore from "../../../../store/vehicleStore";
+import useAdminAuthStore from "../../../../store/AdminAuthStore";
  
 function Admincarspage() {
   const navigate = useNavigate();
-  const { vehicles, fetchVehicles, addVehicle, updateVehicle, removeVehicle } = useVehicleStore();
+  const { vehicles, fetchVehicles, addVehicle, updateVehicle, removeVehicle, loading, error } = useVehicleStore();
+  const { isAuthenticated, checkAuth } = useAdminAuthStore();
   const [filteredVehicles, setFilteredVehicles] = useState([]);
   const [filter, setFilter] = useState("All");
   const [editingVehicle, setEditingVehicle] = useState(null);
+  const [authError, setAuthError] = useState(null);
+
+  // Check authentication on component mount
+  useEffect(() => {
+    const isAdminAuthenticated = checkAuth();
+    if (!isAdminAuthenticated) {
+      navigate("/auth/adminsignin");
+    }
+  }, [checkAuth, navigate]);
 
   // Fetch vehicles from the backend on component mount
   useEffect(() => {
-    fetchVehicles();
-  }, []);
+    if (isAuthenticated) {
+      fetchVehicles().catch(err => {
+        if (err.response?.status === 401) {
+          setAuthError("Authentication required. Please sign in again.");
+          navigate("/auth/adminsignin");
+        }
+      });
+    }
+  }, [isAuthenticated, fetchVehicles, navigate]);
 
   // Apply filtering & sorting logic
   useEffect(() => {
@@ -55,15 +73,26 @@ function Admincarspage() {
   };
 
   const handleNewVehicle = async (newVehicle) => {
-    if (editingVehicle) {
-      // Update existing vehicle
-      await updateVehicle(editingVehicle._id, newVehicle);
-    } else {
-      // Add new vehicle
-      console.log("Adding new vehicle:", newVehicle);
-      await addVehicle(newVehicle);
+    try {
+      if (editingVehicle) {
+        // Update existing vehicle
+        await updateVehicle(editingVehicle._id, newVehicle);
+      } else {
+        // Add new vehicle
+        await addVehicle(newVehicle);
+      }
+      // Refresh the vehicles list
+      await fetchVehicles();
+      navigate("/admin/vehicles");
+    } catch (error) {
+      console.error("Error handling vehicle:", error);
+      if (error.response?.status === 401) {
+        setAuthError("Authentication required. Please sign in again.");
+        navigate("/auth/adminsignin");
+      } else {
+        alert("Failed to save vehicle. Please try again.");
+      }
     }
-    navigate("/admin/vehicles");
   };
 
   const handleEditVehicle = (vehicle) => {
@@ -73,7 +102,19 @@ function Admincarspage() {
 
   const handleDeleteVehicle = async (vehicle) => {
     if (window.confirm("Are you sure you want to delete this vehicle?")) {
-      await removeVehicle(vehicle._id);
+      try {
+        await removeVehicle(vehicle._id);
+        // Refresh the vehicles list
+        await fetchVehicles();
+      } catch (error) {
+        console.error("Error deleting vehicle:", error);
+        if (error.response?.status === 401) {
+          setAuthError("Authentication required. Please sign in again.");
+          navigate("/auth/adminsignin");
+        } else {
+          alert("Failed to delete vehicle. Please try again.");
+        }
+      }
     }
   };
 
@@ -89,10 +130,13 @@ function Admincarspage() {
           element={
             <div className="main">
               <Filter onFilterChange={handleFilterChange} />
+              {loading && <p>Loading vehicles...</p>}
+              {error && <p className="error">Error: {error}</p>}
+              {authError && <p className="auth-error">{authError}</p>}
               <div className="card-container">
                 {filteredVehicles.map((vehicle, index) => (
                   <VehicleCard
-                    key={index}
+                    key={vehicle._id || index}
                     vehicle={vehicle}
                     onEdit={handleEditVehicle}
                     onDelete={handleDeleteVehicle}

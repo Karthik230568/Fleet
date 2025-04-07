@@ -4,19 +4,37 @@ import { useNavigate, Routes, Route } from "react-router-dom";
 import DriverCard from "./drivercard";
 import AddDriver from "../adddriverdetails/adddriver";
 import useDriverStore from "../../../../store/driverStore"; // Import the driver store
+import useAdminAuthStore from "../../../../store/AdminAuthStore";
 
 function Admindriverpage() {
   const navigate = useNavigate();
+  const { isAuthenticated, checkAuth } = useAdminAuthStore();
 
   // Zustand store actions and state
-  const { drivers, fetchDrivers, addDriver, updateDriverProfile, removeDriver, error } = useDriverStore();
+  const { drivers, fetchDrivers, addDriver, updateDriver, removeDriver, loading, error } = useDriverStore();
 
   const [editingDriver, setEditingDriver] = useState(null);
+  const [authError, setAuthError] = useState(null);
+
+  // Check authentication on component mount
+  useEffect(() => {
+    const isAdminAuthenticated = checkAuth();
+    if (!isAdminAuthenticated) {
+      navigate("/auth/adminsignin");
+    }
+  }, [checkAuth, navigate]);
 
   // Fetch drivers from the backend on component mount
   useEffect(() => {
-    fetchDrivers();
-  }, [fetchDrivers]);
+    if (isAuthenticated) {
+      fetchDrivers().catch(err => {
+        if (err.response?.status === 401) {
+          setAuthError("Authentication required. Please sign in again.");
+          navigate("/auth/adminsignin");
+        }
+      });
+    }
+  }, [isAuthenticated, fetchDrivers, navigate]);
 
   const handleAddDriver = () => {
     setEditingDriver(null);
@@ -27,16 +45,24 @@ function Admindriverpage() {
     try {
       if (editingDriver) {
         // Update existing driver
-        await updateDriverProfile(driverData);
+        console.log("Editing driver with ID:", editingDriver._id);
+        console.log("Driver data to update:", driverData);
+        await updateDriver(editingDriver._id, driverData);
       } else {
         // Add new driver
         await addDriver(driverData);
       }
-      setEditingDriver(null);
+      // Refresh the drivers list
+      await fetchDrivers();
       navigate("/admin/drivers");
     } catch (error) {
       console.error("Error handling driver:", error);
-      alert("Failed to save driver. Please try again.");
+      if (error.response?.status === 401) {
+        setAuthError("Authentication required. Please sign in again.");
+        navigate("/auth/adminsignin");
+      } else {
+        alert("Failed to save driver. Please try again.");
+      }
     }
   };
 
@@ -49,9 +75,16 @@ function Admindriverpage() {
     if (window.confirm("Are you sure you want to delete this driver?")) {
       try {
         await removeDriver(driverId);
+        // Refresh the drivers list
+        await fetchDrivers();
       } catch (error) {
         console.error("Error deleting driver:", error);
-        alert("Failed to delete driver. Please try again.");
+        if (error.response?.status === 401) {
+          setAuthError("Authentication required. Please sign in again.");
+          navigate("/auth/adminsignin");
+        } else {
+          alert("Failed to delete driver. Please try again.");
+        }
       }
     }
   };
@@ -62,10 +95,15 @@ function Admindriverpage() {
         path="/"
         element={
           <div className="driver-container">
+            {loading && <p className="loading">Loading drivers...</p>}
             {error && <p className="error_message">{error}</p>}
-            {drivers.map((driver, index) => (
+            {authError && <p className="auth-error">{authError}</p>}
+            {drivers.length === 0 && !loading && !error && (
+              <p className="no-drivers">No drivers found. Add a new driver to get started.</p>
+            )}
+            {drivers.map((driver) => (
               <DriverCard
-                key={index}
+                key={driver._id}
                 {...driver}
                 onEdit={() => handleEditDriver(driver)}
                 onDelete={() => handleDeleteDriver(driver._id)}

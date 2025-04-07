@@ -17,11 +17,17 @@ const AddDriver = ({ onAddDriver, editingDriver }) => {
 
   useEffect(() => {
     if (editingDriver) {
-      setFormData(editingDriver);
+      // Convert age to string for the form input
+      const driverData = {
+        ...editingDriver,
+        age: editingDriver.age ? editingDriver.age.toString() : ""
+      };
+      setFormData(driverData);
     }
   }, [editingDriver]);
 
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -48,13 +54,13 @@ const AddDriver = ({ onAddDriver, editingDriver }) => {
       return "";
     },
     license: (value) => (!value ? "License is required." : ""),
-    vehicleId: (value) => (!value ? "Vehicle ID is required." : ""),
     driverId: (value) => (!value ? "Driver ID is required." : ""),
     image: (value) => (!value && !editingDriver ? "Photo URL is required." : ""),
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     // Validate form
     let newErrors = {};
@@ -70,27 +76,34 @@ const AddDriver = ({ onAddDriver, editingDriver }) => {
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      setIsSubmitting(false);
       return;
     }
 
-    // Create new driver object
-    const driverData = {
-      name: formData.name,
-      age: formData.age,
-      address: formData.address,
-      phone: formData.phone,
-      license: formData.license,
-      vehicleId: formData.vehicleId,
-      driverId: formData.driverId,
-      image: formData.image || "Images/default-driver.png",
-    };
+    try {
+      // Create new driver object
+      const driverData = {
+        name: formData.name,
+        age: parseInt(formData.age, 10),
+        address: formData.address,
+        phone: formData.phone,
+        license: formData.license,
+        vehicleId: formData.vehicleId || "",
+        driverId: formData.driverId,
+        image: formData.image || "Images/default-driver.png",
+      };
 
-    // Call the parent component's handler
-    if (typeof onAddDriver === 'function') {
-      onAddDriver(driverData);
-      navigate("/admin/drivers");
-    } else {
-      console.error('onAddDriver is not a function');
+      // Call the parent component's handler
+      if (typeof onAddDriver === 'function') {
+        await onAddDriver(driverData);
+      } else {
+        console.error('onAddDriver is not a function');
+      }
+    } catch (error) {
+      console.error("Error submitting driver data:", error);
+      setErrors({ submit: "Failed to save driver. Please try again." });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -110,6 +123,7 @@ const AddDriver = ({ onAddDriver, editingDriver }) => {
             type: "number",
             name: "age",
             placeholder: "Enter age",
+            min: "19",
           },
           {
             label: "Address",
@@ -133,7 +147,7 @@ const AddDriver = ({ onAddDriver, editingDriver }) => {
             label: "Vehicle ID",
             type: "text",
             name: "vehicleId",
-            placeholder: "Enter vehicle ID",
+            placeholder: "Enter vehicle ID (optional)",
           },
           {
             label: "Driver ID",
@@ -143,11 +157,11 @@ const AddDriver = ({ onAddDriver, editingDriver }) => {
           },
           {
             label: "Photo URL",
-            type: "url",
+            type: "text",
             name: "image",
             placeholder: "Enter photo URL",
           },
-        ].map(({ label, type, name, placeholder }) => (
+        ].map(({ label, type, name, placeholder, min }) => (
           <div className="form-group_d" key={name}>
             <label>{label}:</label>
             <div>
@@ -157,7 +171,7 @@ const AddDriver = ({ onAddDriver, editingDriver }) => {
                 placeholder={placeholder}
                 value={formData[name] || ""}
                 onChange={handleChange}
-                required
+                min={min}
               />
               {errors[name] && <p className="error">{errors[name]}</p>}
             </div>
@@ -168,9 +182,19 @@ const AddDriver = ({ onAddDriver, editingDriver }) => {
             <img src={formData.image} alt="Driver preview" />
           </div>
         )}
-        <button type="submit">
-          {editingDriver ? "Update Driver" : "Add Driver"}
-        </button>
+        {errors.submit && <p className="error submit-error">{errors.submit}</p>}
+        <div className="form-actions">
+          <button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Saving..." : (editingDriver ? "Update Driver" : "Add Driver")}
+          </button>
+          <button 
+            type="button" 
+            onClick={() => navigate("/admin/drivers")}
+            disabled={isSubmitting}
+          >
+            Cancel
+          </button>
+        </div>
       </form>
     </div>
   );

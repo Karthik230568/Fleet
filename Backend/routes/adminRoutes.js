@@ -11,7 +11,8 @@ const {
   removeDriver,
   getDrivers,
   getDriverProfile,
-  updateDriverProfile
+  updateDriverProfile,
+  updateDriver
 } = require('../controllers/adminController');
 
 const { login } = require('../controllers/adminauth');
@@ -34,6 +35,7 @@ router.delete('/vehicles/:id', removeVehicle);
 router.post('/drivers', addDriver);
 router.delete('/drivers/:id', removeDriver);
 router.get('/drivers', getDrivers);
+router.put('/drivers/:id', updateDriver);
 router.get('/drivers/profile', getDriverProfile);
 router.put('/drivers/profile', updateDriverProfile);
 
