@@ -1,9 +1,6 @@
 // BookingStore.js
 import { create } from 'zustand';
 
-// src/store/BookingStore.js
-import { create } from 'zustand';
-
 const useBookingStore = create((set) => ({
   bookingData: {
     // Home.jsx fields:
@@ -39,7 +36,7 @@ const useBookingStore = create((set) => ({
      },
    })),
 
-  //to finalize booking
+  //to finalize booking, not used yet
   initializeBooking: async () => {
     const { bookingData } = useBookingStore.getState();
     try {
