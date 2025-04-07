@@ -1,53 +1,64 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const useUserVehicleStore = create((set) => ({
+// Configure axios defaults
+axios.defaults.baseURL = "/api";
+axios.defaults.headers.post["Content-Type"] = "application/json";
+
+// Helper function to normalize vehicle data format
+const normalizeVehicle = (vehicle) => ({
+  _id: vehicle._id || vehicle.id,
+  name: vehicle.name,
+  type: vehicle.type,
+  price: vehicle.price,
+  availability: vehicle.availability,
+  rating: vehicle.rating,
+  driverName: vehicle.driverName || "",
+  driverId: vehicle.driverId || "",
+  fuelType: vehicle.fuelType,
+  seatingCapacity: vehicle.seatingCapacity,
+  registrationPlate: vehicle.registrationPlate,
+  vehicleId: vehicle.vehicleId,
+  city: vehicle.city,
+  image: vehicle.image || "Images/default-car.png",
+});
+
+const useUserVehicleStore = create((set, get) => ({
   vehicles: [], // List of vehicles
-  loading: false, // Loading state
   error: null, // Error state
+  loading: false, // Loading state
 
   // Function to search vehicles based on search parameters
   searchVehicles: async (searchParams) => {
-    set({ loading: true, error: null }); // Set loading state
-
+    set({ loading: true, error: null });
     try {
-
       console.log("Search parameters:", searchParams);
-      // Make an API call to fetch vehicles based on search parameters
-      const response = await axios.get("/vehicles", {
-        params: searchParams,
-      });
+      const response = await axios.get("/vehicles", { params: searchParams });
       console.log("API response:", response.data);
 
       if (response.data.success) {
-        set({
-          vehicles: response.data.vehicles,
-          loading: false,
-          error: null,
-        });
+        const normalizedVehicles = response.data.vehicles.map(normalizeVehicle);
+        set({ vehicles: normalizedVehicles, loading: false, error: null });
+        return normalizedVehicles;
       } else {
-        set({
-          vehicles: [],
-          loading: false,
-          error: response.data.message || "Failed to fetch vehicles",
-        });
+        throw new Error(response.data.message || "Failed to fetch vehicles");
       }
-    } catch (err) {
-      console.error("Error fetching vehicles:", err);
+    } catch (error) {
+      console.error("Error fetching vehicles:", error);
       set({
         vehicles: [],
         loading: false,
-        error: err.message || "An error occurred while fetching vehicles",
+        error: error.response?.data?.error || error.message || "An error occurred while fetching vehicles",
       });
+      throw error;
     }
   },
 
   // Function to mark a vehicle as unavailable
   markVehicleUnavailable: async (vehicleId, returnDate, bookingId) => {
     set({ loading: true, error: null });
-
     try {
-      const response = await axios.post(`/api/vehicles/${vehicleId}/unavailable`, {
+      const response = await axios.post(`/vehicles/${vehicleId}/unavailable`, {
         returnDate,
         bookingId,
       });
@@ -56,22 +67,23 @@ const useUserVehicleStore = create((set) => ({
         set({ loading: false });
         return true;
       } else {
-        set({ loading: false, error: response.data.error || "Failed to mark vehicle as unavailable" });
-        return false;
+        throw new Error(response.data.error || "Failed to mark vehicle as unavailable");
       }
-    } catch (err) {
-      console.error("Error marking vehicle unavailable:", err);
-      set({ loading: false, error: err.message || "Error marking vehicle unavailable" });
-      return false;
+    } catch (error) {
+      console.error("Error marking vehicle unavailable:", error);
+      set({
+        loading: false,
+        error: error.response?.data?.error || error.message || "Error marking vehicle unavailable",
+      });
+      throw error;
     }
   },
 
   // Function to update a vehicle's status
   updateVehicleStatus: async (vehicleId, status, bookingId) => {
     set({ loading: true, error: null });
-
     try {
-      const response = await axios.put(`/api/vehicles/${vehicleId}/status`, {
+      const response = await axios.put(`/vehicles/${vehicleId}/status`, {
         status,
         bookingId,
       });
@@ -80,13 +92,15 @@ const useUserVehicleStore = create((set) => ({
         set({ loading: false });
         return true;
       } else {
-        set({ loading: false, error: response.data.error || "Failed to update vehicle status" });
-        return false;
+        throw new Error(response.data.error || "Failed to update vehicle status");
       }
-    } catch (err) {
-      console.error("Error updating vehicle status:", err);
-      set({ loading: false, error: err.message || "Error updating vehicle status" });
-      return false;
+    } catch (error) {
+      console.error("Error updating vehicle status:", error);
+      set({
+        loading: false,
+        error: error.response?.data?.error || error.message || "Error updating vehicle status",
+      });
+      throw error;
     }
   },
 
