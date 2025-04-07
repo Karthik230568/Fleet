@@ -9,7 +9,7 @@ import useBookingStore from '../../store/BookingStore';
 function VehicleCard({ vehicle, bookingType }) {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
-  const { markVehicleUnavailable } = useVehicleStore(); // Access the store action
+  // const { markVehicleUnavailable } = useVehicleStore(); // Access the store action
 
   // Access the booking store to update booking data
   const { updateBookingData} = useBookingStore();
@@ -22,7 +22,7 @@ function VehicleCard({ vehicle, bookingType }) {
     setShowPopup(false); // Close the popup
     try {
       // Mark the vehicle as unavailable
-      await markVehicleUnavailable(vehicle._id, new Date().toISOString(), null);
+      // await markVehicleUnavailable(vehicle._id, new Date().toISOString(), null);
 
       // Update the booking data in the store once confirm is selected.
       updateBookingData(vehicle);
