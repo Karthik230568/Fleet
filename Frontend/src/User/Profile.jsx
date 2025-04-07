@@ -225,7 +225,7 @@ function Profile() {
               className={`profile-input-field ${isEditing ? "editing" : "disabled"} ${formErrors.email ? 'error-input' : ''}`}
               value={formData.email}
               onChange={handleChange}
-              disabled={!isEditing}
+              disabled={true}
             />
             {formErrors.email && <div className="error-message">{formErrors.email}</div>}
           </div>
