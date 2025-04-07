@@ -141,28 +141,42 @@ const getAllBookings = async (req, res, next) => {
     }
 };
 
+//code to get all the bookings from start date to the latest booking in the database.
 const viewBookingsByDate = async (req, res, next) => {
     try {
-        const { startDate, endDate } = req.query;
-        
+        const { startDate } = req.query;
+
+        if (!startDate) {
+            return res.status(400).json({ success: false, message: "startDate is required" });
+        }
+
+        // Step 1: Find the latest returnDate in the Booking collection
+        const latestBooking = await Booking.findOne().sort({ returnDate: -1 }).limit(1);
+        if (!latestBooking) {
+            return res.status(200).json({ success: true, bookings: [], message: "No bookings found" });
+        }
+
+        const endDate = latestBooking.returnDate;
+
+        // Step 2: Query bookings between startDate and endDate
         const bookings = await Booking.find({
             $or: [
                 {
                     pickupDate: {
                         $gte: new Date(startDate),
-                        $lte: new Date(endDate)
+                        $lte: endDate
                     }
                 },
                 {
                     returnDate: {
                         $gte: new Date(startDate),
-                        $lte: new Date(endDate)
+                        $lte: endDate
                     }
                 },
                 {
                     $and: [
                         { pickupDate: { $lte: new Date(startDate) } },
-                        { returnDate: { $gte: new Date(endDate) } }
+                        { returnDate: { $gte: endDate } }
                     ]
                 }
             ]
@@ -170,6 +184,7 @@ const viewBookingsByDate = async (req, res, next) => {
         .populate('user', 'name email')
         .populate('vehicle', 'name type');
 
+        // Step 3: Format results
         const formattedBookings = bookings.map(booking => ({
             bookingId: booking._id,
             userName: booking.user.name,
@@ -189,13 +204,71 @@ const viewBookingsByDate = async (req, res, next) => {
             bookings: formattedBookings,
             dateRange: {
                 startDate,
-                endDate
+                endDate: endDate.toISOString()
             }
         });
     } catch (error) {
         next(error);
     }
 };
+
+
+//code to get bookind from start date to end date, but our frontend only provides start date hence we will not use it
+// const viewBookingsByDate = async (req, res, next) => {
+//     try {
+//         const { startDate, endDate } = req.query;
+        
+//         const bookings = await Booking.find({
+//             $or: [
+//                 {
+//                     pickupDate: {
+//                         $gte: new Date(startDate),
+//                         $lte: new Date(endDate)
+//                     }
+//                 },
+//                 {
+//                     returnDate: {
+//                         $gte: new Date(startDate),
+//                         $lte: new Date(endDate)
+//                     }
+//                 },
+//                 {
+//                     $and: [
+//                         { pickupDate: { $lte: new Date(startDate) } },
+//                         { returnDate: { $gte: new Date(endDate) } }
+//                     ]
+//                 }
+//             ]
+//         })
+//         .populate('user', 'name email')
+//         .populate('vehicle', 'name type');
+
+//         const formattedBookings = bookings.map(booking => ({
+//             bookingId: booking._id,
+//             userName: booking.user.name,
+//             userEmail: booking.user.email,
+//             vehicleName: booking.vehicle.name,
+//             pickupDate: new Date(booking.pickupDate).toLocaleString(),
+//             returnDate: new Date(booking.returnDate).toLocaleString(),
+//             totalAmount: booking.totalAmount,
+//             status: booking.status,
+//             withDriver: booking.withDriver,
+//             isDelivery: booking.isDelivery,
+//             address: booking.address
+//         }));
+
+//         res.status(200).json({
+//             success: true,
+//             bookings: formattedBookings,
+//             dateRange: {
+//                 startDate,
+//                 endDate
+//             }
+//         });
+//     } catch (error) {
+//         next(error);
+//     }
+// };
 
 // Driver Management
 const addDriver = async (req, res, next) => {

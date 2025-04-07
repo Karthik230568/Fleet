@@ -160,6 +160,7 @@ const confirmSelfDriveStorePickup = async (req, res, next) => {
                 error: "Failed to update vehicle status"
             });
         }
+        
 
         res.status(200).json({
             success: true,
