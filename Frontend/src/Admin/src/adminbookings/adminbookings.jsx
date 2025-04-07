@@ -2,8 +2,8 @@ import React from "react";
 import "./adminbookings.css";
 import AdminbookingList from "./bookinglist";
 import Calendar from "./calendar";
-import Adminbookingssidebar from "./sidebar";
-//import { useNavigate } from "react-router-dom";
+
+//import { useNavigate } from "react-router-dom";:wq
 function Adminbookingspage() {
   const bookings = [
   
