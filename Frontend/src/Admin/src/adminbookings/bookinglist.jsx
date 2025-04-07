@@ -11,10 +11,12 @@ function AdminbookingList({ bookings }) {
             <span className="user-name">{booking.user}</span>
           </div>
           <div className="booking-details">
-            {booking.startDate} | {booking.duration} | {booking.endDate}
+            {booking.pickupDate} | {booking.duration} | {booking.returnDate}
           </div>
-          <div className="provider">{booking.provider}</div>
-          <div className="price">{booking.price}</div>
+          
+          <div className="driver-name">{booking.driverName}</div>
+          <div className="vehicle-id">{booking.vehicleId}</div>
+          <div className="price">{booking.totalAmount}</div>
         </div>
       ))}
     </div>
