@@ -3,7 +3,7 @@ import axios from "axios";
 
 // Configure axios defaults for admin API
 const adminApi = axios.create({
-  baseURL: '/api/admin/auth', // This should match the backend admin auth route prefix
+  baseURL: 'http://localhost:5000/api/admin/auth', // Update to use full URL
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
