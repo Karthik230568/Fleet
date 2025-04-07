@@ -74,18 +74,31 @@ function Admincarspage() {
 
   const handleNewVehicle = async (newVehicle) => {
     try {
+      console.log("Handling new vehicle:", newVehicle);
       if (editingVehicle) {
         // Update existing vehicle
-        await updateVehicle(editingVehicle._id, newVehicle);
+        console.log("Updating existing vehicle with ID:", editingVehicle._id);
+        const updatedVehicle = await updateVehicle(editingVehicle._id, newVehicle);
+        console.log("Vehicle updated successfully:", updatedVehicle);
       } else {
         // Add new vehicle
-        await addVehicle(newVehicle);
+        console.log("Adding new vehicle");
+        const addedVehicle = await addVehicle(newVehicle);
+        console.log("Vehicle added successfully:", addedVehicle);
       }
       // Refresh the vehicles list
-      await fetchVehicles();
+      console.log("Refreshing vehicles list");
+      const refreshedVehicles = await fetchVehicles();
+      console.log("Vehicles refreshed:", refreshedVehicles);
       navigate("/admin/vehicles");
     } catch (error) {
       console.error("Error handling vehicle:", error);
+      console.error("Error details:", {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
+      
       if (error.response?.status === 401) {
         setAuthError("Authentication required. Please sign in again.");
         navigate("/auth/adminsignin");

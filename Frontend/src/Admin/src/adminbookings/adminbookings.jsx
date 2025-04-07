@@ -18,9 +18,6 @@ function Adminbookingspage() {
       driverName: "Sai",
       vehicleId: "1234567890",
     },
-    
-    
-    
     {
       id: 1,
       vehicle: "Hyundai i30",
@@ -31,9 +28,7 @@ function Adminbookingspage() {
       user: "Sai@gmail.com",
       driverName: "Sai",
       vehicleId: "1234567890",
-    }
-    
-    
+    }   
     
   ];
 

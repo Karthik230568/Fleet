@@ -2,11 +2,16 @@ import { create } from "zustand";
 import axios from "axios";
 
 // Configure axios defaults
-axios.defaults.baseURL = '/api';
-axios.defaults.headers.post['Content-Type'] = 'application/json';
+const api = axios.create({
+  baseURL: 'http://localhost:5000/api',
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
 
 // Add auth token to requests
-axios.interceptors.request.use((config) => {
+api.interceptors.request.use((config) => {
   // Check if it's an admin route
   if (config.url.startsWith('/admin')) {
     const adminToken = localStorage.getItem('adminToken');
@@ -54,7 +59,7 @@ const useVehicleStore = create((set, get) => ({
   fetchVehicles: async () => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.get("/admin/vehicles");
+      const response = await api.get("/admin/vehicles");
       
       if (response.data.success) {
         // Normalize vehicle data
@@ -85,11 +90,12 @@ const useVehicleStore = create((set, get) => ({
         ...vehicleData,
         availability: vehicleData.availability || "Available",
         rating: vehicleData.rating || 0.0,
-        city: vehicleData.city || "Delhi",
         image: vehicleData.image || "Images/default-car.png"
       };
 
-      const response = await axios.post("/admin/vehicles", vehicleToAdd);
+      console.log('Sending vehicle data to server:', vehicleToAdd);
+
+      const response = await api.post("/admin/vehicles", vehicleToAdd);
       
       if (response.data.success) {
         // Normalize the new vehicle data
@@ -123,7 +129,7 @@ const useVehicleStore = create((set, get) => ({
       // Make sure we're using the correct ID format
       const vehicleId = id;
       
-      const response = await axios.put(`/admin/vehicles/${vehicleId}`, updates);
+      const response = await api.put(`/admin/vehicles/${vehicleId}`, updates);
       
       if (response.data.success) {
         // Normalize the updated vehicle data
@@ -152,7 +158,7 @@ const useVehicleStore = create((set, get) => ({
   removeVehicle: async (id) => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.delete(`/admin/vehicles/${id}`);
+      const response = await api.delete(`/admin/vehicles/${id}`);
       
       if (response.data.success) {
         set((state) => ({
