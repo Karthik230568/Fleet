@@ -7,15 +7,17 @@
 
 /* Full-screen container */
 .body_past {
-  font-family: Arial, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(180deg, #0a1825, #142134, #1e3c72); 
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 20px;
+  padding-top: 90px;
+  overflow-x: hidden;
 }
-
 
 /* Tabs */
 .tabs_past {
@@ -24,43 +26,55 @@
   padding: 15px;
   background: transparent;
   width: 100%;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  max-width: 800px;
+  margin: 0 0 20px 0;
+  gap: 30px;
+  position: relative;
+  z-index: 1;
 }
 
-.tab_past {
-  margin: 0 20px;
-  padding: 5px 15px;
-  cursor: pointer;
-  font-size: 16px;
-  color: #555;
-  background-color: transparent;
-  border: 0;
-}
-
-.tab_past:focus {
-  outline: none;
-}
-
-.active_past {
-  font-weight: bold;
-  border-bottom: 3px solid white;
+.active_active, .past_active {
+  font-weight: 600;
   color: white;
   border-radius: 0;
   background-color: transparent;
-  border-top: 0;
-  border-left: 0;
-  border-right: 0;
+  border: none;
+  padding: 8px 20px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  position: relative;
+  cursor: pointer;
+  opacity: 0.6;
 }
 
-.active_past:focus {
-  outline: none;
+.active_active.selected,
+.past_active.selected {
+  opacity: 1;
+  color: white;
 }
 
-.active_past:hover {
-  border-bottom: 3px solid white;
+.active_active::after,
+.past_active::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background-color: white;
+  transition: all 0.3s ease;
 }
 
+.active_active.selected::after,
+.past_active.selected::after {
+  width: 100%;
+}
+
+.active_active:hover,
+.past_active:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+}
 
 /* Full-screen content */
 .content_past {
@@ -213,4 +227,162 @@ color: white;
 .popup-buttons button:last-child {
 background-color: red;
 color: white;
+}
+
+/* Booking Card Image */
+.vehicle-image {
+  width: 200px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Media Queries */
+@media (max-width: 1200px) {
+  .booking-card_past {
+    max-width: 700px;
+  }
+  
+  .vehicle-image {
+    width: 180px;
+    height: 135px;
+  }
+}
+
+@media (max-width: 992px) {
+  .booking-card_past {
+    max-width: 600px;
+  }
+  
+  .vehicle-image {
+    width: 160px;
+    height: 120px;
+  }
+}
+
+@media (max-width: 768px) {
+  .body_past {
+    padding-top: 80px;
+  }
+
+  .tabs_past {
+    gap: 20px;
+  }
+
+  .active_active,
+  .past_active {
+    font-size: 14px;
+    padding: 6px 15px;
+  }
+
+  .booking-card_past {
+    padding: 20px;
+    max-width: 500px;
+  }
+
+  .details_past {
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .vehicle-image {
+    width: 100%;
+    height: 200px;
+    margin-top: 15px;
+  }
+
+  .rating_past {
+    margin-top: 15px;
+  }
+}
+
+@media (max-width: 576px) {
+  .body_past {
+    padding-top: 70px;
+  }
+
+  .tabs_past {
+    gap: 15px;
+    margin: 15px 0;
+  }
+
+  .active_active,
+  .past_active {
+    font-size: 13px;
+    padding: 5px 12px;
+  }
+
+  .booking-card_past {
+    padding: 15px;
+    max-width: 400px;
+  }
+
+  .vehicle-image {
+    height: 180px;
+  }
+
+  .left_past h3,
+  .right_past h3 {
+    font-size: 1rem;
+  }
+
+  .left_past p,
+  .right_past p {
+    font-size: 0.9rem;
+    margin: 6px 0;
+  }
+}
+
+@media (max-width: 380px) {
+  .body_past {
+    padding-top: 65px;
+  }
+
+  .tabs_past {
+    gap: 10px;
+  }
+
+  .active_active,
+  .past_active {
+    font-size: 12px;
+    padding: 4px 10px;
+  }
+
+  .booking-card_past {
+    padding: 12px;
+    max-width: 320px;
+  }
+
+  .vehicle-image {
+    height: 160px;
+  }
+
+  .left_past h3,
+  .right_past h3 {
+    font-size: 0.95rem;
+  }
+
+  .left_past p,
+  .right_past p {
+    font-size: 0.85rem;
+  }
+}
+
+/* For landscape orientation on mobile */
+@media (max-height: 600px) and (orientation: landscape) {
+  .body_past {
+    padding-top: 60px;
+  }
+
+  .booking-card_past {
+    margin-bottom: 15px;
+    max-width: 500px;
+  }
+
+  .vehicle-image {
+    width: 150px;
+    height: 100px;
+  }
 }

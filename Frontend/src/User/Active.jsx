@@ -14,7 +14,7 @@ function Active() {
 
         {/* Tabs */}
         <div className="tabs_active">
-          <NavLink to='/home/active' className="active_active">Active</NavLink>
+          <NavLink to='/home/active' className="active_active selected">Active</NavLink>
           <NavLink to='/home/past' className="past_active">Past journey</NavLink>
         </div>
 
