@@ -39,6 +39,8 @@ function Admincarspage() {
   // Apply filtering & sorting logic
   useEffect(() => {
     let updatedVehicles = [...vehicles];
+    console.log("Current filter:", filter);
+    console.log("Vehicles before filtering:", updatedVehicles);
 
     if (filter === "Available") {
       updatedVehicles = updatedVehicles.filter(
@@ -64,6 +66,7 @@ function Admincarspage() {
       );
     }
 
+    console.log("Vehicles after filtering:", updatedVehicles);
     setFilteredVehicles(updatedVehicles);
   }, [filter, vehicles]);
 

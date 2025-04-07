@@ -53,6 +53,12 @@ function AddCar({ onAddVehicle, editingVehicle }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     
+    // Validate vehicle name
+    if (!formData.name.trim()) {
+      alert("Please enter vehicle name");
+      return;
+    }
+    
     // Validate driver information if hasDriver is true
     if (formData.hasDriver) {
       if (!formData.driverName.trim()) {
@@ -81,6 +87,8 @@ function AddCar({ onAddVehicle, editingVehicle }) {
       driverName: formData.hasDriver ? formData.driverName.trim() : "No Driver",
       driverId: formData.hasDriver ? formData.driverId.trim() : "",
     };
+
+    console.log("Submitting vehicle data:", cardData);
 
     try {
       onAddVehicle(cardData);

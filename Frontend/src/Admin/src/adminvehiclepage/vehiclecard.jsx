@@ -2,13 +2,15 @@ import React from "react";
 import "./adminvehicle.css";
 
 function VehicleCard({ vehicle, onEdit, onDelete }) {
+  console.log("Rendering vehicle card:", vehicle);
+  
   return (
     <div className="vehicle-card">
       <div className="vehicle-image">
         <img src={vehicle.image} alt={vehicle.name} />
       </div>
       <div className="vehicle-details">
-        <h3>{vehicle.name}</h3>
+        <h3>{vehicle.name || "Unnamed Vehicle"}</h3>
         <p>Type: {vehicle.type}</p>
         <p>Price: INR {vehicle.price}/day</p>
         <p>Availability: {vehicle.availability}</p>
