@@ -1,6 +1,26 @@
 import { create } from "zustand";
 import axios from "axios";
 
+// Configure axios defaults
+const api = axios.create({
+  baseURL: 'http://localhost:5000/api',
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
+
+// Add auth token to requests
+api.interceptors.request.use((config) => {
+  const adminToken = localStorage.getItem('adminToken');
+  if (adminToken) {
+    config.headers.Authorization = `Bearer ${adminToken}`;
+  }
+  return config;
+}, (error) => {
+  return Promise.reject(error);
+});
+
 // Helper function to normalize driver data format
 const normalizeDriver = (driver) => {
   return {
@@ -25,7 +45,7 @@ const useDriverStore = create((set, get) => ({
   fetchDrivers: async () => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.get("/admin/drivers");
+      const response = await api.get("/admin/drivers");
       
       if (response.data.success) {
         // Normalize driver data
@@ -57,7 +77,9 @@ const useDriverStore = create((set, get) => ({
         image: driverData.image || "Images/default-driver.png"
       };
 
-      const response = await axios.post("/admin/drivers", driverToAdd);
+      console.log('Sending driver data to server:', driverToAdd);
+
+      const response = await api.post("/admin/drivers", driverToAdd);
       
       if (response.data.success) {
         // Normalize the new driver data
@@ -88,7 +110,7 @@ const useDriverStore = create((set, get) => ({
       console.log("Updating driver with ID:", id);
       console.log("Update data:", updates);
       
-      const response = await axios.put(`/admin/drivers/${id}`, updates);
+      const response = await api.put(`/admin/drivers/${id}`, updates);
       
       if (response.data.success) {
         // Normalize the updated driver data
@@ -117,7 +139,7 @@ const useDriverStore = create((set, get) => ({
   removeDriver: async (id) => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.delete(`/admin/drivers/${id}`);
+      const response = await api.delete(`/admin/drivers/${id}`);
       
       if (response.data.success) {
         set((state) => ({
@@ -141,7 +163,7 @@ const useDriverStore = create((set, get) => ({
   getDriverProfile: async () => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.get("/admin/drivers/profile");
+      const response = await api.get("/admin/drivers/profile");
       
       if (response.data.success) {
         const normalizedDriver = normalizeDriver(response.data.driver);
@@ -162,7 +184,7 @@ const useDriverStore = create((set, get) => ({
   updateDriverProfile: async (profileData) => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.put("/admin/drivers/profile", profileData);
+      const response = await api.put("/admin/drivers/profile", profileData);
       
       if (response.data.success) {
         const normalizedDriver = normalizeDriver(response.data.driver);

@@ -90,9 +90,10 @@ const useVehicleStore = create((set, get) => ({
         ...vehicleData,
         availability: vehicleData.availability || "Available",
         rating: vehicleData.rating || 0.0,
-        city: vehicleData.city || "Delhi",
         image: vehicleData.image || "Images/default-car.png"
       };
+
+      console.log('Sending vehicle data to server:', vehicleToAdd);
 
       const response = await api.post("/admin/vehicles", vehicleToAdd);
       

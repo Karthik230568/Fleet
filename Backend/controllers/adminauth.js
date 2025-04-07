@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 // Hardcoded admin credentials
-const ADMIN_EMAIL = 'fleetiitk@gmail.com';
+const ADMIN_EMAIL = 'admin@fleetapp@gmail.com';
 const ADMIN_PASSWORD = 'admin123456';
 
 
