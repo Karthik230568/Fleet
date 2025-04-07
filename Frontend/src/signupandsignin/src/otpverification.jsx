@@ -127,16 +127,18 @@ export default function OTPVerification() {
             ))}
           </div>
 
-          <button className="btn mt-4" onClick={handleVerifyOtp}>
+          <button className="otp-verify-btn" onClick={handleVerifyOtp}>
             Verify OTP
           </button>
 
           <div className="auth-links">
-          {!resendEnabled ? (
-            <p>Resend OTP in {timer} seconds</p>
-          ) : (
-            <button onClick={handleResendOtp}>Resend OTP</button>
-          )}
+            {!resendEnabled ? (
+              <p className="timer-text">Resend OTP in {timer} seconds</p>
+            ) : (
+              <button className="resend-otp-btn" onClick={handleResendOtp}>
+                Resend OTP
+              </button>
+            )}
           </div>
         </div>
       </div>

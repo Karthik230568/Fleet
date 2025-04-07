@@ -47,7 +47,7 @@ const NavBar = ({ isAdmin }) => {
                     ) : (
                         <>
                            <NavLink to='/auth' className="logout_nav">Logout</NavLink>
-                            <NavLink to='/admin/profile' className="profile_nav">👤</NavLink>
+                            
                         </>
                     )}
                 </div>
