@@ -1,6 +1,7 @@
 // BookingStore.js
 import { create } from 'zustand';
 
+
 const useBookingStore = create((set) => ({
   bookingData: {
     // Home.jsx fields:
