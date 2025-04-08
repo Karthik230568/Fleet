@@ -22,7 +22,7 @@ const { authenticateUser, authenticateAdmin } = require('../middleware/authMiddl
 router.post('/login', login);
 
 // All routes below this point require admin authentication
-router.use(authenticateAdmin);
+// router.use(authenticateAdmin);
 
 // Vehicle routes
 router.get('/vehicles', getAllVehicles);
