@@ -30,7 +30,7 @@ const vehicleSchema = new mongoose.Schema({
     driverId: {
         type: String,
         required: function() {
-            return this.driverName !== null;
+            return this.driverName !== 'No Driver';
         }
     },
     city: {
