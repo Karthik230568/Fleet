@@ -21,6 +21,12 @@ const searchVehicles = async (req, res, next) => {
             console.log('Filtering vehicles by city:', city);
         }
 
+        if(withDriver=='driver'){
+            query.driverName = { $ne: null }; // Filter vehicles with driver
+        } else if(withDriver=='own'){
+            query.driverName = 'No Driver';
+         } // Filter vehicles without driver
+
         console.log('Database query:', JSON.stringify(query, null, 2));
         
         let vehicles = await Vehicle.find(query);
