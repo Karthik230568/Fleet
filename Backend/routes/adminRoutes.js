@@ -15,15 +15,16 @@ const {
   updateDriver
 } = require('../controllers/adminController');
 
-const { login } = require('../controllers/adminauth');
-const { authenticateUser, authenticateAdmin } = require('../middleware/authMiddleware');
+const { login ,validateToken} = require('../controllers/adminauth');
+const {  authenticateAdmin } = require('../middleware/authMiddleware');
 
 // Login route - no authentication needed
 router.post('/login', login);
+router.post('/validate-token', validateToken);
 
 // All routes below this point require admin authentication
 // router.use(authenticateAdmin);
-
+router.use(authenticateAdmin);
 // Vehicle routes
 router.get('/vehicles', getAllVehicles);
 router.post('/vehicles', addVehicle);

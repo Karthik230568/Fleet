@@ -1,32 +1,38 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import './Auth.css';
 import fleetLogo from '../../../public/greylogo.png';
 import useAdminAuthStore from "../../../store/AdminAuthStore";
-
 export default function Adminsignin() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
   const { login, isAuthenticated, error: storeError, checkAuth } = useAdminAuthStore();
-
-  // Only run checkAuth once on first render
   useEffect(() => {
-    if (checkAuth()) {
-      navigate("/admin");
-    }
+    localStorage.removeItem('adminToken');
   }, []);
+  // Check authentication on first render
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      const isAuth = await checkAuth();
+      if (isAuth) {
+        navigate("/admin");
+      }
+    };
+    checkAuthentication();
+  }, [checkAuth, navigate]);
 
   // Redirect after successful login
   useEffect(() => {
     if (isAuthenticated) {
       navigate("/admin");
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, navigate]);
 
+  // Update error state when storeError changes
   useEffect(() => {
     if (storeError) {
       setError(storeError);

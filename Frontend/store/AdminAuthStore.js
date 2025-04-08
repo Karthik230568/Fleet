@@ -1,22 +1,21 @@
+
 import { create } from "zustand";
 import axios from "axios";
-
 // Configure axios defaults for admin API
 const adminApi = axios.create({
-  baseURL: 'http://localhost:5000/api/admin/auth', // Update to use full URL
+  baseURL: 'http://localhost:5000/api/admin/auth', // Backend URL
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
   }
 });
-
 // Add response interceptor for better error handling
 adminApi.interceptors.response.use(
   response => response,
   error => {
     console.error('Admin API Error:', error);
     if (error.response) {
-      // Server responded with error
+      // Server responded with an error
       const errorMessage = error.response.data.message || error.response.data.error || "Server error occurred";
       return Promise.reject({ message: errorMessage });
     } else if (error.request) {
@@ -28,33 +27,32 @@ adminApi.interceptors.response.use(
     }
   }
 );
-
 const useAdminAuthStore = create((set) => ({
   isAuthenticated: false,
   token: null,
   error: null,
   loading: false,
 
-  // Admin login with hardcoded credentials
+  // Admin login with database-based credentials
   login: async (email, password) => {
     try {
       set({ loading: true, error: null });
-      
+
       const response = await adminApi.post("/login", { email, password });
-      
+
       if (response.data.token) {
         // Store token in localStorage
         localStorage.setItem('adminToken', response.data.token);
         // Set token in axios default headers
         adminApi.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-        
+
         set({
           isAuthenticated: true,
           token: response.data.token,
           error: null,
           loading: false
         });
-        
+
         return response.data;
       } else {
         throw new Error("Admin login failed - no token received");
@@ -72,17 +70,28 @@ const useAdminAuthStore = create((set) => ({
   },
 
   // Check if admin is already logged in (on app load)
-  checkAuth: () => {
+  checkAuth: async () => {
     const token = localStorage.getItem('adminToken');
     if (token) {
-      // Set token in axios default headers
-      adminApi.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      set({
-        isAuthenticated: true,
-        token
-      });
-      return true;
+      try {
+        // Validate token with backend
+        const response = await adminApi.post('/validate-token', { token });
+        if (response.data.valid) {
+          // Set token in axios default headers
+          adminApi.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          set({
+            isAuthenticated: true,
+            token,
+            error: null
+          });
+          return true;
+        }
+      } catch (error) {
+        console.error('Token validation failed:', error);
+        set({ error: "Token validation failed. Please log in again." });
+      }
     }
+    set({ isAuthenticated: false, token: null });
     return false;
   },
 
@@ -90,10 +99,10 @@ const useAdminAuthStore = create((set) => ({
   logout: () => {
     // Clear admin token from localStorage
     localStorage.removeItem('adminToken');
-    
+
     // Remove token from axios headers
     delete adminApi.defaults.headers.common['Authorization'];
-    
+
     // Reset store state
     set({
       isAuthenticated: false,
@@ -105,5 +114,4 @@ const useAdminAuthStore = create((set) => ({
     window.location.href = '/auth/admin';
   }
 }));
-
 export default useAdminAuthStore;

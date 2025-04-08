@@ -1,10 +1,6 @@
+
 const jwt = require('jsonwebtoken');
-
-// Hardcoded admin credentials
-const ADMIN_EMAIL = 'fleetiitk@gmail.com';
-const ADMIN_PASSWORD = 'admin123456';
-
-
+const Admin = require('../models/Administrator'); // Import the Admin model
 const login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
@@ -14,8 +10,9 @@ const login = async (req, res, next) => {
             return res.status(400).json({ error: "Email and password are required" });
         }
 
-        // Check against hardcoded credentials
-        if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
+        // Find admin in the database
+        const admin = await Admin.findOne({ email });
+        if (!admin || !(await admin.comparePassword(password))) {
             return res.status(401).json({ error: "Invalid credentials" });
         }
 
@@ -23,7 +20,7 @@ const login = async (req, res, next) => {
         const token = jwt.sign(
             { 
                 isAdmin: true,
-                email: ADMIN_EMAIL
+                email: admin.email
             },
             process.env.JWT_SECRET,
             { expiresIn: '1d' }
@@ -39,6 +36,20 @@ const login = async (req, res, next) => {
     }
 };
 
+const validateToken = (req, res) => {
+    const { token } = req.body;
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        if (decoded.isAdmin) {
+            return res.status(200).json({ valid: true });
+        }
+        return res.status(403).json({ valid: false });
+    } catch (error) {
+        return res.status(401).json({ valid: false });
+    }
+};
+
 module.exports = {
-    login
+    login,
+    validateToken
 };
