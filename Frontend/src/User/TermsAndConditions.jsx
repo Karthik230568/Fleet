@@ -114,7 +114,7 @@ const TermsAndConditions = () => {
       {/* Popup */}
       {showPopup && (
         <div className="popup-overlay_p">
-          <div className="popup-content_">
+          <div className="popup-content_" >
             <h3>Booking Confirmed</h3>
             <p>Your booking has been successfully confirmed!</p>
             <button onClick={handlePopupOk} className="popup-ok-button">
