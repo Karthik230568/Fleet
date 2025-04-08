@@ -143,6 +143,9 @@ const getAllBookings = async (req, res, next) => {
 };
 
 // code to get all the active bookings on the selected calendar date
+
+// const Booking = require('../models/Booking'); // adjust path as needed
+
 const viewBookingsByDate = async (req, res, next) => {
     try {
         const { selectedDate } = req.query;
@@ -154,17 +157,25 @@ const viewBookingsByDate = async (req, res, next) => {
             });
         }
 
-        const date = new Date(selectedDate);
-        if (isNaN(date.getTime())) {
+        // Convert selectedDate string (YYYY-MM-DD) to a Date object (in UTC)
+        const [year, month, day] = selectedDate.split('-');
+        const formattedDate = new Date(`${year}-${month}-${day}T00:00:00Z`);
+
+        // Convert formattedDate to a timestamp (milliseconds)
+        const selectedDateTimestamp = formattedDate.getTime();
+
+        // Check if the date is valid
+        if (isNaN(selectedDateTimestamp)) {
             return res.status(400).json({
                 success: false,
                 message: "Invalid date format. Please use a valid date string like '2025-04-07'."
             });
         }
 
+        // Find bookings that are active on the selected date
         const bookings = await Booking.find({
-            pickupDate: { $lte: date },
-            returnDate: { $gte: date }
+            pickupDate: { $lte: selectedDateTimestamp }, // pickupDate <= selectedDate
+            returnDate: { $gte: selectedDateTimestamp } // returnDate >= selectedDate
         })
         .populate('user', 'name email')
         .populate('vehicle', 'name type');
@@ -174,14 +185,16 @@ const viewBookingsByDate = async (req, res, next) => {
             userName: booking.user.name,
             userEmail: booking.user.email,
             vehicleName: booking.vehicle.name,
-            pickupDate: booking.pickupDate.toLocaleString(),
-            returnDate: booking.returnDate.toLocaleString(),
+            pickupDate: booking.pickupDate, // Format as string
+            returnDate: booking.returnDate, // Format as string
+            // pickupDate: new Date(booking.pickupDate).toLocaleString(), // Format as string
+            // returnDate: new Date(booking.returnDate).toLocaleString(), // Format as string
             totalAmount: booking.totalAmount,
             withDriver: booking.withDriver,
             isDelivery: booking.isDelivery,
             address: booking.address,
             status: booking.status,
-            bookingDate: booking.bookingDate.toLocaleString(),
+            bookingDate: new Date(booking.bookingDate).toLocaleString(), // Format as string
             rating: booking.rating
         }));
 
@@ -196,6 +209,122 @@ const viewBookingsByDate = async (req, res, next) => {
         next(error);
     }
 };
+
+
+// code to get all the active bookings on the selected calendar date            here the dates had no timestamps in them, hence it was not working
+// const Booking = require('../models/Booking'); // adjust path as needed
+
+// const viewBookingsByDate = async (req, res, next) => {
+//     try {
+//         const { selectedDate } = req.query;
+
+//         if (!selectedDate) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: "Query parameter 'selectedDate' is required in YYYY-MM-DD format."
+//             });
+//         }
+
+//         const date = new Date(selectedDate);
+//         if (isNaN(date.getTime())) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: "Invalid date format. Please use a valid date string like '2025-04-07'."
+//             });
+//         }
+
+//         const bookings = await Booking.find({
+//             pickupDate: { $lte: date },
+//             returnDate: { $gte: date }
+//         })
+//         .populate('user', 'name email')
+//         .populate('vehicle', 'name type');
+
+//         const formattedBookings = bookings.map(booking => ({
+//             bookingId: booking._id,
+//             userName: booking.user.name,
+//             userEmail: booking.user.email,
+//             vehicleName: booking.vehicle.name,
+//             pickupDate: booking.pickupDate.toLocaleString(),
+//             returnDate: booking.returnDate.toLocaleString(),
+//             totalAmount: booking.totalAmount,
+//             withDriver: booking.withDriver,
+//             isDelivery: booking.isDelivery,
+//             address: booking.address,
+//             status: booking.status,
+//             bookingDate: booking.bookingDate.toLocaleString(),
+//             rating: booking.rating
+//         }));
+
+//         res.status(200).json({
+//             success: true,
+//             activeOn: selectedDate,
+//             total: formattedBookings.length,
+//             bookings: formattedBookings
+//         });
+
+//     } catch (error) {
+//         next(error);
+//     }
+// };
+
+
+// code to get all the active bookings on the selected calendar date   {here the formatting was wrong ddmmyyyy}
+// const viewBookingsByDate = async (req, res, next) => {
+//     try {
+//         const { selectedDate } = req.query;
+
+//         if (!selectedDate) {
+
+//             return res.status(400).json({
+//                 success: false,
+//                 message: "Query parameter 'selectedDate' is required."
+//             });
+//         }
+
+//         // Parse DD-MM-YYYY to Date object
+//         const [day, month, year] = selectedDate.split('-');
+//         const parsedDate = new Date(`${year}-${month}-${day}T00:00:00`);
+
+//         if (isNaN(parsedDate.getTime())) {
+//             return res.status(400).json({ success: false, message: 'Invalid date format' });
+//         }
+
+//         // Query bookings active on that date
+//         const bookings = await Booking.find({
+//             pickupDate: { $lte: parsedDate },
+//             returnDate: { $gte: parsedDate }
+//         })
+//         .populate('user', 'name email')
+//         .populate('vehicle', 'name type');
+
+//         const formattedBookings = bookings.map(booking => ({
+//             bookingId: booking._id,
+//             userName: booking.user.name,
+//             userEmail: booking.user.email,
+//             vehicleName: booking.vehicle.name,
+//             pickupDate: booking.pickupDate.toLocaleString(),
+//             returnDate: booking.returnDate.toLocaleString(),
+//             totalAmount: booking.totalAmount,
+//             withDriver: booking.withDriver,
+//             isDelivery: booking.isDelivery,
+//             address: booking.address,
+//             status: booking.status,
+//             bookingDate: booking.bookingDate.toLocaleString(),
+//             rating: booking.rating
+//         }));
+
+//         res.status(200).json({
+//             success: true,
+//             activeOn: selectedDate,
+//             total: formattedBookings.length,
+//             bookings: formattedBookings
+//         });
+
+//     } catch (error) {
+//         next(error);
+//     }
+// };
 
 
 //code to get all the bookings from start date to the latest booking in the database. this is not implemented

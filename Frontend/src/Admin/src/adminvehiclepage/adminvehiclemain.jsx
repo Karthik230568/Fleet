@@ -6,7 +6,7 @@ import VehicleCard from "./vehiclecard";
 import AddCar from "./addcar";
 import useVehicleStore from "../../../../store/vehicleStore";
 import useAdminAuthStore from "../../../../store/AdminAuthStore";
- 
+
 function Admincarspage() {
   const navigate = useNavigate();
   const { vehicles, fetchVehicles, addVehicle, updateVehicle, removeVehicle, loading, error } = useVehicleStore();
@@ -101,7 +101,7 @@ function Admincarspage() {
         response: error.response?.data,
         status: error.response?.status
       });
-      
+
       if (error.response?.status === 401) {
         setAuthError("Authentication required. Please sign in again.");
         navigate("/auth/adminsignin");

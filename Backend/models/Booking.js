@@ -6,6 +6,13 @@ const bookingSchema = new mongoose.Schema({
         ref: 'User',
         // required: true
     },
+    driver: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Driver',
+        required: function() {
+            return this.withDriver === true;
+        }
+    },
     vehicle: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Vehicle',
