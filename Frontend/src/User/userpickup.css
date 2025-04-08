@@ -7,6 +7,7 @@
   flex-direction: row; /* Stack content vertically */
   height: 100vh;
   padding: 0 5vw; /* Add horizontal padding */
+  gap: 200px;
 }
 
 /* Logo styling */
@@ -142,6 +143,7 @@
   .pickup_body {
     flex-direction: column; /* Stack content vertically */
     padding: 0 5vw; /* Add horizontal padding */
+    gap:30px; /* Adjust gap for smaller screens */
   }
   .pickup_logo-container {
     padding-left: 0;
@@ -170,6 +172,7 @@
 @media (max-width: 480px) {
   .pickup_body {
     padding: 0 2vw;
+    gap:20px;
   }
 
   .pickup_logo-image {
