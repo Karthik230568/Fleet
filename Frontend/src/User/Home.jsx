@@ -154,7 +154,6 @@ function Home() {
             >
               <option value="">Select City</option>
               <option value="Kanpur">Kanpur</option>
-              <option value="Hyderabad">Hyderabad</option>
               <option value="Lucknow">Lucknow</option>
               <option value="Delhi">Delhi</option>
             </select>

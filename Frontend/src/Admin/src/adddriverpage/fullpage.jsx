@@ -95,7 +95,12 @@ function Admindriverpage() {
         path="/"
         element={
           <div className="driver-container">
-            {loading && <p className="loading">Loading drivers...</p>}
+            {loading && (
+              <div className="loading-screen">
+                <div className="loading-spinner"></div>
+                <p className="loading-text">Loading drivers...</p>
+              </div>
+            )}
             {error && <p className="error_message">{error}</p>}
             {authError && <p className="auth-error">{authError}</p>}
             {drivers.length === 0 && !loading && !error && (
