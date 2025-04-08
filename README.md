@@ -43,7 +43,7 @@ The script will:
 - Stop the servers using `CTRL + C`.
 
 ## **3.Admin Login Credentials
-- Use the following credentials to sign in as an admin from the login page:
+- Use the following credentials to sign in as an admin :
 - Email: fleetiitk@gmail.com
 - Password: admin123456
 
