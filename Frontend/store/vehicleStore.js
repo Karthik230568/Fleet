@@ -39,7 +39,7 @@ const normalizeVehicle = (vehicle) => {
     price: vehicle.price,
     availability: vehicle.availability,
     rating: vehicle.rating,
-    driverName: vehicle.driverName || "",
+    driverName: vehicle.driverName || "No Driveri",
     driverId: vehicle.driverId || "",
     fuelType: vehicle.fuelType,
     seatingCapacity: vehicle.seatingCapacity,
@@ -83,6 +83,7 @@ const useVehicleStore = create((set, get) => ({
 
   // Add a new vehicle (admin only)
   addVehicle: async (vehicleData) => {
+    console.log('in store')
     set({ loading: true, error: null });
     try {
       // Ensure required fields are present
@@ -100,7 +101,7 @@ const useVehicleStore = create((set, get) => ({
       if (response.data.success) {
         // Normalize the new vehicle data
         const normalizedVehicle = normalizeVehicle(response.data.vehicle);
-        
+        console.log('Received normalized vehicle data:', normalizedVehicle);
         // Update the vehicles list with the new vehicle
         set((state) => ({
           vehicles: [...state.vehicles, normalizedVehicle],

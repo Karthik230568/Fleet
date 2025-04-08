@@ -4,12 +4,12 @@ const bookingSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        // required: true
     },
     vehicle: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Vehicle',
-        required: true
+        // required: true
     },
     pickupDate: {
         type: Date,
@@ -23,7 +23,7 @@ const bookingSchema = new mongoose.Schema({
     },
     returnDate: {
         type: Date,
-        required: true,
+        // required: true,
         validate: {
             validator: function(v) {
                 return v > this.pickupDate;
@@ -33,20 +33,20 @@ const bookingSchema = new mongoose.Schema({
     },
     totalAmount: {
         type: Number,
-        required: true,
+        // required: true,
         min: 0
     },
     withDriver: {
         type: Boolean,
-        required: true,
+        // required: true,
         default: false
     },
     address: {
         type: String,
         trim: true,
-        required: function() {
-            return this.withDriver === true || this.isDelivery === true;
-        }
+        // required: function() {
+        //     return this.withDriver === true || this.isDelivery === true;
+        // }
     },
     isDelivery: {
         type: Boolean,
@@ -56,18 +56,18 @@ const bookingSchema = new mongoose.Schema({
         type: String,
         enum: ['pending', 'active', 'completed', 'cancelled'],
         default: 'pending',
-        required: true
+        // required: true
     },
     termsAccepted: {
         type: Boolean,
-        required: function() {
-            return this.withDriver === false;
-        }
+        // required: function() {
+        //     return this.withDriver === false;
+        // }
     },
     bookingDate: {
         type: Date,
         default: Date.now,
-        required: true
+        // required: true
     },
     rating: {
         type: Number,

@@ -15,7 +15,7 @@ function VehicleCard({ vehicle, onEdit, onDelete }) {
         <p>Price: INR {vehicle.price}/day</p>
         <p>Availability: {vehicle.availability}</p>
         <p>Rating: {vehicle.rating} ⭐</p>
-        <p>Driver: {vehicle.hasDriver ? vehicle.driverName : "No Driver"}</p>
+        <p>Driver: {vehicle.driverName || "No Driver"}</p>
         <p>City: {vehicle.city}</p>
         <p>Fuel Type: {vehicle.fuelType}</p>
         <p>Seating Capacity: {vehicle.seatingCapacity}</p>

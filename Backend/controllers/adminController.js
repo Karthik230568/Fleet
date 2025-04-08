@@ -6,7 +6,6 @@ const Driver = require('../models/Driver');
 const getAllVehicles = async (req, res, next) => {
     try {
         const vehicles = await Vehicle.find()
-            .select('name type price availability rating driver fuelType seatingCapacity registrationPlate vehicleId image city');
         
         res.status(200).json({
             success: true,
@@ -23,25 +22,27 @@ const addVehicle = async (req, res, next) => {
         const { 
             name, 
             type,
-            price, 
+            price,
             city,
             driverName,
             driverId,
             fuelType,
+            availability,
             seatingCapacity,
             registrationPlate,
             vehicleId,
-            image,
-            withDriver
+            image
         } = req.body;
 
         // Create vehicle object with required fields
         const vehicleData = {
             name,
             type,
+            driverName,
+            driverId,
             price,
             city,
-            availability: 'Available',
+            availability,
             rating: 0.0,
             fuelType,
             seatingCapacity,
@@ -51,16 +52,16 @@ const addVehicle = async (req, res, next) => {
         };
 
         // Only add driver-related fields if withDriver is true
-        if (withDriver === true) {
-            if (!driverName || !driverId) {
-                return res.status(400).json({
-                    success: false,
-                    error: 'Driver name and ID are required when adding a vehicle with driver'
-                });
-            }
-            vehicleData.driverName = driverName;
-            vehicleData.driverId = driverId;
-        }
+        // if (withDriver === true) {
+        //     if (!driverName || !driverId) {
+        //         return res.status(400).json({
+        //             success: false,
+        //             error: 'Driver name and ID are required when adding a vehicle with driver'
+        //         });
+        //     }
+        //     vehicleData.driverName = driverName;
+        //     vehicleData.driverId = driverId;
+        // }
 
         const vehicle = new Vehicle(vehicleData);
         await vehicle.save();

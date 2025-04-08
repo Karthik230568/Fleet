@@ -21,9 +21,8 @@ function Home() {
     const now = new Date();
     const nextDay = new Date(now);
     const dayAfterTomorrow = new Date(now);
-  
-    nextDay.setDate(now.getDate() + 1); // Next day
-    dayAfterTomorrow.setDate(now.getDate() + 2); // Day after tomorrow
+    nextDay.setDate(now.getDate() + 2); // Next day
+    dayAfterTomorrow.setDate(now.getDate() + 3); // Day after tomorrow
   
     return {
       city: 'Kanpur',
@@ -157,6 +156,7 @@ function Home() {
               <option value="Kanpur">Kanpur</option>
               <option value="Hyderabad">Hyderabad</option>
               <option value="Lucknow">Lucknow</option>
+              <option value="Delhi">Delhi</option>
             </select>
             {formErrors.city && <div className="error-message">{formErrors.city}</div>}
           </div>
