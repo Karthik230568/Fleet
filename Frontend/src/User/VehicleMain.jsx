@@ -64,7 +64,12 @@ function Usercarspage() {
         element={
           <div className="main_v">
             <Filter onFilterChange={handleFilterChange} />
-            {loading && <p className="loading">Loading vehicles...</p>}
+            {loading && (
+              <div className="loading-screen">
+                <div className="loading-spinner"></div>
+                <p className="loading-text">Loading vehicles...</p>
+              </div>
+            )}
             {error && <p className="error">Error: {error}</p>}
             <div className="card-container_v">
               {filteredVehicles.length === 0 && !loading && !error && (

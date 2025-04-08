@@ -9,9 +9,9 @@ const bookingSchema = new mongoose.Schema({
     driver: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Driver',
-        required: function() {
-            return this.withDriver === true;
-        }
+        // required: function() {
+        //     return this.withDriver === true;
+        // }
     },
     vehicle: {
         type: mongoose.Schema.Types.ObjectId,
@@ -20,7 +20,7 @@ const bookingSchema = new mongoose.Schema({
     },
     pickupDate: {
         type: Date,
-        required: true,
+        // required: true,
         validate: {
             validator: function(v) {
                 return v >= new Date();

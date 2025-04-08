@@ -178,7 +178,8 @@ const viewBookingsByDate = async (req, res, next) => {
             returnDate: { $gte: selectedDateTimestamp } // returnDate >= selectedDate
         })
         .populate('user', 'name email')
-        .populate('vehicle', 'name type');
+        .populate('vehicle', 'name type')
+        .populate('driver', 'name license contact'); // Populate driver details if needed
 
         const formattedBookings = bookings.map(booking => ({
             bookingId: booking._id,
@@ -193,7 +194,9 @@ const viewBookingsByDate = async (req, res, next) => {
             withDriver: booking.withDriver,
             isDelivery: booking.isDelivery,
             address: booking.address,
+            driverName: booking.withDriver ? booking.driver.name : 'No driver', // Driver name if available
             status: booking.status,
+            vehicleId: booking.vehicle.vehicleId,
             bookingDate: new Date(booking.bookingDate).toLocaleString(), // Format as string
             rating: booking.rating
         }));

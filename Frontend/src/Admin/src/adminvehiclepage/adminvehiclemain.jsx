@@ -64,9 +64,28 @@ function Admincarspage() {
       updatedVehicles.sort(
         (a, b) => parseFloat(b.rating) - parseFloat(a.rating)
       );
+    }else if(filter==="Delhi"){
+      updatedVehicles=updatedVehicles.filter(
+        (v)=>v.city.toLowerCase()==="delhi"
+      )
+    }else if(filter==="Lucknow"){
+      updatedVehicles=updatedVehicles.filter(
+        (v)=>v.city.toLowerCase()==="lucknow"
+      )
+    }else if(filter==="Kanpur"){
+      updatedVehicles=updatedVehicles.filter(
+        (v)=>v.city.toLowerCase()==="kanpur"
+      )
+    }else if(filter==="Truck"){
+      updatedVehicles=updatedVehicles.filter(
+        (v)=>v.type.toLowerCase()==="truck"
+      )
+    }else if(filter==="Van"){
+      updatedVehicles=updatedVehicles.filter(
+        (v)=>v.type.toLowerCase()==="van"
+      )
     }
 
-    console.log("Vehicles after filtering:", updatedVehicles);
     setFilteredVehicles(updatedVehicles);
   }, [filter, vehicles]);
 
@@ -101,7 +120,7 @@ function Admincarspage() {
         response: error.response?.data,
         status: error.response?.status
       });
-
+      
       if (error.response?.status === 401) {
         setAuthError("Authentication required. Please sign in again.");
         navigate("/auth/adminsignin");
@@ -146,7 +165,12 @@ function Admincarspage() {
           element={
             <div className="main">
               <Filter onFilterChange={handleFilterChange} />
-              {loading && <p>Loading vehicles...</p>}
+              {loading && (
+                <div className="loading-screen">
+                  <div className="loading-spinner"></div>
+                  <p className="loading-text">Loading vehicles...</p>
+                </div>
+              )}
               {error && <p className="error">Error: {error}</p>}
               {authError && <p className="auth-error">{authError}</p>}
               <div className="card-container">

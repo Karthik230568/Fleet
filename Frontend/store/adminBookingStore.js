@@ -31,9 +31,10 @@ const useAdminBookingStore = create((set) => ({
   fetchBookingsByDate: async (selectedDate) => {
     try {
       set({ loading: true, error: null });
-      
+      console.log("Selected Date:", selectedDate); // Log the selected date for debugging
       const encodedDate = encodeURIComponent(selectedDate);
       const response = await api.get(`/date?selectedDate=${encodedDate}`);
+      console.log("API Response:", response.data); // Log the API response for debugging
       
     //   const response = await axios.get(`/api/admin/bookings/date`, {
     //     // params: { selectedDate: selectedDateString }    //e.g., '07-04-2025'

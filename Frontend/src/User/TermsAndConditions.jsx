@@ -9,21 +9,38 @@ const TermsAndConditions = () => {
   const [showPopup, setShowPopup] = useState(false); // State to manage popup visibility
 
   const handleAgree = () => {
-    
-    if (bookingType === "own" && deliveryOption === "Pickup") {
-      setShowPopup(true); // Show the booking confirmation popup
-    } else if (bookingType === "own" && deliveryOption === "Delivery") {
-      navigate("/home/userpickup", { state: { bookingType, deliveryOption: "Delivery" } });
+    // Validate that we have both bookingType and deliveryOption
+    if (!bookingType || !deliveryOption) {
+      alert("Missing booking information. Please try again.");
+      return;
     }
-    else if (bookingType === "driver" && deliveryOption === "Delivery"){
-      navigate("/home/userpickup", { state: { bookingType, deliveryOption: "Delivery" } });
-    }else {
-      setShowPopup(true);
-    }
-      
-      
 
-    
+    // Handle different booking scenarios
+    if (bookingType === "own") {
+      if (deliveryOption === "Pickup") {
+        setShowPopup(true); // Show confirmation for self-drive pickup
+      } else if (deliveryOption === "Delivery") {
+        navigate("/home/userpickup", { 
+          state: { 
+            bookingType, 
+            deliveryOption: "Delivery" 
+          } 
+        });
+      }
+    } else if (bookingType === "driver") {
+      if (deliveryOption === "Delivery") {
+        navigate("/home/userpickup", { 
+          state: { 
+            bookingType, 
+            deliveryOption: "Delivery" 
+          } 
+        });
+      } else if (deliveryOption === "Pickup") {
+        setShowPopup(true); // Show confirmation for driver pickup
+      }
+    } else {
+      alert("Invalid booking type. Please try again.");
+    }
   };
 
   const handlePopupOk = () => {
@@ -46,7 +63,7 @@ const TermsAndConditions = () => {
               The customer must be at least 18 years old (or the legal driving age in their region) to rent a vehicle.
             </li>
             <li>
-              A valid government-issued ID and driver’s license must be provided for verification.
+              A valid government-issued ID and driver's license must be provided for verification.
             </li>
           </ul>
         </section>
@@ -68,7 +85,7 @@ const TermsAndConditions = () => {
   </ul>
 </section>
 <section>
-  <h2 className="h2_tc">4. Liability</h2>
+  <h2 className="h2_tc">3. Liability</h2>
   <ul className="ul_tc">
     <li className="li_tc">
       The Fleet platform is not responsible for any personal belongings left in the vehicle.
@@ -96,8 +113,8 @@ const TermsAndConditions = () => {
 
       {/* Popup */}
       {showPopup && (
-        <div className="popup-overlay">
-          <div className="popup-content">
+        <div className="popup-overlay_p">
+          <div className="popup-content_">
             <h3>Booking Confirmed</h3>
             <p>Your booking has been successfully confirmed!</p>
             <button onClick={handlePopupOk} className="popup-ok-button">
