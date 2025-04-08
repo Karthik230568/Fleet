@@ -42,7 +42,7 @@ The script will:
 - Ensure Mongodb and Node.js are installed before running the setup.
 - Stop the servers using `CTRL + C`.
 
-## 3.Admin Login Credentials
+## 3. Admin Login Credentials
 - Use the following credentials to sign in as an admin :
 - Email: fleetiitk@gmail.com
 - Password: admin123456
