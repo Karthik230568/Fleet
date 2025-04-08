@@ -184,8 +184,9 @@ const viewBookingsByDate = async (req, res, next) => {
         const formattedBookings = bookings.map(booking => ({
             bookingId: booking._id,
             userName: booking.user?.username || 'No username',
+            email: booking.user?.email || 'No email',
             fullname: booking.user?.fullName || 'Unkown User',
-            userEmail: booking.user.email,
+            // userEmail: booking.user.email,
             vehicleName: booking.vehicle.name,
             pickupDate: booking.pickupDate, // Format as string
             returnDate: booking.returnDate, // Format as string

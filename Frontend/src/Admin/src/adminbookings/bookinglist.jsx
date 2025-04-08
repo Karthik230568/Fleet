@@ -14,6 +14,8 @@ function AdminbookingList({ bookings }) {
           <div className="booking-details">
           <span className="user-fullname">Customer's Fullname: {booking.fullname}</span>
           <br />
+          <span className="user-email">Customer's email: {booking.email}</span>
+          <br />
             <span>Pickup Date and Time: {booking.pickupDate} </span>
             <br />
             <span>Return Date and Time:{booking.returnDate}</span>
