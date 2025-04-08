@@ -9,19 +9,22 @@ function AdminbookingList({ bookings }) {
         <div key={booking.bookingId} className="booking-card">
           <div className="vehicle-info">
             <span className="vehicle-name">{booking.vehicleName}</span>
-            <span className="user-name">username?{booking.userName}</span>
+            <span className="user-name">Username: {booking.userName}</span>
           </div>
           <div className="booking-details">
+          <span className="user-fullname">Customer's Fullname: {booking.fullname}</span>
+          <br />
             <span>Pickup Date and Time: {booking.pickupDate} </span>
             <br />
             <span>Return Date and Time:{booking.returnDate}</span>
           </div>
           
-          <div className="driver-name">drivername?{booking.driverName}</div>
-          <div className="vehicle-id">vehicleid?{booking.vehicleId}</div>
+          <div className="driver-name">Driver's Name: {booking.driverName}</div>
+          <div className="vehicle-id">Vehicle_id: {booking.vehicleId}</div>
           <div className="price">Price: {booking.totalAmount}</div>
         </div>
       ))}
+      {console.log("Bookings:", bookings)}
     </div>
   );
 }

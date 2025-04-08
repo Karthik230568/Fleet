@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+ import React, { useState } from "react";
 import "./TermsAndConditions.css";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 
