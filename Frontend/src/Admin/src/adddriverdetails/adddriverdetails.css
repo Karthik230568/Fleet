@@ -133,6 +133,34 @@ button[type="submit"]:active {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+.form-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+  align-items: center;
+}
+
+.cancel-button {
+  background-color: #f44336;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  width: 25%;
+}
+.cancel-button:hover {
+  background-color: #da190b;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
 /* Media Queries */
 @media (max-width: 768px) {
   .form-container {
@@ -206,6 +234,8 @@ button[type="submit"]:active {
     max-height: 150px;
   }
 }
+
+
 
 /* Remove autofill background color */
 input:-webkit-autofill,

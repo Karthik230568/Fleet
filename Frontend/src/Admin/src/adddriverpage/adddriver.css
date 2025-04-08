@@ -136,7 +136,7 @@ body {
     transform: translateY(-2px);
 }
 
-.add-card {
+.add-card-driver {
     background-color: black;
     box-shadow: grey 0px 0px 7px 0px;
     cursor: pointer;
@@ -153,13 +153,13 @@ body {
     justify-content: center;
 }
 
-.add-card:hover {
+.add-card-driver:hover {
     background-color:black;
     transform: translateY(-2px);
     border-color: #6b5a84;
 }
 
-.add-card h2 {
+.add-card-driver h2 {
     display: block;
     margin: 0;
     color: white;
@@ -216,7 +216,7 @@ body {
         justify-content: flex-end;
     }
     
-    .add-card {
+    .add-card-driver {
         width: 100%;
         height: 150px;
     }
@@ -246,11 +246,11 @@ body {
         min-width: 70px;
     }
     
-    .add-card {
+    .add-card-driver {
         height: 120px;
     }
     
-    .add-card h2 {
+    .add-card-driver h2 {
         font-size: 0.9rem;
     }
 }
@@ -265,4 +265,11 @@ body {
     .delete-btn {
         width: 100%;
     }
+}
+
+.no-drivers {
+    text-align: center;
+    font-size: 1.5rem;
+    color: white;
+    margin-top: 20px;
 }

@@ -9,13 +9,21 @@ const TermsAndConditions = () => {
   const [showPopup, setShowPopup] = useState(false); // State to manage popup visibility
 
   const handleAgree = () => {
+    
     if (bookingType === "own" && deliveryOption === "Pickup") {
       setShowPopup(true); // Show the booking confirmation popup
     } else if (bookingType === "own" && deliveryOption === "Delivery") {
       navigate("/home/userpickup", { state: { bookingType, deliveryOption: "Delivery" } });
-    } else {
-      alert("Invalid booking type or delivery option.");
     }
+    else if (bookingType === "driver" && deliveryOption === "Delivery"){
+      navigate("/home/userpickup", { state: { bookingType, deliveryOption: "Delivery" } });
+    }else {
+      setShowPopup(true);
+    }
+      
+      
+
+    
   };
 
   const handlePopupOk = () => {
