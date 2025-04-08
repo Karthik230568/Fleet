@@ -17,10 +17,15 @@ function Filter({ onFilterChange }) {
         "All",
         "Cars",
         "Bikes",
+        "Truck",
+        "Van",
         "Available",
         "Not available",
         "Price",
         "Rating",
+        "Delhi",
+        "Lucknow",
+        "Kanpur",
       ].map((option) => (
         <label key={option} className="filter-option">
           <input
