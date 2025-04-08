@@ -177,13 +177,14 @@ const viewBookingsByDate = async (req, res, next) => {
             pickupDate: { $lte: selectedDateTimestamp }, // pickupDate <= selectedDate
             returnDate: { $gte: selectedDateTimestamp } // returnDate >= selectedDate
         })
-        .populate('user', 'name email')
-        .populate('vehicle', 'name type')
+        .populate('user', 'username fullName email')
+        .populate('vehicle', 'name vehicleId type')
         .populate('driver', 'name license contact'); // Populate driver details if needed
 
         const formattedBookings = bookings.map(booking => ({
             bookingId: booking._id,
-            userName: booking.user.name,
+            userName: booking.user?.username || 'No username',
+            fullname: booking.user?.fullName || 'Unkown User',
             userEmail: booking.user.email,
             vehicleName: booking.vehicle.name,
             pickupDate: booking.pickupDate, // Format as string
@@ -194,7 +195,10 @@ const viewBookingsByDate = async (req, res, next) => {
             withDriver: booking.withDriver,
             isDelivery: booking.isDelivery,
             address: booking.address,
-            driverName: booking.withDriver ? booking.driver.name : 'No driver', // Driver name if available
+            // driverName: booking.withDriver?.driver.name || 'No driver', // Driver name if available
+            driverName: booking.withDriver && booking.driver?.name ? booking.driver.name : 'No driver',
+            // driverName: booking.withDriver && booking.driver?.name ? booking.driver.name : 'No driver',
+
             status: booking.status,
             vehicleId: booking.vehicle.vehicleId,
             bookingDate: new Date(booking.bookingDate).toLocaleString(), // Format as string
