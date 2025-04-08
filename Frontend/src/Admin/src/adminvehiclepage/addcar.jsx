@@ -179,7 +179,7 @@ function AddCar({ onAddVehicle, editingVehicle }) {
             required
           >
             <option value="Kanpur">Kanpur</option>
-            <option value="Hyderabad">Hyderabad</option>
+            <option value="Delhi">Delhi</option>
             <option value="Lucknow">Lucknow</option>
 
           </select>
