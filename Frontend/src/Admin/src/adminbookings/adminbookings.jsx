@@ -1,23 +1,30 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./adminbookings.css";
 import AdminbookingList from "./bookinglist";
 import Calendar from "./calendar";
-// import Adminbookingssidebar from "./sidebar";
-
-// importing adminBookingStore
 import useAdminBookingStore from "../../../../store/adminBookingStore";
 
 function Adminbookingspage() {
+  const { bookings, fetchBookingsByDate, loading, error } = useAdminBookingStore();
 
-  // Get bookings from the adminBookingStore
-  const bookings = useAdminBookingStore((state) => state.bookings);
+  const handleDateChange = (selectedDate) => {
+    fetchBookingsByDate(selectedDate);
+  };
+
+  useEffect(() => {
+    // Fetch bookings for the current date by default
+    const today = new Date().toISOString().split("T")[0];
+    fetchBookingsByDate(today);
+  }, [fetchBookingsByDate]);
 
   return (
     <div className="app">
       <div className="sidebar">
-        <Calendar />
+        <Calendar onDateChange={handleDateChange} />
       </div>
       <div className="main-content">
+        {loading && <p>Loading bookings...</p>}
+        {error && <p>Error: {error}</p>}
         <AdminbookingList bookings={bookings} />
       </div>
     </div>
@@ -25,34 +32,3 @@ function Adminbookingspage() {
 }
 
 export default Adminbookingspage;
-
-
-
-
-// previously hardcoded bookings data
-  // const bookings = [
-  
-  //   {
-  //     id: 2,
-  //     vehicle: "KTM RC 360",
-  //     pickupDate: "04/02/2025 17:00",
-  //     duration: "2 days 21 hours",
-  //     returnDate: "06/02/2025 14:00",
-  //     totalAmount: "5000 INR",
-  //     user: "Sai@gmail.com",
-  //     driverName: "Sai",
-  //     vehicleId: "1234567890",
-  //   },
-  //   {
-  //     id: 1,
-  //     vehicle: "Hyundai i30",
-  //     pickupDate: "31/01/2025 11:00",
-  //     duration: "5 days 3 hours",
-  //   returnDate: "05/02/2025 14:00",
-  //     totalAmount: "20000 INR",
-  //     user: "Sai@gmail.com",
-  //     driverName: "Sai",
-  //     vehicleId: "1234567890",
-  //   }   
-    
-  // ];
