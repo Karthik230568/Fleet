@@ -2,7 +2,9 @@
   background: linear-gradient(180deg, #0a1825, #142134, #1e3c72);
   height:100vh;
   padding-top: 30px;
+  margin-top: 60px;
 }
+
 .body_tc {
   background:transparent;
   
@@ -116,4 +118,34 @@
 
 .popup-ok-button:hover {
   background-color: #45a049;
+}
+
+@media (min-width: 1200px) {
+  .app-container_tc {
+    margin-top: 45px; 
+  }
+}
+
+@media (max-width: 992px) {
+  .app-container_tc {
+    margin-top: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-container_tc {
+    margin-top: 35px;
+  }
+}
+
+@media (max-width: 576px) {
+  .app-container_tc {
+    margin-top: 30px;
+  }
+}
+
+@media (max-width: 380px) {
+  .app-container_tc {
+    margin-top: 25px; 
+  }
 }

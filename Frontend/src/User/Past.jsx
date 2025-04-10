@@ -31,7 +31,7 @@ function Past() {
             <BookingCard key={index} booking={booking} />
           ))
         ) : (
-          <h4>No past bookings yet</h4>
+          <h4 className="no-car-past">No past bookings yet</h4>
         )}
       </div>
     </div>

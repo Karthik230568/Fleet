@@ -238,6 +238,10 @@ color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+.no-car-past{
+  color: white;
+}
+
 /* Media Queries */
 @media (max-width: 1200px) {
   .booking-card_past {

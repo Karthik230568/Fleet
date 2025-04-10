@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import './Auth.css';
@@ -10,23 +11,34 @@ export default function Adminsignin() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
   const { login, isAuthenticated, error: storeError, checkAuth } = useAdminAuthStore();
 
-  // Only run checkAuth once on first render
+  // Optionally clear any token on mount (if you want a fresh login)
   useEffect(() => {
-    if (checkAuth()) {
-      navigate("/admin");
-    }
+    localStorage.removeItem('adminToken');
   }, []);
+
+  // Check authentication on first render
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      const isAuth = await checkAuth();
+      if (isAuth) {
+        // We use navigate without replace so that "/auth/admin" stays in history
+        navigate("/admin"); 
+      }
+    };
+    checkAuthentication();
+  }, [checkAuth, navigate]);
 
   // Redirect after successful login
   useEffect(() => {
     if (isAuthenticated) {
+      // Use navigate("/admin") without { replace: true } to preserve history
       navigate("/admin");
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, navigate]);
 
+  // Update error state when storeError changes
   useEffect(() => {
     if (storeError) {
       setError(storeError);
@@ -50,7 +62,9 @@ export default function Adminsignin() {
 
     try {
       setIsLoading(true);
+      // Call your login function; ensure that it does not perform a navigation with replace.
       await login(email, password);
+      // Navigation is handled in the useEffect when isAuthenticated becomes true
     } catch (err) {
       setError(err.message || "Login failed. Please try again.");
     } finally {

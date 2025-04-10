@@ -31,7 +31,7 @@ function Active() {
             <BookingCard1 key={index} booking={booking} />
           ))
         ) : (
-          <h4>No car is booked yet</h4>
+          <h4 className="no-car-active">No car is booked yet</h4>
         )}
       </div>
     </div>

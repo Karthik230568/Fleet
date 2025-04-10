@@ -1,4 +1,6 @@
+
 const jwt = require('jsonwebtoken');
+const Administrator = require('../models/Administrator'); // Import the Administrator model
 
 const authenticateUser = (req, res, next) => {
     try {
@@ -22,7 +24,7 @@ const authenticateUser = (req, res, next) => {
     }
 };
 
-const authenticateAdmin = (req, res, next) => {
+const authenticateAdmin = async (req, res, next) => {
     try {
         const token = req.headers.authorization?.split(' ')[1];
         
@@ -40,9 +42,16 @@ const authenticateAdmin = (req, res, next) => {
                 error: 'Admin access required'
             });
         }
-        
-        // For hardcoded admin, we don't have a userId from database
-        // Instead we use the admin email from the token
+
+        // Verify the admin exists in the database
+        const admin = await Administrator.findOne({ email: decoded.email });
+        if (!admin) {
+            return res.status(401).json({
+                success: false,
+                error: 'Admin not found or unauthorized'
+            });
+        }
+
         req.user = { 
             email: decoded.email,
             isAdmin: true 

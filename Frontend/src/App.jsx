@@ -1,3 +1,4 @@
+
 import NavBar from './User/NavBar.jsx';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import Home from './User/Home.jsx';
@@ -8,12 +9,10 @@ import Usercarspage from './User/VehicleMain.jsx';
 import TermsAndConditions from './User/TermsAndConditions.jsx';
 import Userpickup from "./User/userpickup.jsx";
 import Userpayment from "./User/userpayment.jsx";
-import Nav from './Admin/src/navbar/nav.jsx';
 import Mainbody from './Admin/src/adminhome/mainbody.jsx';
 import Adminbookingspage from './Admin/src/adminbookings/adminbookings.jsx';
 import Admindriverpage from './Admin/src/adddriverpage/fullpage.jsx';
 import Admincarspage from './Admin/src/adminvehiclepage/adminvehiclemain.jsx';
-import AddDriver from './Admin/src/adddriverdetails/adddriver.jsx';
 import Signin from './signupandsignin/src/Signin.jsx';
 import Signup from './signupandsignin/src/Signup.jsx';
 import Adminsignin from './signupandsignin/src/Adminsignin.jsx';
@@ -25,7 +24,7 @@ import './signupandsignin/src/App.css';
 
 import { useEffect } from 'react';
 import useAuthStore from '../store/AuthStore';
-import useAdminAuthStore from '../store/AdminAuthStore'; 
+import useAdminAuthStore from '../store/AdminAuthStore';
 
 // User Layout Component
 const UserLayout = () => {
@@ -88,7 +87,7 @@ function App() {
   const { token: userToken } = useAuthStore();
   const { token: adminToken } = useAdminAuthStore();
 
-  // ✅ Redirect users/admins if unauthenticated and trying to access private routes
+  // Redirect users/admins if unauthenticated and trying to access private routes
   useEffect(() => {
     const publicRoutes = [
       '/auth/signin',
@@ -104,40 +103,12 @@ function App() {
 
     if (!isPublic) {
       if (isAdminRoute && !adminToken) {
-        window.history.replaceState(null, '', '/auth/adminsignin');
-        window.location.href = '/auth/adminsignin';
+        navigate('/auth/adminsignin', { replace: true });
       } else if (isUserRoute && !userToken) {
-        window.history.replaceState(null, '', '/auth/signin');
-        window.location.href = '/auth/signin';
+        navigate('/auth/signin', { replace: true });
       }
     }
-  }, [location.pathname, userToken, adminToken]);
-
-  // ✅ Prevent back navigation if unauthenticated
-  useEffect(() => {
-    const preventBackNavigation = () => {
-      const currentPath = location.pathname;
-      const isAdminRoute = currentPath.startsWith('/admin');
-      const isUserRoute = currentPath.startsWith('/home');
-
-      if ((isAdminRoute && !adminToken) || (isUserRoute && !userToken)) {
-        window.history.forward();
-        window.location.href = isAdminRoute ? '/auth/adminsignin' : '/auth/signin';
-      }
-    };
-
-    window.history.pushState(null, '', window.location.href);
-    window.addEventListener('popstate', preventBackNavigation);
-    window.addEventListener('beforeunload', preventBackNavigation);
-    window.addEventListener('load', () => {
-      window.history.pushState(null, '', window.location.href);
-    });
-
-    return () => {
-      window.removeEventListener('popstate', preventBackNavigation);
-      window.removeEventListener('beforeunload', preventBackNavigation);
-    };
-  }, [userToken, adminToken, location.pathname]);
+  }, [location.pathname, userToken, adminToken, navigate]);
 
   return (
     <Routes>

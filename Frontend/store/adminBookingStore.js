@@ -1,6 +1,6 @@
-import { create } from "zustand";
-import axios from "axios";
-
+// adminBookingStore.js to store the boookings from the admin side
+import { create } from 'zustand';
+import axios from 'axios';
 const api = axios.create({
   baseURL: "/api/admin/bookings",
   timeout: 10000,
@@ -32,14 +32,11 @@ const useAdminBookingStore = create((set) => ({
   fetchBookingsByDate: async (selectedDate) => {
     try {
       set({ loading: true, error: null });
-      console.log("Selected Date:", selectedDate);
-
-      const response = await api.get(`/date`, {
-        params: { selectedDate },
-      });
-
-      console.log("API Response:", response.data);
-
+      console.log("Selected Date:", selectedDate); // Log the selected date for debugging
+      const encodedDate = encodeURIComponent(selectedDate);
+      const response = await api.get(`/date?selectedDate=${encodedDate}`);
+      console.log("API Response:", response.data); // Log the API response for debugging
+   
       set({
         bookings: response.data.bookings,
         loading: false,
