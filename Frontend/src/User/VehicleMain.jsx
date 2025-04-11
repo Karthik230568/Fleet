@@ -14,6 +14,7 @@ function Usercarspage() {
   const { bookingData } = useBookingStore(); // Access the booking data from BookingStore
 
   const [filter, setFilter] = useState("All");
+  const [sortOption, setSortOption] = useState("");
 
   // Initialize search parameters from BookingStore
   const [searchParams, setSearchParams] = useState({
@@ -44,18 +45,34 @@ function Usercarspage() {
     }));
   };
 
+  const handleSortChange = (option) => {
+    setSortOption(option);
+  }
+
   // Apply client-side filtering based on the selected filter
   const filteredVehicles = React.useMemo(() => {
-    if (filter === "All") return vehicles;
+    let filtered = vehicles;
 
-    return vehicles.filter((vehicle) => {
-      if (filter === "Available") return vehicle.availability === "Available";
-      if (filter === "Not available") return vehicle.availability === "Not available";
-      if (filter === "Cars") return vehicle.type.toLowerCase() === "car";
-      if (filter === "Bikes") return vehicle.type.toLowerCase() === "bike";
-      return true;
-    });
-  }, [vehicles, filter]);
+    // Apply filter
+    if (filter !== "All") {
+      filtered = filtered.filter((vehicle) => {
+        if (filter === "Available") return vehicle.availability === "Available";
+        if (filter === "Not available") return vehicle.availability === "Not available";
+        if (filter === "Cars") return vehicle.type.toLowerCase() === "car";
+        if (filter === "Bikes") return vehicle.type.toLowerCase() === "bike";
+        return true;
+      });
+    }
+
+    // Apply sorting
+    if (filter === "Price") {
+      filtered = [...filtered].sort((a, b) => a.price - b.price);
+    } else if (filter === "Rating") {
+      filtered = [...filtered].sort((a, b) => b.rating - a.rating);
+    }
+
+    return filtered;
+  }, [vehicles, filter, sortOption]);
 
   return (
     <Routes>
@@ -63,7 +80,9 @@ function Usercarspage() {
         path="/"
         element={
           <div className="main_v">
-            <Filter onFilterChange={handleFilterChange} />
+            <Filter 
+            onFilterChange={handleFilterChange}
+            onSortChange={handleSortChange} />
             {loading && (
               <div className="loading-screen">
                 <div className="loading-spinner"></div>
