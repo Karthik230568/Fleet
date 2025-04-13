@@ -56,6 +56,12 @@ export default function Adminsignin() {
     }
   };
 
+  const handleForgotPassword = (e) => {
+    e.preventDefault();
+    // Navigate to the forgot password page with state if needed
+    navigate("/auth/forgotpassword", { state: { isForgotPassword: true } });
+  };
+
   return (
     <div className="auth-container">
       <div className="auth-box">
@@ -90,6 +96,10 @@ export default function Adminsignin() {
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete="current-password" // Optional: for better UX
               />
+            </div>
+
+            <div className="forgot-password-admin">
+                <a href="#" onClick={handleForgotPassword}>Forgot Password?</a>
             </div>
 
             <button type="submit" className="btn" disabled={isLoading}>
