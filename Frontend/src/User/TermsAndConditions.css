@@ -1,14 +1,15 @@
-.app-container_tc{
+.app-container_tc {
   background: linear-gradient(180deg, #0a1825, #142134, #1e3c72);
-  height:100vh;
+  height: 100vh;
   padding-top: 30px;
   margin-top: 60px;
 }
 
 .body_tc {
-  background:transparent;
-  
+  background: transparent;
+
 }
+
 .container_tc {
   max-width: 800px;
   margin: 20px auto;
@@ -29,7 +30,8 @@
   color: #555;
 }
 
-.p_tc, .ul_tc {
+.p_tc,
+.ul_tc {
   font-size: 16px;
   line-height: 1.6;
   color: #444;
@@ -42,6 +44,7 @@
 .ul_tc .li_tc {
   margin-bottom: 10px;
 }
+
 .button-container_tc {
   display: flex;
   justify-content: flex-end;
@@ -122,7 +125,7 @@
 
 @media (min-width: 1200px) {
   .app-container_tc {
-    margin-top: 45px; 
+    margin-top: 45px;
   }
 }
 
@@ -146,6 +149,6 @@
 
 @media (max-width: 380px) {
   .app-container_tc {
-    margin-top: 25px; 
+    margin-top: 25px;
   }
 }

@@ -52,7 +52,8 @@ body {
   width: 100%;
   position: relative;
   overflow-x: hidden;
-  background: linear-gradient(180deg, #0a1825, #142134, #1e3c72);;
+  background: linear-gradient(180deg, #0a1825, #142134, #1e3c72);
+  ;
 }
 
 .filter-container {
@@ -105,7 +106,7 @@ body {
   transition: background-color 0.3s ease;
 }
 
-.filter-option input:checked ~ .circle::after {
+.filter-option input:checked~.circle::after {
   background-color: black;
 }
 
@@ -317,7 +318,7 @@ body {
   accent-color: grey;
 }
 
-.form-group_a:first-child .radio-group input[type="radio"]:checked + span {
+.form-group_a:first-child .radio-group input[type="radio"]:checked+span {
   color: grey;
 }
 
@@ -469,7 +470,7 @@ body {
 
 .radio-group label:hover {
   background-color: grey;
-  color:black
+  color: black
 }
 
 .radio-group input[type="radio"] {
@@ -479,7 +480,7 @@ body {
   accent-color: grey;
 }
 
-.radio-group input[type="radio"]:checked + span {
+.radio-group input[type="radio"]:checked+span {
   color: white;
 }
 
