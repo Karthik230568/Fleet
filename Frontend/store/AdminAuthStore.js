@@ -1,114 +1,165 @@
-
 import { create } from "zustand";
-import { persist } from "zustand/middleware"; // 👈 import persist
+import { persist } from "zustand/middleware";
 import axios from "axios";
 
 // Axios config
-const adminApi = axios.create({
-  baseURL: '/api/admin/auth',
+const api = axios.create({
+  baseURL: '/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true,
+  withCredentials: true, // Enable cookies if needed
 });
 
-adminApi.interceptors.response.use(
-  response => response,
-  error => {
-    console.error("Admin API Error:", error);
-    if (error.response) {
-      const errorMessage = error.response.data.message || error.response.data.error || "Server error occurred";
-      return Promise.reject({ message: errorMessage });
-    } else if (error.request) {
-      return Promise.reject({ message: "No response from server. Please try again." });
-    } else {
-      return Promise.reject({ message: error.message });
+// Axios interceptor to handle token expiration
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response?.status === 401) {
+      const { adminlogout } = useAdminAuthStore.getState();
+
+      // Log out the user if token is invalid or expired
+      adminlogout();
     }
+    return Promise.reject(error);
   }
 );
 
 const useAdminAuthStore = create(
   persist(
     (set, get) => ({
-      isAuthenticated: false,
+      user: null,
       token: null,
+      isOtpSent: false,
+      isVerified: false,
       error: null,
-      loading: false,
 
+      // Login
       login: async (email, password) => {
         try {
-          set({ loading: true, error: null });
-          const response = await adminApi.post("/login", { email, password });
+          const response = await api.post("/admin/auth/login", { email, password });
 
           if (response.data.token) {
-            localStorage.setItem("adminToken", response.data.token);
-            adminApi.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`;
+            localStorage.setItem('token', response.data.token);
+            api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
 
             set({
-              isAuthenticated: true,
+              user: response.data.user,
               token: response.data.token,
-              loading: false,
               error: null,
             });
 
             return response.data;
           } else {
-            throw new Error("Login failed - No token received");
+            throw new Error("Login failed - no token received");
           }
         } catch (error) {
           set({
-            isAuthenticated: false,
+            user: null,
             token: null,
-            loading: false,
-            error: error.message || "Login failed",
+            error: error.message || "Login failed. Please try again.",
           });
           throw error;
         }
       },
 
-      checkAuth: async () => {
-        const token = localStorage.getItem("adminToken");
-        if (token) {
-          try {
-            const response = await adminApi.post("/validate-token", { token });
-            if (response.data.valid) {
-              adminApi.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-              set({
-                isAuthenticated: true,
-                token,
-                error: null,
-              });
-              return true;
-            }
-          } catch (error) {
-            console.error("Admin token validation failed:", error);
-            set({ error: "Session expired. Please login again." });
-          }
-        }
-        set({ isAuthenticated: false, token: null });
-        return false;
-      },
-
-      logout: () => {
-        localStorage.removeItem("adminToken");
-        delete adminApi.defaults.headers.common["Authorization"];
+      // Logout
+      adminlogout: () => {
+        localStorage.removeItem('token');
+        delete api.defaults.headers.common['Authorization'];
         set({
-          isAuthenticated: false,
+          user: null,
           token: null,
+          isOtpSent: false,
+          isVerified: false,
           error: null,
         });
-        window.location.href = "/auth/admin";
+        window.location.href = "/auth/adminsignin"; // Redirect to login page
+      },
+
+      // Forgot Password
+      forgotPassword: async (email) => {
+        const response = await api.post("/forgot-password", { email });
+        if (response.data.message) {
+          set({ email });
+          return response.data;
+        } else {
+          throw new Error("Failed to send password reset OTP");
+        }
+      },
+
+      // Reset Password
+      resetPassword: async (email, otp, newPassword) => {
+        const response = await api.post("/reset-password", { email, otp, newPassword });
+        if (response.data.success) {
+          return response.data;
+        } else {
+          throw new Error(response.data.error || "Failed to reset password");
+        }
       },
     }),
     {
-      name: "admin-auth-storage", // 👈 localStorage key
+      name: 'auth-storage',
+      getStorage: () => localStorage,
       partialize: (state) => ({
-        isAuthenticated: state.isAuthenticated,
         token: state.token,
+        user: state.user,
+        isVerified: state.isVerified,
       }),
     }
   )
 );
 
 export default useAdminAuthStore;
+
+
+
+
+
+// Set signup data
+      // setSignupData: (email, password, confirmPassword) => {
+      //   if (password !== confirmPassword) {
+      //     throw new Error('Passwords do not match');
+      //   }
+      //   set({ email, password, confirmPassword });
+      // },
+
+      // // Send OTP
+      // sendOtp: async () => {
+      //   const { email, password, confirmPassword } = get();
+
+      //   if (!email || !password) throw new Error('Email and password are required');
+      //   if (password !== confirmPassword) throw new Error('Passwords do not match');
+
+      //   const response = await api.post("/send-otp", { email, password, confirmPassword });
+      //   if (response.data.success) {
+      //     set({ isOtpSent: true });
+      //     return response.data;
+      //   } else {
+      //     throw new Error(response.data.message || 'Failed to send OTP');
+      //   }
+      // },
+
+      // // Verify OTP
+      // verifyOtp: async (otp) => {
+      //   const { email, password } = get();
+
+      //   if (!email || !password) throw new Error('Session expired. Please try signing up again.');
+
+      //   const response = await api.post("/verify-otp", { email, otp, password });
+
+      //   if (response.data.success) {
+      //     set({
+      //       isVerified: true,
+      //       user: response.data.user,
+      //       token: response.data.token,
+      //     });
+
+      //     localStorage.setItem('token', response.data.token);
+      //     api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+      //     return response.data;
+      //   } else {
+      //     throw new Error(response.data.message || "OTP verification failed");
+      //   }
+      // },

@@ -11,32 +11,14 @@ export default function Adminsignin() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { login, isAuthenticated, error: storeError, checkAuth } = useAdminAuthStore();
+  const { login, error: storeError } = useAdminAuthStore();
+
+  // checkAuth, isAuthenticated, it was present before but not used in the code
 
   // Optionally clear any token on mount (if you want a fresh login)
   useEffect(() => {
     localStorage.removeItem('adminToken');
   }, []);
-
-  // Check authentication on first render
-  useEffect(() => {
-    const checkAuthentication = async () => {
-      const isAuth = await checkAuth();
-      if (isAuth) {
-        // We use navigate without replace so that "/auth/admin" stays in history
-        navigate("/admin"); 
-      }
-    };
-    checkAuthentication();
-  }, [checkAuth, navigate]);
-
-  // Redirect after successful login
-  useEffect(() => {
-    if (isAuthenticated) {
-      // Use navigate("/admin") without { replace: true } to preserve history
-      navigate("/admin");
-    }
-  }, [isAuthenticated, navigate]);
 
   // Update error state when storeError changes
   useEffect(() => {
@@ -63,7 +45,9 @@ export default function Adminsignin() {
     try {
       setIsLoading(true);
       // Call your login function; ensure that it does not perform a navigation with replace.
-      await login(email, password);
+      const res = await login(email, password);
+
+      navigate("/admin"); // Navigate to admin dashboard after successful login
       // Navigation is handled in the useEffect when isAuthenticated becomes true
     } catch (err) {
       setError(err.message || "Login failed. Please try again.");
@@ -91,6 +75,8 @@ export default function Adminsignin() {
                 placeholder="Enter email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                onFocus={() => setError("")} // Clear error on focus
+                autoComplete="username" // Optional: for better UX
               />
             </div>
 
@@ -102,6 +88,7 @@ export default function Adminsignin() {
                 placeholder="Enter password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password" // Optional: for better UX
               />
             </div>
 
@@ -118,3 +105,25 @@ export default function Adminsignin() {
     </div>
   );
 }
+
+
+
+  // Check authentication on first render
+  // useEffect(() => {
+  //   const checkAuthentication = async () => {
+  //     const isAuth = await checkAuth();
+  //     if (isAuth) {
+  //       // We use navigate without replace so that "/auth/admin" stays in history
+  //       navigate("/admin"); 
+  //     }
+  //   };
+  //   checkAuthentication();
+  // }, [checkAuth, navigate]);
+
+  // Redirect after successful login
+  // useEffect(() => {
+  //   if (isAuthenticated) {
+  //     // Use navigate("/admin") without { replace: true } to preserve history
+  //     navigate("/admin");
+  //   }
+  // }, [isAuthenticated, navigate]);

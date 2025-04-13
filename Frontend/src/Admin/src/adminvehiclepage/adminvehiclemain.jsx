@@ -5,36 +5,35 @@ import Filter from "./filter";
 import VehicleCard from "./vehiclecard";
 import AddCar from "./addcar";
 import useVehicleStore from "../../../../store/vehicleStore";
-import useAdminAuthStore from "../../../../store/AdminAuthStore";
 
 function Admincarspage() {
   const navigate = useNavigate();
   const { vehicles, fetchVehicles, addVehicle, updateVehicle, removeVehicle, loading, error } = useVehicleStore();
-  const { isAuthenticated, checkAuth } = useAdminAuthStore();
+  // const { isAuthenticated, checkAuth } = useAdminAuthStore();
   const [filteredVehicles, setFilteredVehicles] = useState([]);
   const [filter, setFilter] = useState("All");
   const [editingVehicle, setEditingVehicle] = useState(null);
   const [authError, setAuthError] = useState(null);
 
-  // Check authentication on component mount
-  useEffect(() => {
-    const isAdminAuthenticated = checkAuth();
-    if (!isAdminAuthenticated) {
-      navigate("/auth/adminsignin");
-    }
-  }, [checkAuth, navigate]);
+  // // Check authentication on component mount
+  // useEffect(() => {
+  //   const isAdminAuthenticated = checkAuth();
+  //   if (!isAdminAuthenticated) {
+  //     navigate("/auth/adminsignin");
+  //   }
+  // }, [checkAuth, navigate]);
 
   // Fetch vehicles from the backend on component mount
   useEffect(() => {
-    if (isAuthenticated) {
+  
       fetchVehicles().catch(err => {
         if (err.response?.status === 401) {
           setAuthError("Authentication required. Please sign in again.");
           navigate("/auth/adminsignin");
         }
       });
-    }
-  }, [isAuthenticated, fetchVehicles, navigate]);
+
+  }, [ fetchVehicles, navigate]);
 
   // Apply filtering & sorting logic
   useEffect(() => {

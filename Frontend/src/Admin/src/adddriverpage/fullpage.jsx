@@ -4,11 +4,11 @@ import { useNavigate, Routes, Route } from "react-router-dom";
 import DriverCard from "./drivercard";
 import AddDriver from "../adddriverdetails/adddriver";
 import useDriverStore from "../../../../store/driverStore"; // Import the driver store
-import useAdminAuthStore from "../../../../store/AdminAuthStore";
+// import useAdminAuthStore from "../../../../store/AdminAuthStore";
 
 function Admindriverpage() {
   const navigate = useNavigate();
-  const { isAuthenticated, checkAuth } = useAdminAuthStore();
+  // const { isAuthenticated, checkAuth } = useAdminAuthStore();
 
   // Zustand store actions and state
   const { drivers, fetchDrivers, addDriver, updateDriver, removeDriver, loading, error } = useDriverStore();
@@ -17,24 +17,23 @@ function Admindriverpage() {
   const [authError, setAuthError] = useState(null);
 
   // Check authentication on component mount
-  useEffect(() => {
-    const isAdminAuthenticated = checkAuth();
-    if (!isAdminAuthenticated) {
-      navigate("/auth/adminsignin");
-    }
-  }, [checkAuth, navigate]);
+  // useEffect(() => {
+  //   const isAdminAuthenticated = checkAuth();
+  //   if (!isAdminAuthenticated) {
+  //     navigate("/auth/adminsignin");
+  //   }
+  // }, [checkAuth, navigate]);
 
   // Fetch drivers from the backend on component mount
   useEffect(() => {
-    if (isAuthenticated) {
+
       fetchDrivers().catch(err => {
         if (err.response?.status === 401) {
           setAuthError("Authentication required. Please sign in again.");
           navigate("/auth/adminsignin");
         }
       });
-    }
-  }, [isAuthenticated, fetchDrivers, navigate]);
+  }, [ fetchDrivers, navigate]);
 
   const handleAddDriver = () => {
     setEditingDriver(null);
