@@ -47,7 +47,7 @@ function Admincarspage() {
       );
     } else if (filter === "Not available") {
       updatedVehicles = updatedVehicles.filter(
-        (v) => v.availability === "Not available"
+        (v) => v.availability === "Not Available"
       );
     } else if (filter === "Cars") {
       updatedVehicles = updatedVehicles.filter(
