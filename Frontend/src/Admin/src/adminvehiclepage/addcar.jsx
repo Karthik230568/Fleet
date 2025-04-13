@@ -202,6 +202,8 @@ function AddCar({ onAddVehicle, editingVehicle }) {
           <input
             type="number"
             name="price"
+            min="0"
+            
             value={formData.price}
             onChange={handleChange}
             placeholder="Enter price per day"
@@ -256,6 +258,8 @@ function AddCar({ onAddVehicle, editingVehicle }) {
           <input
             type="number"
             name="seatingCapacity"
+            min="0"
+            max="12"
             value={formData.seatingCapacity}
             onChange={handleChange}
             placeholder="Enter seating capacity"
