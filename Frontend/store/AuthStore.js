@@ -17,10 +17,10 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response?.status === 401) {
-      const { logout } = useAuthStore.getState();
+      const { userlogout } = useAuthStore.getState();
 
       // Log out the user if token is invalid or expired
-      logout();
+      userlogout();
     }
     return Promise.reject(error);
   }
@@ -86,7 +86,9 @@ const useAuthStore = create(
       login: async (email, password) => {
         try {
           const response = await api.post("/login", { email, password });
-
+          if(!response.data.success) {
+            return response.data;
+          }
           if (response.data.token) {
             localStorage.setItem('token', response.data.token);
             api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
@@ -97,7 +99,7 @@ const useAuthStore = create(
               error: null,
             });
 
-            return response.data;
+          return response.data;
           } else {
             throw new Error("Login failed - no token received");
           }

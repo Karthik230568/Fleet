@@ -1,4 +1,3 @@
-
 const jwt = require('jsonwebtoken');
 const Admin = require('../models/Administrator'); // Import the Admin model
 const login = async (req, res, next) => {
@@ -7,13 +6,13 @@ const login = async (req, res, next) => {
 
         // Validate input
         if (!email || !password) {
-            return res.status(400).json({ error: "Email and password are required" });
+            return res.status(400).json({ success: false, message: "Email and password are required" });
         }
 
         // Find admin in the database
         const admin = await Admin.findOne({ email });
         if (!admin || !(await admin.comparePassword(password))) {
-            return res.status(401).json({ error: "Invalid credentials" });
+            return res.status(401).json({ success: false, message: "Invalid credentials" });
         }
 
         // Generate token
