@@ -45,6 +45,7 @@ const AddDriver = ({ onAddDriver, editingDriver }) => {
     age: (value) => {
       if (!value) return "Age is required.";
       if (isNaN(value) || value <= 18) return "Age must be over 18.";
+      if (value > 60) return "Age must be under 60.";
       return "";
     },
     address: (value) => (!value ? "Address is required." : ""),
