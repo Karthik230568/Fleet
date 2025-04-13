@@ -12,18 +12,20 @@ const {
 const { authenticateUser } = require('../middleware/authMiddleware');
 
 // Initialize booking and get price details
-router.post('/initialize', authenticateUser, initializeBooking);
+router.post('/initialize', initializeBooking);
 
 // Confirm bookings
-router.post('/confirm-driver', authenticateUser, confirmBookingWithDriver);
-router.post('/confirm-self-drive-store', authenticateUser, confirmSelfDriveStorePickup);
-router.post('/confirm-self-drive-home', authenticateUser, confirmSelfDriveHomeDelivery);
+router.post('/confirm-driver', confirmBookingWithDriver);
+router.post('/confirm-self-drive-store', confirmSelfDriveStorePickup);
+router.post('/confirm-self-drive-home', confirmSelfDriveHomeDelivery);
 
 // Get bookings
-router.get('/active/:userId', authenticateUser, getActiveBookings);
-router.get('/past/:userId', authenticateUser, getPastBookings);
+router.get('/active/:userId', getActiveBookings);
+router.get('/past/:userId', getPastBookings);
 
 // Cancel booking
-router.put('/cancel/:bookingId', authenticateUser, cancelBooking);
+router.put('/cancel/:bookingId', cancelBooking);
 
 module.exports = router;
+
+// should add authenticateUser middleware

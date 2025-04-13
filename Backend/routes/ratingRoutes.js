@@ -6,7 +6,9 @@ const {
 } = require('../controllers/ratingController');
 const { authenticateUser } = require('../middleware/authMiddleware');
 
-router.post('/submit', authenticateUser, submitFeedback);
-router.get('/status/:bookingId', authenticateUser, getFeedbackStatus);
+router.post('/submit',  submitFeedback);
+router.get('/status/:bookingId',  getFeedbackStatus);
 
 module.exports = router;
+
+// should add authenticateUser middleware
