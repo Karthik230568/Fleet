@@ -314,7 +314,7 @@ export default function UserSignin() {
   const handleForgotPassword = (e) => {
     e.preventDefault();
     // Navigate to the forgot password page with state if needed
-    navigate("/auth/forgotpassword", { state: { isForgotPassword: true } });
+    navigate("/auth/forgotpassword_user", { state: { isForgotPassword: true } });
   };
 
   return (
