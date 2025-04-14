@@ -16,7 +16,7 @@ import Signin from './signupandsignin/src/Signin.jsx';
 import Signup from './signupandsignin/src/Signup.jsx';
 import Adminsignin from './signupandsignin/src/Adminsignin.jsx';
 import Bookingtype from './User/Bookingtype.jsx';
-import Forgot from './signupandsignin/src/forgot.jsx';
+import Forgot from './signupandsignin/src/forgot_user.jsx';
 import Unauthorized from './Unauthorized.jsx';
 import './Admin/src/AdminLayout.css';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -24,20 +24,36 @@ import './signupandsignin/src/App.css';
 import  useAuthStore  from '../store/AuthStore.js';
 import  useAdminAuthStore  from '../store/AdminAuthStore.js';
 import { Outlet } from 'react-router-dom';
+import Forgot_User from './signupandsignin/src/forgot_user.jsx';
+import Forgot_Admin from './signupandsignin/src/forgot_admin.jsx';
+
+import {jwtDecode} from 'jwt-decode';
+
 const ProtectedRoute = ({ children, isAdmin }) => {
-  const { token: userToken } = useAuthStore();
-  const { token: adminToken } = useAdminAuthStore();
+  const { token } = useAuthStore();
 
   // Check if the user is authenticated
-  if (isAdmin && !adminToken) {
-    return <Navigate to="/auth/adminsignin" replace />;
+  if (!token) {
+    // Redirect to the appropriate login page if not authenticated
+    return <Navigate to={isAdmin ? "/auth/adminsignin" : "/auth/signin"} replace />;
   }
 
-  if (!isAdmin && !userToken) {
+  try {
+    // Decode the token to extract user role
+    const decodedToken = jwtDecode(token);
+    const tokenIsAdmin = decodedToken.isAdmin; // Assuming the token contains an "isAdmin" field
+
+    // Check if the user is authorized to access the route
+    if (isAdmin !== tokenIsAdmin) {
+      // Redirect to the unauthorized page if roles don't match
+      return <Navigate to="/unauthorized" replace />;
+    }
+  } catch (error) {
+    console.error("Invalid token:", error);
     return <Navigate to="/auth/signin" replace />;
   }
 
-  // Render the protected content if authenticated
+  // Render the protected content if authenticated and authorized
   return children;
 };
 
@@ -72,8 +88,8 @@ function App() {
         <Route path="/auth/signin" element={<Signin />} />
         <Route path="/auth/signup" element={<Signup />} />
         <Route path="/auth/adminsignin" element={<Adminsignin />} />
-        <Route path="/auth/forgotpassword" element={<Forgot />} />
-
+        <Route path="/auth/forgotpassword_user" element={<Forgot_User />} />
+        <Route path="/auth/forgotpassword_admin" element={<Forgot_Admin />} />
         {/* Protected Admin Routes */}
         <Route
           path="/admin/*"

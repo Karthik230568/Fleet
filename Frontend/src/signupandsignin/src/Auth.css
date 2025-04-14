@@ -198,6 +198,22 @@
     color: rgb(113, 85, 139);
 }
 
+
+.forgot-password-admin {
+  text-align: right;
+  margin-top: 5px;
+}
+
+.forgot-password-admin a {
+  color: #271944;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s;
+}
+
+.forgot-password-admin a:hover {
+  color: rgb(113, 85, 139);
+}
 /* OTP Verification Button Styles */
 .otp-verify-btn {
     width: 100%;

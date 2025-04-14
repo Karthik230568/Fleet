@@ -1,4 +1,3 @@
-
 const jwt = require('jsonwebtoken');
 const Administrator = require('../models/Administrator'); // Import the Administrator model
 

@@ -81,28 +81,30 @@ const login = async (req, res, next) => {
 
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+            return res.status(404).json({success: false, message: 'User not found' });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ error: 'Incorrect Password' });
+            return res.status(401).json({ success: false, message: 'Incorrect Password' });
         }
 
         if (!user.isVerified) {
-            return res.status(401).json({ error: 'Please verify your email first' });
+            return res.status(401).json({ success: false, message: 'Please verify your email first' });
         }
 
         const token = jwt.sign(
             { 
                 userId: user._id,
-                role: user.role 
+                isAdmin: false 
             }, 
             process.env.JWT_SECRET, 
             { expiresIn: '24h' }
         );
 
         res.status(200).json({ 
+            success: true,
+            message: "Login successful",
             token,
             user: {
                 id: user._id,
@@ -212,7 +214,11 @@ const verifyOTP = async (req, res, next) => {
         await OTP.deleteOne({ email });
 
         const token = jwt.sign(
-            { userId: user._id, role: user.role }, 
+            { 
+                userId: user._id, 
+                isAdmin: false,
+            }, 
+
             process.env.JWT_SECRET, 
             { expiresIn: '24h' }
         );
