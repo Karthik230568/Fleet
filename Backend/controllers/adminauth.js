@@ -27,7 +27,8 @@ const login = async (req, res, next) => {
 
         res.status(200).json({
             success: true,
-            token,
+            user: admin,
+            token: token,
             message: "Admin login successful"
         });
     } catch (error) {

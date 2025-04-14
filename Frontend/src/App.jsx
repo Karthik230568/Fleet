@@ -26,20 +26,23 @@ import  useAdminAuthStore  from '../store/AdminAuthStore.js';
 import { Outlet } from 'react-router-dom';
 import Forgot_User from './signupandsignin/src/forgot_user.jsx';
 import Forgot_Admin from './signupandsignin/src/forgot_admin.jsx';
+
 const ProtectedRoute = ({ children, isAdmin }) => {
-  const { token: userToken } = useAuthStore();
-  const { token: adminToken } = useAdminAuthStore();
+  const { token, isAdmin: isUserAdmin } = useAuthStore();
 
   // Check if the user is authenticated
-  if (isAdmin && !adminToken) {
-    return <Navigate to="/auth/adminsignin" replace />;
+  if (!token) {
+    // Redirect to the appropriate login page if not authenticated
+    return <Navigate to={isAdmin ? "/auth/adminsignin" : "/auth/signin"} replace />;
   }
 
-  if (!isAdmin && !userToken) {
-    return <Navigate to="/auth/signin" replace />;
+  // Check if the user is authorized to access the route
+  if (isAdmin !== isUserAdmin) {
+    // Redirect to the unauthorized page if roles don't match
+    return <Navigate to="/unauthorized" replace />;
   }
 
-  // Render the protected content if authenticated
+  // Render the protected content if authenticated and authorized
   return children;
 };
 

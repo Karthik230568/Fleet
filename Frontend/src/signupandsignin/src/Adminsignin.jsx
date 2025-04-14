@@ -11,11 +11,11 @@ export default function Adminsignin() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { login, error: storeError } = useAdminAuthStore();
+  const { Adminlogin, error: storeError } = useAdminAuthStore();
 
   // checkAuth, isAuthenticated, it was present before but not used in the code
 
-  // Optionally clear any token on mount (if you want a fresh login)
+  // Optionally clear any token on mount (if you want a fresh Adminlogin)
   useEffect(() => {
     localStorage.removeItem('adminToken');
   }, []);
@@ -44,10 +44,10 @@ export default function Adminsignin() {
 
     try {
       setIsLoading(true);
-      // Call your login function; ensure that it does not perform a navigation with replace.
-      const res = await login(email, password);
+      // Call your Adminlogin function; ensure that it does not perform a navigation with replace.
+      const res = await Adminlogin(email, password);
 
-      navigate("/admin"); // Navigate to admin dashboard after successful login
+      navigate("/admin"); // Navigate to admin dashboard after successful Adminlogin
       // Navigation is handled in the useEffect when isAuthenticated becomes true
     } catch (err) {
       setError(err.message || "Login failed. Please try again.");
@@ -130,7 +130,7 @@ export default function Adminsignin() {
   //   checkAuthentication();
   // }, [checkAuth, navigate]);
 
-  // Redirect after successful login
+  // Redirect after successful Adminlogin
   // useEffect(() => {
   //   if (isAuthenticated) {
   //     // Use navigate("/admin") without { replace: true } to preserve history
