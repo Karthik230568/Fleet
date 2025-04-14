@@ -59,7 +59,7 @@ export default function Adminsignin() {
   const handleForgotPassword = (e) => {
     e.preventDefault();
     // Navigate to the forgot password page with state if needed
-    navigate("/auth/forgotpassword", { state: { isForgotPassword: true } });
+    navigate("/auth/forgotpassword_admin", { state: { isForgotPassword: true } });
   };
 
   return (

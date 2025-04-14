@@ -16,7 +16,7 @@ import Signin from './signupandsignin/src/Signin.jsx';
 import Signup from './signupandsignin/src/Signup.jsx';
 import Adminsignin from './signupandsignin/src/Adminsignin.jsx';
 import Bookingtype from './User/Bookingtype.jsx';
-import Forgot from './signupandsignin/src/forgot.jsx';
+import Forgot from './signupandsignin/src/forgot_user.jsx';
 import Unauthorized from './Unauthorized.jsx';
 import './Admin/src/AdminLayout.css';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -24,6 +24,8 @@ import './signupandsignin/src/App.css';
 import  useAuthStore  from '../store/AuthStore.js';
 import  useAdminAuthStore  from '../store/AdminAuthStore.js';
 import { Outlet } from 'react-router-dom';
+import Forgot_User from './signupandsignin/src/forgot_user.jsx';
+import Forgot_Admin from './signupandsignin/src/forgot_admin.jsx';
 const ProtectedRoute = ({ children, isAdmin }) => {
   const { token: userToken } = useAuthStore();
   const { token: adminToken } = useAdminAuthStore();
@@ -72,8 +74,8 @@ function App() {
         <Route path="/auth/signin" element={<Signin />} />
         <Route path="/auth/signup" element={<Signup />} />
         <Route path="/auth/adminsignin" element={<Adminsignin />} />
-        <Route path="/auth/forgotpassword" element={<Forgot />} />
-
+        <Route path="/auth/forgotpassword_user" element={<Forgot_User />} />
+        <Route path="/auth/forgotpassword_admin" element={<Forgot_Admin />} />
         {/* Protected Admin Routes */}
         <Route
           path="/admin/*"

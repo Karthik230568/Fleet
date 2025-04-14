@@ -5,7 +5,7 @@ import fleetLogo from "../../../public/greylogo.png"; // Import logo
 import OTPVerification from "./otpverification";
 import useAuthStore from "./../../../store/AuthStore.js";
 
-export default function Forgot() {
+export default function Forgot_Admin() {
   const navigate = useNavigate();
   const { forgotPassword, resetPassword } = useAuthStore();
   const [email, setEmail] = useState("");
@@ -144,7 +144,7 @@ export default function Forgot() {
 
           <div className="auth-links">
             <span>Remember your password? </span>
-            <a href="/auth/signin">Sign in</a>
+            <a href="/auth/adminsignin">Sign in</a>
           </div>
         </div>
       </div>
