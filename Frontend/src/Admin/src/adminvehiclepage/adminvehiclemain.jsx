@@ -11,7 +11,12 @@ function Admincarspage() {
   const { vehicles, fetchVehicles, addVehicle, updateVehicle, removeVehicle, loading, error } = useVehicleStore();
   // const { isAuthenticated, checkAuth } = useAdminAuthStore();
   const [filteredVehicles, setFilteredVehicles] = useState([]);
-  const [filter, setFilter] = useState("All");
+  const [filters, setFilters] = useState({
+    availability: [],
+    type: [],
+    city: [],
+    sortBy: null
+  });
   const [editingVehicle, setEditingVehicle] = useState(null);
   const [authError, setAuthError] = useState(null);
 
@@ -38,55 +43,53 @@ function Admincarspage() {
   // Apply filtering & sorting logic
   useEffect(() => {
     let updatedVehicles = [...vehicles];
-    console.log("Current filter:", filter);
+    console.log("Current filters:", filters);
     console.log("Vehicles before filtering:", updatedVehicles);
 
-    if (filter === "Available") {
-      updatedVehicles = updatedVehicles.filter(
-        (v) => v.availability === "Available"
+    // Apply availability filters
+    if (filters.availability.length > 0) {
+      updatedVehicles = updatedVehicles.filter(vehicle => 
+        filters.availability.includes(vehicle.availability)
       );
-    } else if (filter === "Not available") {
-      updatedVehicles = updatedVehicles.filter(
-        (v) => v.availability === "Not Available"
-      );
-    } else if (filter === "Cars") {
-      updatedVehicles = updatedVehicles.filter(
-        (v) => v.type.toLowerCase() === "car"
-      );
-    } else if (filter === "Bikes") {
-      updatedVehicles = updatedVehicles.filter(
-        (v) => v.type.toLowerCase() === "bike"
-      );
-    } else if (filter === "Price") {
-      updatedVehicles.sort((a, b) => Number(a.price) - Number(b.price));
-    } else if (filter === "Rating") {
-      updatedVehicles.sort(
-        (a, b) => parseFloat(b.rating) - parseFloat(a.rating)
-      );
-    }else if(filter==="Delhi"){
-      updatedVehicles=updatedVehicles.filter(
-        (v)=>v.city.toLowerCase()==="delhi"
-      )
-    }else if(filter==="Lucknow"){
-      updatedVehicles=updatedVehicles.filter(
-        (v)=>v.city.toLowerCase()==="lucknow"
-      )
-    }else if(filter==="Kanpur"){
-      updatedVehicles=updatedVehicles.filter(
-        (v)=>v.city.toLowerCase()==="kanpur"
-      )
-    }else if(filter==="Truck"){
-      updatedVehicles=updatedVehicles.filter(
-        (v)=>v.type.toLowerCase()==="truck"
-      )
-    }else if(filter==="Van"){
-      updatedVehicles=updatedVehicles.filter(
-        (v)=>v.type.toLowerCase()==="van"
-      )
     }
 
+    // Apply type filters
+    if (filters.type.length > 0) {
+      console.log("Applying type filters:", filters.type);
+      updatedVehicles = updatedVehicles.filter(vehicle => {
+        const vehicleType = vehicle.type?.toLowerCase() || '';
+        const matches = filters.type.some(filterType => 
+          vehicleType.includes(filterType.toLowerCase())
+        );
+        console.log(`Vehicle ${vehicle.name} type: ${vehicleType}, matches: ${matches}`);
+        return matches;
+      });
+    }
+
+    // Apply city filters
+    if (filters.city.length > 0) {
+      updatedVehicles = updatedVehicles.filter(vehicle => 
+        filters.city.includes(vehicle.city.toLowerCase())
+      );
+    }
+
+    // Apply sorting
+    if (filters.sortBy) {
+      switch (filters.sortBy) {
+        case "Price":
+          updatedVehicles.sort((a, b) => Number(a.price) - Number(b.price));
+          break;
+        case "Rating":
+          updatedVehicles.sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating));
+          break;
+        default:
+          break;
+      }
+    }
+
+    console.log("Vehicles after filtering:", updatedVehicles);
     setFilteredVehicles(updatedVehicles);
-  }, [filter, vehicles]);
+  }, [filters, vehicles]);
 
   const handleAddVehicle = () => {
     setEditingVehicle(null);
@@ -152,8 +155,29 @@ function Admincarspage() {
     }
   };
 
-  const handleFilterChange = (selectedFilter) => {
-    setFilter(selectedFilter);
+  const handleFilterChange = (category, value, isChecked) => {
+    setFilters(prevFilters => {
+      const newFilters = { ...prevFilters };
+      
+      if (isChecked) {
+        // Add filter
+        if (!newFilters[category].includes(value)) {
+          newFilters[category] = [...newFilters[category], value];
+        }
+      } else {
+        // Remove filter
+        newFilters[category] = newFilters[category].filter(item => item !== value);
+      }
+      
+      return newFilters;
+    });
+  };
+
+  const handleSortChange = (sortOption) => {
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      sortBy: sortOption
+    }));
   };
 
   return (
@@ -163,7 +187,11 @@ function Admincarspage() {
           path="/"
           element={
             <div className="main">
-              <Filter onFilterChange={handleFilterChange} />
+              <Filter 
+                onFilterChange={handleFilterChange}
+                onSortChange={handleSortChange}
+                activeFilters={filters}
+              />
               {loading && (
                 <div className="loading-screen">
                   <div className="loading-spinner"></div>

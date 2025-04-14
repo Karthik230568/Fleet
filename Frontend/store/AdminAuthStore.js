@@ -4,10 +4,10 @@ import axios from "axios";
 
 // Axios config
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: "/api",
   timeout: 10000,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
   withCredentials: true, // Enable cookies if needed
 });
@@ -38,11 +38,16 @@ const useAdminAuthStore = create(
       // Login
       login: async (email, password) => {
         try {
-          const response = await api.post("/admin/auth/login", { email, password });
+          const response = await api.post("/admin/auth/login", {
+            email,
+            password,
+          });
 
           if (response.data.token) {
-            localStorage.setItem('token', response.data.token);
-            api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+            localStorage.setItem("token", response.data.token);
+            api.defaults.headers.common[
+              "Authorization"
+            ] = `Bearer ${response.data.token}`;
 
             set({
               user: response.data.user,
@@ -66,8 +71,8 @@ const useAdminAuthStore = create(
 
       // Logout
       adminlogout: () => {
-        localStorage.removeItem('token');
-        delete api.defaults.headers.common['Authorization'];
+        localStorage.removeItem("token");
+        delete api.defaults.headers.common["Authorization"];
         set({
           user: null,
           token: null,
@@ -91,7 +96,11 @@ const useAdminAuthStore = create(
 
       // Reset Password
       resetPassword: async (email, otp, newPassword) => {
-        const response = await api.post("/reset-password", { email, otp, newPassword });
+        const response = await api.post("/reset-password", {
+          email,
+          otp,
+          newPassword,
+        });
         if (response.data.success) {
           return response.data;
         } else {
@@ -100,7 +109,7 @@ const useAdminAuthStore = create(
       },
     }),
     {
-      name: 'auth-storage',
+      name: "auth-storage",
       getStorage: () => localStorage,
       partialize: (state) => ({
         token: state.token,
@@ -113,53 +122,49 @@ const useAdminAuthStore = create(
 
 export default useAdminAuthStore;
 
-
-
-
-
 // Set signup data
-      // setSignupData: (email, password, confirmPassword) => {
-      //   if (password !== confirmPassword) {
-      //     throw new Error('Passwords do not match');
-      //   }
-      //   set({ email, password, confirmPassword });
-      // },
+// setSignupData: (email, password, confirmPassword) => {
+//   if (password !== confirmPassword) {
+//     throw new Error('Passwords do not match');
+//   }
+//   set({ email, password, confirmPassword });
+// },
 
-      // // Send OTP
-      // sendOtp: async () => {
-      //   const { email, password, confirmPassword } = get();
+// // Send OTP
+// sendOtp: async () => {
+//   const { email, password, confirmPassword } = get();
 
-      //   if (!email || !password) throw new Error('Email and password are required');
-      //   if (password !== confirmPassword) throw new Error('Passwords do not match');
+//   if (!email || !password) throw new Error('Email and password are required');
+//   if (password !== confirmPassword) throw new Error('Passwords do not match');
 
-      //   const response = await api.post("/send-otp", { email, password, confirmPassword });
-      //   if (response.data.success) {
-      //     set({ isOtpSent: true });
-      //     return response.data;
-      //   } else {
-      //     throw new Error(response.data.message || 'Failed to send OTP');
-      //   }
-      // },
+//   const response = await api.post("/send-otp", { email, password, confirmPassword });
+//   if (response.data.success) {
+//     set({ isOtpSent: true });
+//     return response.data;
+//   } else {
+//     throw new Error(response.data.message || 'Failed to send OTP');
+//   }
+// },
 
-      // // Verify OTP
-      // verifyOtp: async (otp) => {
-      //   const { email, password } = get();
+// // Verify OTP
+// verifyOtp: async (otp) => {
+//   const { email, password } = get();
 
-      //   if (!email || !password) throw new Error('Session expired. Please try signing up again.');
+//   if (!email || !password) throw new Error('Session expired. Please try signing up again.');
 
-      //   const response = await api.post("/verify-otp", { email, otp, password });
+//   const response = await api.post("/verify-otp", { email, otp, password });
 
-      //   if (response.data.success) {
-      //     set({
-      //       isVerified: true,
-      //       user: response.data.user,
-      //       token: response.data.token,
-      //     });
+//   if (response.data.success) {
+//     set({
+//       isVerified: true,
+//       user: response.data.user,
+//       token: response.data.token,
+//     });
 
-      //     localStorage.setItem('token', response.data.token);
-      //     api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-      //     return response.data;
-      //   } else {
-      //     throw new Error(response.data.message || "OTP verification failed");
-      //   }
-      // },
+//     localStorage.setItem('token', response.data.token);
+//     api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+//     return response.data;
+//   } else {
+//     throw new Error(response.data.message || "OTP verification failed");
+//   }
+// },
