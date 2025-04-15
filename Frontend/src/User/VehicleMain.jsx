@@ -13,8 +13,12 @@ function Usercarspage() {
   const { vehicles, searchVehicles, loading, error } = useUserVehicleStore(); // Access the user vehicle store
   const { bookingData } = useBookingStore(); // Access the booking data from BookingStore
 
-  const [filter, setFilter] = useState("All");
-  const [sortOption, setSortOption] = useState("");
+  const [filters, setFilters] = useState({
+    availability: [],
+    type: [],
+    city: [],
+    sortBy: "Price"
+  });
 
   // Initialize search parameters from BookingStore
   const [searchParams, setSearchParams] = useState({
@@ -22,7 +26,6 @@ function Usercarspage() {
     pickupDate: bookingData.pickupDate || location.state?.pickupDate || "",
     returnDate: bookingData.returnDate || location.state?.returnDate || "",
     withDriver: bookingData.withDriver,
-    filter: "All",
   });
 
   // Fetch vehicles when the component mounts or search parameters change
@@ -37,42 +40,65 @@ function Usercarspage() {
     fetchVehicles();
   }, [searchParams, searchVehicles]);
 
-  const handleFilterChange = (selectedFilter) => {
-    setFilter(selectedFilter);
-    setSearchParams((prev) => ({
-      ...prev,
-      filter: selectedFilter,
+  const handleFilterChange = (category, value, isChecked) => {
+    setFilters(prevFilters => {
+      const newFilters = { ...prevFilters };
+      
+      if (isChecked) {
+        // Add filter
+        if (!newFilters[category].includes(value)) {
+          newFilters[category] = [...newFilters[category], value];
+        }
+      } else {
+        // Remove filter
+        newFilters[category] = newFilters[category].filter(item => item !== value);
+      }
+      
+      return newFilters;
+    });
+  };
+
+  const handleSortChange = (sortOption) => {
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      sortBy: sortOption
     }));
   };
 
-  const handleSortChange = (option) => {
-    setSortOption(option);
-  }
-
-  // Apply client-side filtering based on the selected filter
+  // Apply client-side filtering based on the selected filters
   const filteredVehicles = React.useMemo(() => {
-    let filtered = vehicles;
+    let filtered = [...vehicles];
 
-    // Apply filter
-    if (filter !== "All") {
-      filtered = filtered.filter((vehicle) => {
-        if (filter === "Available") return vehicle.availability === "Available";
-        if (filter === "Not available") return vehicle.availability === "Not available";
-        if (filter === "Cars") return vehicle.type.toLowerCase() === "car";
-        if (filter === "Bikes") return vehicle.type.toLowerCase() === "bike";
-        return true;
-      });
+    // Apply availability filters
+    if (filters.availability.length > 0) {
+      filtered = filtered.filter(vehicle => 
+        filters.availability.includes(vehicle.availability)
+      );
+    }
+
+    // Apply type filters
+    if (filters.type.length > 0) {
+      filtered = filtered.filter(vehicle => 
+        filters.type.includes(vehicle.type.toLowerCase())
+      );
+    }
+
+    // Apply city filters
+    if (filters.city.length > 0) {
+      filtered = filtered.filter(vehicle => 
+        filters.city.includes(vehicle.city.toLowerCase())
+      );
     }
 
     // Apply sorting
-    if (filter === "Price") {
-      filtered = [...filtered].sort((a, b) => a.price - b.price);
-    } else if (filter === "Rating") {
-      filtered = [...filtered].sort((a, b) => b.rating - a.rating);
+    if (filters.sortBy === "Price") {
+      filtered.sort((a, b) => Number(a.price) - Number(b.price));
+    } else if (filters.sortBy === "Rating") {
+      filtered.sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating));
     }
 
     return filtered;
-  }, [vehicles, filter, sortOption]);
+  }, [vehicles, filters]);
 
   return (
     <Routes>
@@ -81,8 +107,10 @@ function Usercarspage() {
         element={
           <div className="main_v">
             <Filter 
-            onFilterChange={handleFilterChange}
-            onSortChange={handleSortChange} />
+              onFilterChange={handleFilterChange}
+              onSortChange={handleSortChange}
+              activeFilters={filters}
+            />
             {loading && (
               <div className="loading-screen">
                 <div className="loading-spinner"></div>

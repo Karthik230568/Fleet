@@ -29,7 +29,7 @@ const Filter = ({ onFilterChange, onSortChange, activeFilters }) => {
         </div>
         {isOpen.availability && (
           <div className="filter-options">
-            {["Available", "Unavailable"].map((option) => (
+            {["Available", "Not Available"].map((option) => (
               <label key={option} className="filter-option">
                 <input
                   type="checkbox"
@@ -50,7 +50,7 @@ const Filter = ({ onFilterChange, onSortChange, activeFilters }) => {
         </div>
         {isOpen.type && (
           <div className="filter-options">
-            {["Car", "Bike"].map((option) => (
+            {["Car", "Bike", "Truck", "Van"].map((option) => (
               <label key={option} className="filter-option">
                 <input
                   type="checkbox"
@@ -71,7 +71,7 @@ const Filter = ({ onFilterChange, onSortChange, activeFilters }) => {
         </div>
         {isOpen.city && (
           <div className="filter-options">
-            {["Chennai", "Madurai", "Coimbatore", "Trichy"].map((option) => (
+            {["Delhi", "Lucknow", "Kanpur"].map((option) => (
               <label key={option} className="filter-option">
                 <input
                   type="checkbox"
