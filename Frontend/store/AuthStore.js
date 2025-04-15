@@ -17,10 +17,10 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response?.status === 401) {
-      const { logout } = useAuthStore.getState();
+      const { userlogout } = useAuthStore.getState();
 
       // Log out the user if token is invalid or expired
-      logout();
+      userlogout();
     }
     return Promise.reject(error);
   }
@@ -31,9 +31,27 @@ const useAuthStore = create(
     (set, get) => ({
       user: null,
       token: null,
+      isAdmin: false,
       isOtpSent: false,
       isVerified: false,
       error: null,
+
+      // Set token and isAdmin state
+      setAuthState: (token, isAdmin) => {
+        set({
+          token,
+          isAdmin,
+        });
+
+        // Save the token in localStorage and set it in Axios headers
+        if (token) {
+          localStorage.setItem('token', token);
+          api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        } else {
+          localStorage.removeItem('token');
+          delete api.defaults.headers.common['Authorization'];
+        }
+      },
 
       // Set signup data
       setSignupData: (email, password, confirmPassword) => {
@@ -62,6 +80,7 @@ const useAuthStore = create(
       // Verify OTP
       verifyOtp: async (otp) => {
         const { email, password } = get();
+        const setAuthState = get().setAuthState; // Access setAuthState using get()
 
         if (!email || !password) throw new Error('Session expired. Please try signing up again.');
 
@@ -71,11 +90,9 @@ const useAuthStore = create(
           set({
             isVerified: true,
             user: response.data.user,
-            token: response.data.token,
           });
 
-          localStorage.setItem('token', response.data.token);
-          api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+          setAuthState(response.data.token, false); // Set token and isAdmin in Zustand store
           return response.data;
         } else {
           throw new Error(response.data.message || "OTP verification failed");
@@ -86,6 +103,11 @@ const useAuthStore = create(
       login: async (email, password) => {
         try {
           const response = await api.post("/login", { email, password });
+          const setAuthState = get().setAuthState; // Access setAuthState using get()
+
+          if (!response.data.success) {
+            return response.data;
+          }
 
           if (response.data.token) {
             localStorage.setItem('token', response.data.token);
@@ -93,10 +115,10 @@ const useAuthStore = create(
 
             set({
               user: response.data.user,
-              token: response.data.token,
               error: null,
             });
 
+            setAuthState(response.data.token, false); // Set token and isAdmin in Zustand store
             return response.data;
           } else {
             throw new Error("Login failed - no token received");
