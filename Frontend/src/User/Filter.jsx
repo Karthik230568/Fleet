@@ -5,7 +5,7 @@ const Filter = ({ onFilterChange, onSortChange, activeFilters }) => {
   const [isOpen, setIsOpen] = useState({
     availability: false,
     type: false,
-    city: false,
+    seating: false,
     sort: false
   });
 
@@ -65,20 +65,25 @@ const Filter = ({ onFilterChange, onSortChange, activeFilters }) => {
       </div>
 
       <div className="filter-group">
-        <div className="filter-header" onClick={() => toggleDropdown('city')}>
-          <h3>City</h3>
-          <span className={`dropdown-arrow ${isOpen.city ? 'open' : ''}`}>▼</span>
+        <div className="filter-header" onClick={() => toggleDropdown('seating')}>
+          <h3>Seating Capacity</h3>
+          <span className={`dropdown-arrow ${isOpen.seating ? 'open' : ''}`}>▼</span>
         </div>
-        {isOpen.city && (
+        {isOpen.seating && (
           <div className="filter-options">
-            {["Delhi", "Lucknow", "Kanpur"].map((option) => (
-              <label key={option} className="filter-option">
+            {[
+              { value: "1", label: "1 Seat" },
+              { value: "2-4", label: "2-4 Seats" },
+              { value: "5-7", label: "5-7 Seats" },
+              { value: "8+", label: "8+ Seats" }
+            ].map((option) => (
+              <label key={option.value} className="filter-option">
                 <input
                   type="checkbox"
-                  checked={activeFilters.city.includes(option.toLowerCase())}
-                  onChange={handleCheckboxChange("city", option.toLowerCase())}
+                  checked={activeFilters.seating.includes(option.value)}
+                  onChange={handleCheckboxChange("seating", option.value)}
                 />
-                <span className="checkbox-label">{option}</span>
+                <span className="checkbox-label">{option.label}</span>
               </label>
             ))}
           </div>

@@ -16,7 +16,7 @@ function Usercarspage() {
   const [filters, setFilters] = useState({
     availability: [],
     type: [],
-    city: [],
+    seating: [],
     sortBy: "Price"
   });
 
@@ -83,11 +83,25 @@ function Usercarspage() {
       );
     }
 
-    // Apply city filters
-    if (filters.city.length > 0) {
-      filtered = filtered.filter(vehicle => 
-        filters.city.includes(vehicle.city.toLowerCase())
-      );
+    // Apply seating capacity filters
+    if (filters.seating.length > 0) {
+      filtered = filtered.filter(vehicle => {
+        const vehicleSeats = parseInt(vehicle.seatingCapacity);
+        return filters.seating.some(selectedRange => {
+          switch (selectedRange) {
+            case "1":
+              return vehicleSeats === 1;
+            case "2-4":
+              return vehicleSeats >= 2 && vehicleSeats <= 4;
+            case "5-7":
+              return vehicleSeats >= 5 && vehicleSeats <= 7;
+            case "8+":
+              return vehicleSeats >= 8;
+            default:
+              return false;
+          }
+        });
+      });
     }
 
     // Apply sorting

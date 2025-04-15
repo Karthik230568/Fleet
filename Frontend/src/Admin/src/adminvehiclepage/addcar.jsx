@@ -76,7 +76,7 @@ function AddCar({ onAddVehicle, editingVehicle }) {
       name: formData.name,
       price: formData.price,
       availability: formData.availability,
-      rating: formData.rating,
+      rating: parseFloat(formData.rating).toFixed(1),
       city: formData.city,
       image: formData.image || "Images/default-car.png",
       fuelType: formData.fuelType,
