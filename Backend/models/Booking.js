@@ -38,6 +38,11 @@ const bookingSchema = new mongoose.Schema({
             message: 'Return date must be after pickup date'
         }
     },
+    duration: {
+        type: Number,
+        // required: true,
+        min: 0
+    },
     totalAmount: {
         type: Number,
         // required: true,
@@ -47,6 +52,13 @@ const bookingSchema = new mongoose.Schema({
         type: Boolean,
         // required: true,
         default: false
+    },
+    city: {
+        type: String,
+        trim: true,
+        // required: function() {
+        //     return this.withDriver === true || this.isDelivery === true;
+        // }
     },
     address: {
         type: String,

@@ -17,7 +17,7 @@ axios.interceptors.request.use((config) => {
   return Promise.reject(error);
 });
 
-const useBookingStore = create((set, get) => ({
+const useBookingStore = create((set) => ({
   bookingData: {
     // Home.jsx fields:
     city: '',
@@ -31,98 +31,34 @@ const useBookingStore = create((set, get) => ({
     name: '', // name of the vehicle
     type: '',
     price: '',
-    availability: '', // will be unavailable from VehicleCard.jsx
-    rating: '',
+    availability: '', // will be unavailable from VehicleCard.jsx, Ramith??
+    // rating: '', // type??
     driverName: '',
-    driverId: '',
+    // driverId: '',
     seatingCapacity: '',
     registrationPlate: '',
-    vehicleId: ''
+    vehicleId: '',
+    // from subsequent pages:
+    location: '',
+    // for each user
+    userId: '',
+    // duration: 0, // Initialize with default value
+    // totalAmount: 0, // Initialize with default value
   },
   error: null,
-  loading: false,
 
   setBookingData: (data) => set({ bookingData: data }),
 
-  // function to update booking data and persist to database
-  updateBookingData: async (newData) => {
-    try {
-      set({ loading: true, error: null });
-      
-      // Update local state first
-      const updatedData = {
-        ...get().bookingData,
-        ...newData,
-      };
-      
-      set({ bookingData: updatedData });
-      
-      console.log("Attempting to save booking data to database:", updatedData);
-      
-      // Format the data for the backend
-      const bookingRequest = {
-        city: updatedData.city,
-        pickupDate: updatedData.pickupDate,
-        pickupTime: updatedData.pickupTime,
-        returnDate: updatedData.returnDate,
-        returnTime: updatedData.returnTime,
-        withDriver: updatedData.withDriver,
-        userId: localStorage.getItem('userId') // Add user ID if needed
-      };
-      
-      // Save to database using the correct endpoint
-      const response = await axios.post('/bookings/initialize', bookingRequest);
-      
-      if (response.data.success) {
-        console.log("Successfully saved booking data to database:", response.data);
-        return true;
-      } else {
-        throw new Error(response.data.error || "Failed to save booking data");
-      }
-    } catch (err) {
-      console.error("Error saving booking data:", err);
-      set({ error: err.message || "Failed to save booking data" });
-      // Don't throw the error - we still want the local state to update
-      return false;
-    } finally {
-      set({ loading: false });
-    }
-  },
-
-  // Initialize a new booking
-  initializeBooking: async () => {
-    const { bookingData } = get();
-    try {
-      set({ loading: true, error: null });
-      
-      // Format dates for backend
-      const formattedData = {
-        ...bookingData,
-        pickupDateTime: new Date(`${bookingData.pickupDate}T${bookingData.pickupTime}`).toISOString(),
-        returnDateTime: new Date(`${bookingData.returnDate}T${bookingData.returnTime}`).toISOString(),
-      };
-      
-      console.log("Initializing booking with data:", formattedData);
-      
-      const response = await axios.post('/bookings/initialize', formattedData);
-      
-      if (response.data.success) {
-        console.log("Successfully initialized booking:", response.data);
-        return true;
-      } else {
-        throw new Error(response.data.error || "Failed to initialize booking");
-      }
-    } catch (err) {
-      console.error("Error initializing booking:", err);
-      set({ error: err.message || "Failed to initialize booking" });
-      return false;
-    } finally {
-      set({ loading: false });
-    }
-  },
-
-  // Clear booking data
-  clearBookingData: () => {
+   // function to update just part of the bookingData
+   updateBookingData: (newData) =>
+   set((state) => ({
+     bookingData: {
+       ...state.bookingData,
+       ...newData,
+     },
+   })),
+   // to reset booking data to initial state
+   resetBookingData: () =>
     set({
       bookingData: {
         city: '',
@@ -136,20 +72,182 @@ const useBookingStore = create((set, get) => ({
         type: '',
         price: '',
         availability: '',
-        rating: '',
+        // rating: '',
         driverName: '',
-        driverId: '',
+        // driverId: '',
         seatingCapacity: '',
         registrationPlate: '',
-        vehicleId: ''
+        vehicleId: '',
+        location: '',
+        userId: '',
+      //   duration: 0, // Initialize with default value
+      // totalAmount: 0, // Initialize with default value
       },
-      error: null,
-      loading: false
-    });
-  }
+      error: null
+    }),
+  
+
+   //to finalize booking, not used yet
+   confirmBooking: async () => {
+    const { bookingData } = useBookingStore.getState();
+    try {
+      //mock API call
+      // console.log("Mock API Call - Booking Data:", bookingData);
+      // Simulate a small delay like a real API call
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
+      
+      const response = await axios.post('/bookings/confirm-booking', bookingData); // API hit
+      
+      console.log("Booking not confirmed but data changed:", response.data);
+      return true;
+    } catch (err) {
+      console.error('Error confirming booking:', err);
+      set({ error: 'Failed to confirm booking' });
+      return false;
+    }
+  },
 }));
 
 export default useBookingStore;
+
+
+
+
+
+
+// const useBookingStore = create((set, get) => ({
+//   bookingData: {
+//     // Home.jsx fields:
+//     city: '',
+//     pickupDate: '',
+//     pickupTime: '',
+//     returnDate: '',
+//     returnTime: '',
+//     withDriver: false,
+//     ownDriving: false,
+//     // VehicleCard.jsx fields:
+//     name: '', // name of the vehicle
+//     type: '',
+//     price: '',
+//     availability: '', // will be unavailable from VehicleCard.jsx
+//     rating: '',
+//     driverName: '',
+//     driverId: '',
+//     seatingCapacity: '',
+//     registrationPlate: '',
+//     vehicleId: ''
+//   },
+//   error: null,
+//   loading: false,
+
+//   setBookingData: (data) => set({ bookingData: data }),
+
+//   // function to update booking data and persist to database
+//   updateBookingData: async (newData) => {
+//     try {
+//       set({ loading: true, error: null });
+      
+//       // Update local state first
+//       const updatedData = {
+//         ...get().bookingData,
+//         ...newData,
+//       };
+      
+//       set({ bookingData: updatedData });
+      
+//       console.log("Attempting to save booking data to database:", updatedData);
+      
+//       // Format the data for the backend
+//       const bookingRequest = {
+//         city: updatedData.city,
+//         pickupDate: updatedData.pickupDate,
+//         pickupTime: updatedData.pickupTime,
+//         returnDate: updatedData.returnDate,
+//         returnTime: updatedData.returnTime,
+//         withDriver: updatedData.withDriver,
+//         userId: localStorage.getItem('userId') // Add user ID if needed
+//       };
+      
+//       // Save to database using the correct endpoint
+//       const response = await axios.post('/bookings/initialize', bookingRequest);
+      
+//       if (response.data.success) {
+//         console.log("Successfully saved booking data to database:", response.data);
+//         return true;
+//       } else {
+//         throw new Error(response.data.error || "Failed to save booking data");
+//       }
+//     } catch (err) {
+//       console.error("Error saving booking data:", err);
+//       set({ error: err.message || "Failed to save booking data" });
+//       // Don't throw the error - we still want the local state to update
+//       return false;
+//     } finally {
+//       set({ loading: false });
+//     }
+//   },
+
+//   // Initialize a new booking
+//   initializeBooking: async () => {
+//     const { bookingData } = get();
+//     try {
+//       set({ loading: true, error: null });
+      
+//       // Format dates for backend
+//       const formattedData = {
+//         ...bookingData,
+//         pickupDateTime: new Date(`${bookingData.pickupDate}T${bookingData.pickupTime}`).toISOString(),
+//         returnDateTime: new Date(`${bookingData.returnDate}T${bookingData.returnTime}`).toISOString(),
+//       };
+      
+//       console.log("Initializing booking with data:", formattedData);
+      
+//       const response = await axios.post('/bookings/initialize', formattedData);
+      
+//       if (response.data.success) {
+//         console.log("Successfully initialized booking:", response.data);
+//         return true;
+//       } else {
+//         throw new Error(response.data.error || "Failed to initialize booking");
+//       }
+//     } catch (err) {
+//       console.error("Error initializing booking:", err);
+//       set({ error: err.message || "Failed to initialize booking" });
+//       return false;
+//     } finally {
+//       set({ loading: false });
+//     }
+//   },
+
+//   // Clear booking data
+//   clearBookingData: () => {
+//     set({
+//       bookingData: {
+//         city: '',
+//         pickupDate: '',
+//         pickupTime: '',
+//         returnDate: '',
+//         returnTime: '',
+//         withDriver: false,
+//         ownDriving: false,
+//         name: '',
+//         type: '',
+//         price: '',
+//         availability: '',
+//         rating: '',
+//         driverName: '',
+//         driverId: '',
+//         seatingCapacity: '',
+//         registrationPlate: '',
+//         vehicleId: ''
+//       },
+//       error: null,
+//       loading: false
+//     });
+//   }
+// }));
+
+// export default useBookingStore;
 
 
 // import axios from 'axios';       // will be required to send/fectch info to/from backend

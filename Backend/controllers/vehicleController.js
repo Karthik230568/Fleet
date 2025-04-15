@@ -41,6 +41,7 @@ const searchVehicles = async (req, res, next) => {
             availability: vehicle.availability,
             rating: vehicle.rating,
             driverName: vehicle.driverName,
+            // driverId: vehicle.driverId,
             fuelType: vehicle.fuelType,
             seatingCapacity: vehicle.seatingCapacity,
             registrationPlate: vehicle.registrationPlate,

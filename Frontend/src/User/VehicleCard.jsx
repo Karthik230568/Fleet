@@ -25,7 +25,11 @@ function VehicleCard({ vehicle, bookingType }) {
       // await markVehicleUnavailable(vehicle._id, new Date().toISOString(), null);
 
       // Update the booking data in the store once confirm is selected.
-      updateBookingData(vehicle);
+      updateBookingData({
+        ...vehicle, // Spread the vehicle data
+        vehicleId: vehicle._id, // Set the MongoDB ObjectId (not the vehicleId)
+      });
+      console.log("Booking store state after update in vehicleCard.jsx:", useBookingStore.getState().bookingData);
 
       // Navigate to the appropriate page based on booking type
       if (bookingType ) {
@@ -60,6 +64,7 @@ function VehicleCard({ vehicle, bookingType }) {
         <p>Availability: {vehicle.availability}</p>
         <p>Rating: {vehicle.rating} ⭐</p>
         {vehicle.driverName && <p>Driver: {vehicle.driverName}</p>}
+        {/* {vehicle.driverName && <p>Driver ID: {vehicle.driverId}</p>} */}
         <p>Fuel Type: {vehicle.fuelType}</p>
         <p>Seating Capacity: {vehicle.seatingCapacity}</p>
         <p>Registration Plate: {vehicle.registrationPlate}</p>

@@ -3,6 +3,8 @@ import "./userpickup.css";
 import Logo from "../../public/greylogo.png";
 import Map from "./map.jpg";
 import { useNavigate, useLocation } from "react-router-dom";
+// to interact with the booking store
+import useBookingStore from '../../store/BookingStore';
 
 function Userpickup() {
   const location = useLocation();
@@ -10,13 +12,38 @@ function Userpickup() {
   const { bookingType, deliveryOption } = location.state || {};
   const [showPopup, setShowPopup] = useState(false);
 
+  // State to manage pickup location
+  const [pickupLocation, setPickupLocation] = useState('');
+  
+  const updateBookingData = useBookingStore((state) => state.updateBookingData);
+  const confirmBooking = useBookingStore((state) => state.confirmBooking); // Zustand action
+
+  const handleConfirmBooking = async () => {
+    // Validate input
+    // if (!bookingType || !deliveryOption) {
+    //   alert("Missing booking information. Please try again.");
+    //   return;
+    // }
+
+    // Call store's confirmBooking
+    const success = await confirmBooking();
+
+    if (success) {
+      setShowPopup(true); // Show success popup
+    } else {
+      alert("Failed to confirm bookingggg. Please try again.");
+    }
+  };
   const placeholderText =
-    bookingType === "own" && deliveryOption === "Delivery"
+    (bookingType === "own" && deliveryOption === "Delivery")
       ? "Enter Delivery Address"
-      : "Enter Pickup Location";
+      : "Enter Location";
 
   const handleNext = () => {
-    setShowPopup(true); // Show the booking confirmation popup
+    // Update bookingStore on button click
+    updateBookingData({ location: pickupLocation });
+    console.log("Booking store state after update in userpickup.jsx:", useBookingStore.getState().bookingData);
+    handleConfirmBooking(); // Show the booking confirmation popup
   };
 
   const handlePopupOk = () => {
@@ -37,6 +64,8 @@ function Userpickup() {
             name="pickup"
             placeholder={placeholderText}
             className="pickup_input-field"
+            value={pickupLocation}
+            onChange={(e) => setPickupLocation(e.target.value)}
           />
         </div>
         <button onClick={handleNext} className="pickup_next-button">
@@ -49,7 +78,8 @@ function Userpickup() {
         <div className="popup-overlay_p">
           <div className="popup-content_p">
             <h3>Booking Confirmed</h3>
-            <p className="ppr">Your booking has been successfully confirmed!</p>
+            {/* confirmation page for withDrvier OR (own driving + Delivery) */}
+            <p className="ppr">Yourrrrrrr booking has been successfully confirmed!</p>
             <button onClick={handlePopupOk} className="popup-ok-button">
               OK
             </button>

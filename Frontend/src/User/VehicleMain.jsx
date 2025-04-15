@@ -77,7 +77,7 @@ function Usercarspage() {
   return (
     <Routes>
       <Route
-        path="/"
+        path="/*"
         element={
           <div className="main_v">
             <Filter 

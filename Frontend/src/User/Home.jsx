@@ -1,6 +1,9 @@
 import './Home.css';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { useEffect } from 'react';
+// to get the token and to get the userId from the token
+import {jwtDecode} from 'jwt-decode';
 
 // to interact with the booking store
 
@@ -12,8 +15,32 @@ function Home() {
   //below line is wtong because it is calling initializeBooking.
   // const { setBookingData, initializeBooking, error: storeError } = useBookingStore();
   
+  // Reset booking data when the component mounts
+  // This is to ensure that the booking data is cleared when the user navigates to this page
+  // This is done to avoid any stale data from previous bookings
+  const resetBookingData = useBookingStore((state) => state.resetBookingData);
+
+  useEffect(() => {
+    resetBookingData(); // clears previous data when component mounts
+  }, []);
+
   // Since we only want to save partial data, and not send it to the backend yet, we removed initializeBooking and use updateBookingData instead of setBookingData
   const { updateBookingData, error: storeError } = useBookingStore();
+  useEffect(() => {
+    const token = localStorage.getItem('token'); // or wherever you're storing it
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        console.log("Decoded Token: ", decoded); // 🔍 See what's inside
+        const userId = decoded.id || decoded._id || decoded.userId;
+        if (userId) {
+          updateBookingData({ userId });
+        }
+      } catch (err) {
+        console.error('Invalid token', err);
+      }
+    }
+  }, []);
 
 // Defining state for form data and putting default values
 // Default values are set to the next day and the day after tomorrow
@@ -104,28 +131,31 @@ function Home() {
 
       // Log the form data before updating the store
       console.log("Form data before updating store:", formData);
-      
+      updateBookingData(formData); // Save this step's inputs
+      console.log("Booking store state after update in Home.jsx:", useBookingStore.getState().bookingData);
+      navigate('/home/vehicles');  // Move to the next step
+
       // Ensure city is properly set
-      const updatedFormData = {
-        ...formData,
-        city: formData.city || "Kanpur"
-      };
+      // const updatedFormData = {
+      //   ...formData,
+      //   city: formData.city || "Kanpur"
+      // };
       
-      console.log("Updated form data:", updatedFormData);
+      // console.log("Updated form data:", updatedFormData);
       
       // Update the booking store with the form data and wait for the result
-      const success = await updateBookingData(updatedFormData);
+      // const success = await updateBookingData(updatedFormData);
       
       // Log the booking store state after updating
-      console.log("Booking store state after update:", useBookingStore.getState().bookingData);
-      console.log("Save to database result:", success);
+      // console.log("Booking store state after update:", useBookingStore.getState().bookingData);
+      // console.log("Save to database result:", success);
       
       // Store the booking type in localStorage for persistence
-      localStorage.setItem("bookingType", updatedFormData.withDriver ? "driver" : "own");
+      // localStorage.setItem("bookingType", updatedFormData.withDriver ? "driver" : "own");
       
       // Navigate to the vehicles page regardless of database save result
       // This allows the app to work even if the backend is not ready
-      navigate('/home/vehicles');
+      // navigate('/home/vehicles');
       
     } catch (error) {
       console.error("Error during search:", error);

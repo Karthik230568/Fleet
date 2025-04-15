@@ -1,12 +1,33 @@
  import React, { useState } from "react";
 import "./TermsAndConditions.css";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
+// to interact with the booking store
+import useBookingStore from '../../store/BookingStore';
 
 const TermsAndConditions = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { bookingType, deliveryOption } = location.state || {};
   const [showPopup, setShowPopup] = useState(false); // State to manage popup visibility
+
+  const confirmBooking = useBookingStore((state) => state.confirmBooking); // Zustand action
+
+  const handleConfirmBooking = async () => {
+    // Validate input
+    if (!bookingType || !deliveryOption) {
+      alert("Missing booking information. Please try again.");
+      return;
+    }
+
+    // Call store's confirmBooking
+    const success = await confirmBooking();
+
+    if (success) {
+      setShowPopup(true); // Show success popup
+    } else {
+      alert("Failed to confirm booking. Please tryyyyyy again.");
+    }
+  };
 
   const handleAgree = () => {
     // Validate that we have both bookingType and deliveryOption
@@ -16,9 +37,12 @@ const TermsAndConditions = () => {
     }
 
     // Handle different booking scenarios
+    //owndrive
     if (bookingType === "own") {
       if (deliveryOption === "Pickup") {
-        setShowPopup(true); // Show confirmation for self-drive pickup
+        // console.log("Booking store state after update in owwwwwwwn driving + pickup TermsAndConditions.jsx:", useBookingStore.getState().bookingData);
+
+        // setShowPopup(true); // Show confirmation for self-drive pickup
       } else if (deliveryOption === "Delivery") {
         navigate("/home/userpickup", { 
           state: { 
@@ -27,7 +51,9 @@ const TermsAndConditions = () => {
           } 
         });
       }
-    } else if (bookingType === "driver") {
+    } 
+    // withdriver
+    else if (bookingType === "driver") {
       if (deliveryOption === "Delivery") {
         navigate("/home/userpickup", { 
           state: { 
@@ -36,7 +62,9 @@ const TermsAndConditions = () => {
           } 
         });
       } else if (deliveryOption === "Pickup") {
-        setShowPopup(true); // Show confirmation for driver pickup
+        console.log("Booking store state after update in owwwwwwwn driving + pickup TermsAndConditions.jsx:", useBookingStore.getState().bookingData);
+        handleConfirmBooking();
+        // setShowPopup(true); // Show confirmation for driver pickup
       }
     } else {
       alert("Invalid booking type. Please try again.");
@@ -116,6 +144,7 @@ const TermsAndConditions = () => {
         <div className="popup-overlay_p">
           <div className="popup-content_" >
             <h3>Booking Confirmed</h3>
+            {/* confirmation page for own driving + pickup */}
             <p>Your booking has been successfully confirmed!</p>
             <button onClick={handlePopupOk} className="popup-ok-button">
               OK
