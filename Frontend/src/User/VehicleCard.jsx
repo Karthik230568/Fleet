@@ -12,7 +12,8 @@ function VehicleCard({ vehicle, bookingType }) {
   // const { markVehicleUnavailable } = useVehicleStore(); // Access the store action
 
   // Access the booking store to update booking data
-  const { updateBookingData} = useBookingStore();
+  const { updateBookingData } = useBookingStore();
+  const { duration } = useBookingStore((state) => state.bookingData);
 
   const handleBookNow = () => {
     setShowPopup(true); // Show the popup when "Book Now" is clicked
@@ -32,7 +33,7 @@ function VehicleCard({ vehicle, bookingType }) {
       console.log("Booking store state after update in vehicleCard.jsx:", useBookingStore.getState().bookingData);
 
       // Navigate to the appropriate page based on booking type
-      if (bookingType ) {
+      if (bookingType) {
         navigate("/home/userpickup", { state: { vehicle, bookingType } });
       } else if (!bookingType) {
         navigate("/home/bookingtype", { state: { bookingType } });
@@ -48,6 +49,8 @@ function VehicleCard({ vehicle, bookingType }) {
   const handleCancel = () => {
     setShowPopup(false); // Close the popup
   };
+
+  const totalPrice = duration ? vehicle.price * duration : vehicle.price;
 
   // Log vehicle data for debugging
   console.log("Rendering vehicle card:", vehicle);
@@ -83,7 +86,8 @@ function VehicleCard({ vehicle, bookingType }) {
           <div className="popup-content_v">
             <h3 className="p-r">Price Details</h3>
             <p className="p-r">Price per day: INR {vehicle.price}</p>
-            <p className="p-r">Total Price: INR {vehicle.price * 1} (for 1 day)</p>
+            <p className="p-r">Duration: {duration || 1} {duration === 1 ? 'day' : 'days'}</p>
+            <p className="p-r">Total Price: INR {totalPrice}</p>
             <div className="popup-actions">
               <button onClick={handleConfirm} className="button_confirm">
                 Confirm

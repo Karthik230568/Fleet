@@ -27,7 +27,7 @@ body {
   height: 50px;
   border: 5px solid rgba(255, 255, 255, 0.1);
   border-radius: 50%;
-  border-top-color: #4CAF50;
+  border-top-color: #4caf50;
   animation: spin 1s ease-in-out infinite;
 }
 
@@ -53,7 +53,6 @@ body {
   position: relative;
   overflow-x: hidden;
   background: linear-gradient(180deg, #0a1825, #142134, #1e3c72);
-  ;
 }
 
 .filter-container {
@@ -134,7 +133,7 @@ body {
   width: 16px;
   height: 16px;
   cursor: pointer;
-  accent-color: #4CAF50;
+  accent-color: #4caf50;
 }
 
 .checkbox-label {
@@ -160,7 +159,7 @@ body {
 
 .sort-select:focus {
   outline: none;
-  border-color: #4CAF50;
+  border-color: #4caf50;
   box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
 }
 
@@ -271,7 +270,7 @@ body {
 .edit-btn,
 .delete-btn {
   position: relative;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   border: none;
   padding: 8px 16px;
@@ -289,7 +288,7 @@ body {
 }
 
 .edit-btn {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
 }
 
@@ -392,7 +391,7 @@ body {
   accent-color: grey;
 }
 
-.form-group_a:first-child .radio-group input[type="radio"]:checked+span {
+.form-group_a:first-child .radio-group input[type="radio"]:checked + span {
   color: grey;
 }
 
@@ -424,7 +423,7 @@ body {
 .form-group_a input:focus,
 .form-group_a select:focus {
   outline: none;
-  border-color: #4CAF50;
+  border-color: #4caf50;
   box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
 }
 
@@ -544,7 +543,7 @@ body {
 
 .radio-group label:hover {
   background-color: grey;
-  color: black
+  color: black;
 }
 
 .radio-group input[type="radio"] {
@@ -554,7 +553,7 @@ body {
   accent-color: grey;
 }
 
-.radio-group input[type="radio"]:checked+span {
+.radio-group input[type="radio"]:checked + span {
   color: white;
 }
 

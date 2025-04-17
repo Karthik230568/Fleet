@@ -203,7 +203,7 @@ function AddCar({ onAddVehicle, editingVehicle }) {
             type="number"
             name="price"
             min="0"
-            
+
             value={formData.price}
             onChange={handleChange}
             placeholder="Enter price per day"

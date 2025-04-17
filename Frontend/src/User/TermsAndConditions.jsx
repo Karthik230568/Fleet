@@ -1,4 +1,4 @@
- import React, { useState } from "react";
+import React, { useState } from "react";
 import "./TermsAndConditions.css";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 // to interact with the booking store
@@ -142,10 +142,9 @@ const TermsAndConditions = () => {
       {/* Popup */}
       {showPopup && (
         <div className="popup-overlay_p">
-          <div className="popup-content_" >
+          <div className="popup-content_p">
             <h3>Booking Confirmed</h3>
-            {/* confirmation page for own driving + pickup */}
-            <p>Your booking has been successfully confirmed!</p>
+            <p className="ppr">Your booking has been successfully confirmed!</p>
             <button onClick={handlePopupOk} className="popup-ok-button">
               OK
             </button>

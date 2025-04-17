@@ -79,7 +79,7 @@ function Userpickup() {
           <div className="popup-content_p">
             <h3>Booking Confirmed</h3>
             {/* confirmation page for withDrvier OR (own driving + Delivery) */}
-            <p className="ppr">Yourrrrrrr booking has been successfully confirmed!</p>
+            <p className="ppr">Your booking has been successfully confirmed!</p>
             <button onClick={handlePopupOk} className="popup-ok-button">
               OK
             </button>

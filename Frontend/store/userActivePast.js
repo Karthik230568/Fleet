@@ -42,11 +42,18 @@ const useUserBookingStore = create((set, get) => ({
       if (response.data.success) {
         set({ activeBookings: response.data.bookings, error: null });
       } else {
-        throw new Error(response.data.error || "Failed to fetch active bookings");
+        throw new Error(
+          response.data.error || "Failed to fetch active bookings"
+        );
       }
     } catch (error) {
-      console.error("Error fetching active bookings:", error.response?.data || error.message);
-      set({ error: error.response?.data?.error || "Failed to fetch active bookings" });
+      console.error(
+        "Error fetching active bookings:",
+        error.response?.data || error.message
+      );
+      set({
+        error: error.response?.data?.error || "Failed to fetch active bookings",
+      });
     } finally {
       set({ loading: false });
     }
@@ -71,8 +78,13 @@ const useUserBookingStore = create((set, get) => ({
         throw new Error(response.data.error || "Failed to fetch past bookings");
       }
     } catch (error) {
-      console.error("Error fetching past bookings:", error.response?.data || error.message);
-      set({ error: error.response?.data?.error || "Failed to fetch past bookings" });
+      console.error(
+        "Error fetching past bookings:",
+        error.response?.data || error.message
+      );
+      set({
+        error: error.response?.data?.error || "Failed to fetch past bookings",
+      });
     } finally {
       set({ loading: false });
     }
@@ -85,14 +97,19 @@ const useUserBookingStore = create((set, get) => ({
       const response = await axios.delete(`/bookings/cancel/${bookingId}`);
       if (response.data.success) {
         set((state) => ({
-          activeBookings: state.activeBookings.filter((booking) => booking.bookingId !== bookingId),
+          activeBookings: state.activeBookings.filter(
+            (booking) => booking.bookingId !== bookingId
+          ),
           error: null,
         }));
       } else {
         throw new Error(response.data.error || "Failed to cancel booking");
       }
     } catch (error) {
-      console.error("Error cancelling booking:", error.response?.data || error.message);
+      console.error(
+        "Error cancelling booking:",
+        error.response?.data || error.message
+      );
       set({ error: error.response?.data?.error || "Failed to cancel booking" });
     } finally {
       set({ loading: false });
@@ -103,7 +120,10 @@ const useUserBookingStore = create((set, get) => ({
   submitFeedback: async (bookingId, rating) => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.post(`/feedback/submit`, { bookingId, rating });
+      const response = await axios.post(`/feedback/submit`, {
+        bookingId,
+        rating,
+      });
       if (response.data.success) {
         set((state) => ({
           pastBookings: state.pastBookings.map((booking) =>
@@ -116,8 +136,13 @@ const useUserBookingStore = create((set, get) => ({
         throw new Error(response.data.error || "Failed to submit feedback");
       }
     } catch (error) {
-      console.error("Error submitting feedback:", error.response?.data || error.message);
-      set({ error: error.response?.data?.error || "Failed to submit feedback" });
+      console.error(
+        "Error submitting feedback:",
+        error.response?.data || error.message
+      );
+      set({
+        error: error.response?.data?.error || "Failed to submit feedback",
+      });
       return false;
     } finally {
       set({ loading: false });

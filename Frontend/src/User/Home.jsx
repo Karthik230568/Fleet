@@ -129,34 +129,19 @@ function Home() {
         return; // Stop if validation fails
       }
 
+      // Calculate duration in days
+      const pickup = new Date(`${formData.pickupDate}T${formData.pickupTime}`);
+      const return_ = new Date(`${formData.returnDate}T${formData.returnTime}`);
+      const duration = Math.ceil((return_ - pickup) / (1000 * 60 * 60 * 24));
+
       // Log the form data before updating the store
       console.log("Form data before updating store:", formData);
-      updateBookingData(formData); // Save this step's inputs
+      updateBookingData({
+        ...formData,
+        duration // Add the calculated duration
+      }); // Save this step's inputs
       console.log("Booking store state after update in Home.jsx:", useBookingStore.getState().bookingData);
       navigate('/home/vehicles');  // Move to the next step
-
-      // Ensure city is properly set
-      // const updatedFormData = {
-      //   ...formData,
-      //   city: formData.city || "Kanpur"
-      // };
-      
-      // console.log("Updated form data:", updatedFormData);
-      
-      // Update the booking store with the form data and wait for the result
-      // const success = await updateBookingData(updatedFormData);
-      
-      // Log the booking store state after updating
-      // console.log("Booking store state after update:", useBookingStore.getState().bookingData);
-      // console.log("Save to database result:", success);
-      
-      // Store the booking type in localStorage for persistence
-      // localStorage.setItem("bookingType", updatedFormData.withDriver ? "driver" : "own");
-      
-      // Navigate to the vehicles page regardless of database save result
-      // This allows the app to work even if the backend is not ready
-      // navigate('/home/vehicles');
-      
     } catch (error) {
       console.error("Error during search:", error);
       // Show error to user but don't prevent navigation
