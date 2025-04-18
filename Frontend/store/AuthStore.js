@@ -79,23 +79,49 @@ const useAuthStore = create(
 
       // Verify OTP
       verifyOtp: async (otp) => {
-        const { email, password } = get();
-        const setAuthState = get().setAuthState; // Access setAuthState using get()
-
-        if (!email || !password) throw new Error('Session expired. Please try signing up again.');
-
-        const response = await api.post("/verify-otp", { email, otp, password });
-
-        if (response.data.success) {
+        try {
+          const { email, password } = get();
+          const setAuthState = get().setAuthState;
+      
+          if (!email || !password) throw new Error('Session expired. Please try signing up again.');
+      
+          const response = await api.post("/verify-otp", { email, otp, password });
+      
+          if (!response.data.success) {
+            return response.data;
+          }
+      
+          if (response.data.token) {
+            localStorage.setItem('token', response.data.token);
+            api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+      
+            set({
+              user: response.data.user,
+              isVerified: true,
+              error: null,
+            });
+      
+            setAuthState(response.data.token, false); // Set token and isAdmin in Zustand store
+            return response.data;
+          } else {
+            throw new Error("OTP verification failed - no token received");
+          }
+        } catch (error) {
           set({
-            isVerified: true,
-            user: response.data.user,
+            user: null,
+            token: null,
+            isVerified: false,
+            error: error.message || "OTP verification failed. Please try again.",
           });
-
+<<<<<<< HEAD
+          throw error;
+=======
+        
           setAuthState(response.data.token, false); // Set token and isAdmin in Zustand store
           return response.data;
         } else {
           throw new Error(response.data.message || "OTP verification failed");
+>>>>>>> d81223ebe0c7ea01055a0964f50ee35cdcbb2528
         }
       },
 
