@@ -50,19 +50,19 @@ function BookingCard({ booking }) {
           <p>Start Date & Time: {booking.startDate}</p>
           <p>End Date & Time: {booking.endDate}</p>
           <p>Duration: {booking.duration} days</p>
-          <p>
+          {/* <p>
             Rating: {booking.rating ? "⭐".repeat(booking.rating) : "Not rated yet"}
-          </p>
+          </p> */}
         </div>
         <div className="right_past">
           <img src={booking.image} alt={booking.vehicleName} className="vehicle-image" />
         </div>
       </div>
-      <div className="rating_past">
+      {/* <div className="rating_past">
         <button className="rating-btn_past" onClick={handleOpenPopup}>
-          {booking.rating ? "Update Rating" : "Submit Rating"}
+          {booking.rating ? "Update Rating" : "Submit Rating"} 
         </button>
-      </div>
+      </div> */}
       {showPopup && (
         <div className="popup_r">
           <div className="popup-content">
