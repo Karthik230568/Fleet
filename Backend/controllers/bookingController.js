@@ -5,6 +5,14 @@ const { calculateTotalPayment } = require('../utils/calculatePayment');
 const { markVehicleUnavailable } = require('./vehicleController');
 const schedule = require('node-schedule');
 
+// function mergeToUTC(dateStr, timeStr) {
+//     const [year, month, day] = dateStr.split('-').map(Number);
+//     const [hour, minute] = timeStr.split(':').map(Number);
+
+//     // Create UTC date object
+//     return new Date(Date.UTC(year, month - 1, day, hour, minute));
+// }
+
 const confirmBooking = async (req, res) => {
     try {
     const bookingData = req.body;
@@ -14,7 +22,10 @@ const confirmBooking = async (req, res) => {
     // 1 & 2: Merge pickupDate & pickupTime, returnDate & returnTime
     const pickupDate = new Date(`${bookingData.pickupDate}T${bookingData.pickupTime}`);
     const returnDate = new Date(`${bookingData.returnDate}T${bookingData.returnTime}`);
-
+    // const pickupDate = mergeToUTC(bookingData.pickupDate, bookingData.pickupTime);
+    // const returnDate = mergeToUTC(bookingData.returnDate, bookingData.returnTime);
+    // console.log('Pickup Date UTC:', pickupDate.toISOString());
+    // console.log('Return Date UTC:', returnDate.toISOString());
     // 3: Set vehicle availability to 'Not available'
 //   await Vehicle.findByIdAndUpdate(bookingData.vehicleId, { availability: 'Not available' });
 
@@ -35,8 +46,8 @@ const confirmBooking = async (req, res) => {
     const bookingObj = {
         user: mongoose.Types.ObjectId.createFromHexString(bookingData.userId),
   vehicle: mongoose.Types.ObjectId.createFromHexString(bookingData.vehicleId),
-        pickupDate: bookingData.pickupDate,
-        returnDate: bookingData.returnDate,
+        pickupDate: pickupDate,
+        returnDate: returnDate,
         duration: bookingData.duration,
         totalAmount: totalAmount,
         city: bookingData.city,
@@ -386,12 +397,15 @@ const getActiveBookings = async (req, res, next) => {
                 vehicleName: booking.vehicle.name,
                 startDate: startDate.toLocaleString(),
                 endDate: endDate.toLocaleString(),
+                // startDate: startDate,
+                // endDate: endDate,
                 duration,
                 driverName: booking.vehicle.driverName,
                 vehicleId: booking.vehicle.vehicleId,
                 price: booking.totalAmount,
                 image: booking.vehicle.image,
                 bookingId: booking._id,
+                // address: booking.address,
                 status: booking.status,
                 withDriver: booking.withDriver,
                 isDelivery: booking.isDelivery,

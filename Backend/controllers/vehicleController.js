@@ -21,13 +21,37 @@ const searchVehicles = async (req, res, next) => {
             console.log('Filtering vehicles by city:', city);
         }
 
-        if(withDriver=='driver'){
-            query.driverName = { $ne: null }; // Filter vehicles with driver
-        } else if(withDriver=='own'){
+        if(withDriver === "true"){
+            query.driverName = { $nin: ["No Driver"] }; // Filter vehicles with driver
+        } else if(withDriver === "false"){
             query.driverName = 'No Driver';
          } // Filter vehicles without driver
 
+        const pickupDateTime = new Date(pickupDate);
+        const returnDateTime = new Date(returnDate);
+
+        // Find all vehicles that are booked during the requested time range
+        const bookedVehicleIds = await Booking.find({
+            $or: [
+                {
+                    pickupDate: { $lte: returnDateTime },
+                    returnDate: { $gte: pickupDateTime }
+                }
+            ]
+        }).distinct('vehicle'); // Get only the vehicle IDs
+        console.log('pickupDateTime:', pickupDateTime);
+        console.log('returnDateTime:', returnDateTime);
+
+        console.log('Booked vehicle IDs:', bookedVehicleIds);
+
+        // Exclude booked vehicles from the query
+        query._id = { $nin: bookedVehicleIds };
+
         console.log('Database query:', JSON.stringify(query, null, 2));
+
+        // Log all available bookings in the database
+        // const allBookings = await Booking.find({});
+        // console.log('All available bookings:', JSON.stringify(allBookings, null, 2));
         
         let vehicles = await Vehicle.find(query);
         console.log('Found vehicles:', vehicles.length);
@@ -51,7 +75,7 @@ const searchVehicles = async (req, res, next) => {
 
         // Log all available cities in the database
         const allCities = await Vehicle.distinct('city');
-        console.log('Available cities in database:', allCities);
+        // console.log('Available cities in database:', allCities);
 
         // Store all search parameters in the response
         res.status(200).json({

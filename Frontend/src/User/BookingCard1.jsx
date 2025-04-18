@@ -29,6 +29,7 @@ function BookingCard1({ booking }) {
           <p>Duration: {booking.duration} days</p>
           <p>Driver Name: {booking.driverName}</p>
           <p>Vehicle ID: {booking.vehicleId}</p>
+          {booking.address && <p>Address: {booking.address}</p>}
           <p>Total Price: {booking.price}</p>
         </div>
         <div className="right_active">

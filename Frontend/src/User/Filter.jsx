@@ -22,7 +22,7 @@ const Filter = ({ onFilterChange, onSortChange, activeFilters }) => {
 
   return (
     <div className="filter-container">
-      <div className="filter-group">
+      {/*<div className="filter-group">
         <div className="filter-header" onClick={() => toggleDropdown('availability')}>
           <h3>Availability</h3>
           <span className={`dropdown-arrow ${isOpen.availability ? 'open' : ''}`}>▼</span>
@@ -41,7 +41,7 @@ const Filter = ({ onFilterChange, onSortChange, activeFilters }) => {
             ))}
           </div>
         )}
-      </div>
+      </div>*/}
 
       <div className="filter-group">
         <div className="filter-header" onClick={() => toggleDropdown('type')}>
