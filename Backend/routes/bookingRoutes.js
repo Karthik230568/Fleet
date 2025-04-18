@@ -4,29 +4,13 @@ const router = express.Router();
 
 const { 
     confirmBooking,
-    // initializeBooking,
-    // confirmBookingWithDriver,
-    // confirmSelfDriveStorePickup,
-    // confirmSelfDriveHomeDelivery,
     getActiveBookings,
     getPastBookings,
     cancelBooking
 } = require('../controllers/bookingController');
 const { authenticateUser } = require('../middleware/authMiddleware');
 
-// Initialize booking and get price details
-// router.post('/initialize', initializeBooking);
-
-// Confirm bookings
-// router.post('/confirm-booking', (req, res, next) => {
-//     console.log("Hit /confirm-booking route");
-//     confirmBooking(req, res, next);
-//   });
 router.post('/confirm-booking', confirmBooking);
-// router.post('/confirm-booking', confirmBooking);
-// router.post('/confirm-driver', confirmBookingWithDriver);
-// router.post('/confirm-self-drive-store', confirmSelfDriveStorePickup);
-// router.post('/confirm-self-drive-home', confirmSelfDriveHomeDelivery);
 
 // Get bookings
 router.get('/active/:userId', getActiveBookings);

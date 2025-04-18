@@ -113,7 +113,15 @@ const useAuthStore = create(
             isVerified: false,
             error: error.message || "OTP verification failed. Please try again.",
           });
+<<<<<<< HEAD
           throw error;
+=======
+        
+          setAuthState(response.data.token, false); // Set token and isAdmin in Zustand store
+          return response.data;
+        } else {
+          throw new Error(response.data.message || "OTP verification failed");
+>>>>>>> d81223ebe0c7ea01055a0964f50ee35cdcbb2528
         }
       },
 
