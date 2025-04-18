@@ -98,9 +98,9 @@ export default function Adminsignin() {
               />
             </div>
 
-            <div className="forgot-password-admin">
+            {/* <div className="forgot-password-admin">
                 <a href="#" onClick={handleForgotPassword}>Forgot Password?</a>
-            </div>
+            </div> */}
 
             <button type="submit" className="btn" disabled={isLoading}>
               {isLoading ? "Signing In..." : "Sign In"}
