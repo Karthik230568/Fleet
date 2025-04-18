@@ -86,9 +86,15 @@ const getActiveBookings = async (req, res, next) => {
         // Find active bookings (pending or active) where the return date is in the future
         const activeBookings = await Booking.find({
             user: userId,
-            status: { $in: ['pending', 'active'] }, // Include both pending and active bookings
+            // status: { $in: ['pending', 'active'] }, // Include both pending and active bookings
             returnDate: { $gte: currentDate } // Only include bookings with a return date in the future
         }).populate('vehicle', 'name image vehicleId driverName');
+
+        console.log('Active bookings query:', {
+            user: userId,
+            status: { $in: ['pending', 'active'] },
+            returnDate: { $gte: currentDate }
+        });
 
         const formattedBookings = activeBookings.map(booking => {
             const startDate = new Date(booking.pickupDate);
@@ -229,10 +235,6 @@ const cancelBooking = async (req, res, next) => {
 };
 
 module.exports = {
-    // initializeBooking,
-    // confirmBookingWithDriver,
-    // confirmSelfDriveStorePickup,
-    // confirmSelfDriveHomeDelivery,
     confirmBooking,
     getActiveBookings,
     getPastBookings,

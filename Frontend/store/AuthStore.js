@@ -91,7 +91,7 @@ const useAuthStore = create(
             isVerified: true,
             user: response.data.user,
           });
-
+        
           setAuthState(response.data.token, false); // Set token and isAdmin in Zustand store
           return response.data;
         } else {
