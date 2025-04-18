@@ -72,6 +72,7 @@ const useAuthStore = create(
         if (response.data.success) {
           set({ isOtpSent: true });
           return response.data;
+          
         } else {
           throw new Error(response.data.message || 'Failed to send OTP');
         }

@@ -74,11 +74,19 @@ function VehicleCard({ vehicle, bookingType }) {
         <p>Vehicle ID: {vehicle.vehicleId}</p>
         <p>City: {vehicle.city}</p>
       </div>
-      <div className="vehicle-actions">
+      {vehicle.availability === "Available" && (
+        <div className="vehicle-actions">
         <button onClick={handleBookNow} className="button_vehicles">
           Book Now
         </button>
       </div>
+      )}
+      {/* Add any additional vehicle details here
+      <div className="vehicle-actions">
+        <button onClick={handleBookNow} className="button_vehicles">
+          Book Now
+        </button>
+      </div> */}
 
       {/* Popup */}
       {showPopup && (
