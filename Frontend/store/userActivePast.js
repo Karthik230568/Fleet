@@ -102,6 +102,9 @@ const useUserBookingStore = create((set, get) => ({
           ),
           error: null,
         }));
+  
+        // Optionally, log the cancelled booking details for debugging
+        console.log("Cancelled booking details:", response.data.booking);
       } else {
         throw new Error(response.data.error || "Failed to cancel booking");
       }

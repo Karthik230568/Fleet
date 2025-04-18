@@ -76,6 +76,171 @@ const confirmBooking = async (req, res) => {
   }
 };
 
+
+
+const getActiveBookings = async (req, res, next) => {
+    try {
+        const userId = req.params.userId;
+        const currentDate = new Date();
+
+        // Find active bookings (pending or active) where the return date is in the future
+        const activeBookings = await Booking.find({
+            user: userId,
+            status: { $in: ['pending', 'active'] }, // Include both pending and active bookings
+            returnDate: { $gte: currentDate } // Only include bookings with a return date in the future
+        }).populate('vehicle', 'name image vehicleId driverName');
+
+        const formattedBookings = activeBookings.map(booking => {
+            const startDate = new Date(booking.pickupDate);
+            const endDate = new Date(booking.returnDate);
+            const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+
+            return {
+                vehicleName: booking.vehicle.name,
+                startDate: startDate.toLocaleString(),
+                endDate: endDate.toLocaleString(),
+                duration,
+                driverName: booking.vehicle.driverName,
+                vehicleId: booking.vehicle.vehicleId,
+                price: booking.totalAmount,
+                image: booking.vehicle.image,
+                bookingId: booking._id,
+                status: booking.status,
+                withDriver: booking.withDriver,
+                isDelivery: booking.isDelivery,
+                address: booking.address
+            };
+        });
+
+        res.status(200).json({
+            success: true,
+            bookings: formattedBookings
+        });
+
+    } catch (error) {
+        console.error('Error in getActiveBookings:', error);
+        next(error);
+    }
+};
+
+const getPastBookings = async (req, res, next) => {
+    try {
+        const { userId } = req.params;
+        const currentTime = new Date();
+
+        // Find bookings associated with the user that are not cancelled and have a returnDate before the current time
+        const bookingsToComplete = await Booking.find({
+            user: userId,
+            status: { $ne: 'cancelled' }, // Exclude cancelled bookings
+            returnDate: { $lt: currentTime } // Return date is before the current time
+        });
+
+        // Update the status of these bookings to 'completed'
+        for (const booking of bookingsToComplete) {
+            booking.status = 'completed';
+            booking.updatedAt = new Date(); // Update the timestamp
+            await booking.save();
+        }
+
+        // Fetch all completed bookings for the user
+        const pastBookings = await Booking.find({
+            user: userId,
+            status: 'completed'
+        }).populate('vehicle');
+
+        // Format the past bookings for the response
+        const formattedPastBookings = pastBookings.map(booking => ({
+            vehicleName: booking.vehicle.name,
+            startDate: new Date(booking.pickupDate).toLocaleString(),
+            endDate: new Date(booking.returnDate).toLocaleString(),
+            duration: Math.ceil((new Date(booking.returnDate) - new Date(booking.pickupDate)) / (1000 * 60 * 60 * 24)),
+            image: booking.vehicle.image,
+            bookingId: booking._id,
+            price: booking.totalAmount
+        }));
+
+        // Send the response
+        res.status(200).json({
+            success: true,
+            bookings: formattedPastBookings
+        });
+
+    } catch (error) {
+        console.error('Error in getPastBookings:', error);
+        next(error);
+    }
+};
+
+const cancelBooking = async (req, res, next) => {
+    try {
+        const { bookingId } = req.params;
+
+        // Find the booking by ID
+        const booking = await Booking.findById(bookingId).populate('vehicle');
+        if (!booking) {
+            return res.status(404).json({
+                success: false,
+                error: "Booking not found"
+            });
+        }
+
+        // Log the current status for debugging
+        console.log('Current booking status:', booking.status);
+
+        // Allow cancellation of only pending or active bookings
+        if (!['pending', 'active'].includes(booking.status)) {
+            return res.status(400).json({
+                success: false,
+                error: "Only pending or active bookings can be cancelled"
+            });
+        }
+
+        // Update vehicle availability to 'Available'
+        if (booking.vehicle) {
+            await Vehicle.findByIdAndUpdate(booking.vehicle._id, {
+                availability: 'Available'
+            });
+        }
+
+        // Update booking status to 'cancelled'
+        booking.status = 'cancelled';
+        booking.updatedAt = new Date(); // Update the timestamp
+        await booking.save();
+
+        // Send the response
+        res.status(200).json({
+            success: true,
+            message: "Booking cancelled successfully",
+            booking: {
+                id: booking._id,
+                status: booking.status,
+                vehicle: booking.vehicle ? booking.vehicle.name : null,
+                updatedAt: booking.updatedAt
+            }
+        });
+
+    } catch (error) {
+        console.error('Error in cancelBooking:', error);
+        res.status(500).json({
+            success: false,
+            error: "Internal server error"
+        });
+    }
+};
+
+module.exports = {
+    // initializeBooking,
+    // confirmBookingWithDriver,
+    // confirmSelfDriveStorePickup,
+    // confirmSelfDriveHomeDelivery,
+    confirmBooking,
+    getActiveBookings,
+    getPastBookings,
+    cancelBooking
+};
+
+
+
 // export const confirmBooking = async (req, res) => {
 //     try {
 //       console.log("Confirm Booking Called");
@@ -376,132 +541,3 @@ const confirmBooking = async (req, res) => {
 //         next(error);
 //     }
 // };
-
-const getActiveBookings = async (req, res, next) => {
-    try {
-        const userId = req.params.userId;
-        const currentDate = new Date();
-
-        const activeBookings = await Booking.find({
-            user: userId,
-            status: { $in: ['pending', 'active'] },  // Include both pending and active bookings
-            returnDate: { $gte: currentDate }   // Only check if return date hasn't passed
-        }).populate('vehicle', 'name image vehicleId driverName');
-
-        const formattedBookings = activeBookings.map(booking => {
-            const startDate = new Date(booking.pickupDate);
-            const endDate = new Date(booking.returnDate);
-            const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
-
-            return {
-                vehicleName: booking.vehicle.name,
-                startDate: startDate.toLocaleString(),
-                endDate: endDate.toLocaleString(),
-                // startDate: startDate,
-                // endDate: endDate,
-                duration,
-                driverName: booking.vehicle.driverName,
-                vehicleId: booking.vehicle.vehicleId,
-                price: booking.totalAmount,
-                image: booking.vehicle.image,
-                bookingId: booking._id,
-                // address: booking.address,
-                status: booking.status,
-                withDriver: booking.withDriver,
-                isDelivery: booking.isDelivery,
-                address: booking.address
-            };
-        });
-
-        res.status(200).json({
-            success: true,
-            bookings: formattedBookings
-        });
-
-    } catch (error) {
-        next(error);
-    }
-};
-
-const getPastBookings = async (req, res, next) => {
-    try {
-        const { userId } = req.params;
-        
-        const pastBookings = await Booking.find({
-            user: userId,
-            status: 'completed'
-        }).populate('vehicle');
-
-        const formattedPastBookings = pastBookings.map(booking => ({
-            vehicleName: booking.vehicle.name,
-            startDate: new Date(booking.pickupDate).toLocaleString(),
-            endDate: new Date(booking.returnDate).toLocaleString(),
-            duration: Math.ceil((new Date(booking.returnDate) - new Date(booking.pickupDate)) / (1000 * 60 * 60 * 24)),
-            image: booking.vehicle.image,
-            bookingId: booking._id,
-            price: booking.totalAmount
-        }));
-
-        res.status(200).json({
-            success: true,
-            bookings: formattedPastBookings
-        });
-
-    } catch (error) {
-        next(error);
-    }
-};
-
-const cancelBooking = async (req, res, next) => {
-    try {
-        const { bookingId } = req.params;
-
-        const booking = await Booking.findById(bookingId);
-        if (!booking) {
-            return res.status(404).json({
-                success: false,
-                error: "Booking not found"
-            });
-        }
-
-        // Log the current status for debugging
-        console.log('Current booking status:', booking.status);
-
-        // Allow cancellation of both pending and active bookings
-        if (!['pending', 'active'].includes(booking.status)) {
-            return res.status(400).json({
-                success: false,
-                error: "Only pending or active bookings can be cancelled"
-            });
-        }
-
-        // Update vehicle status to available
-        await Vehicle.findByIdAndUpdate(booking.vehicle, {
-            availability: 'Available'
-        });
-
-        // Update booking status to cancelled
-        booking.status = 'cancelled';
-        await booking.save();
-
-        res.status(200).json({
-            success: true,
-            message: "Booking cancelled successfully"
-        });
-
-    } catch (error) {
-        console.error('Error in cancelBooking:', error);
-        next(error);
-    }
-};
-
-module.exports = {
-    // initializeBooking,
-    // confirmBookingWithDriver,
-    // confirmSelfDriveStorePickup,
-    // confirmSelfDriveHomeDelivery,
-    confirmBooking,
-    getActiveBookings,
-    getPastBookings,
-    cancelBooking
-};

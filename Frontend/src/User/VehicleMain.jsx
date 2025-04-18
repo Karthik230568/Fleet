@@ -23,8 +23,8 @@ function Usercarspage() {
   // Initialize search parameters from BookingStore
   const [searchParams, setSearchParams] = useState({
     city: bookingData.city || location.state?.city || "",
-    pickupDate: bookingData.pickupDate || location.state?.pickupDate || "",
-    returnDate: bookingData.returnDate || location.state?.returnDate || "",
+    pickupDate: new Date(`${bookingData.pickupDate}T${bookingData.pickupTime}:00.000Z`), // Combine date and time
+    returnDate: new Date(`${bookingData.returnDate}T${bookingData.returnTime}:00.000Z`),
     withDriver: bookingData.withDriver,
   });
 
