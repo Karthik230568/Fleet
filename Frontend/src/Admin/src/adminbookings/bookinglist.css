@@ -1,8 +1,18 @@
+.bookings-count {
+  color: hsl(0, 0%, 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  
+  
+}
+
 .booking-list {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding-left: 420px; /* Ensure content starts after sidebar */
+  padding-left: 0px
 }
 
 .booking-card {
