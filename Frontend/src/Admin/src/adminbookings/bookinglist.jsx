@@ -9,7 +9,7 @@ function AdminbookingList({ bookings }) {
         <div key={booking.bookingId} className="booking-card">
           <div className="vehicle-info">
             <span className="vehicle-name">{booking.vehicleName}</span>
-            <span className="user-name">Username: {booking.userName}</span>
+            {/* <span className="user-name">Username: {booking.userName}</span> */}
           </div>
           <div className="booking-details">
           <span className="user-fullname">Customer's Fullname: {booking.fullname}</span>
