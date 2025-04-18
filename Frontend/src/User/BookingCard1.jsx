@@ -36,9 +36,7 @@ function BookingCard1({ booking }) {
         </div>
       </div>
       <div className="cancel_active">
-        <button className="cancel-btn" onClick={handleCancel}>
-          Cancel
-        </button>
+       
         {showPopup && (
           <div className="popup-overlay_c">
             <div className="popup-content_c">

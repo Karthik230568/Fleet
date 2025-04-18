@@ -4,7 +4,7 @@ import "./bookinglist.css";
 function AdminbookingList({ bookings }) {
   return (
     <div className="booking-list">
-      <h1 style={{ color: "white" }}>Number of Active Bookings: {bookings.length}</h1>
+      <h1 className="bookings-count">Number of Active Bookings: {bookings.length}</h1>
       {bookings.map((booking) => (
         <div key={booking.bookingId} className="booking-card">
           <div className="vehicle-info">

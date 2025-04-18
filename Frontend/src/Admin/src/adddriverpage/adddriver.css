@@ -55,7 +55,8 @@ body {
   flex-direction: column;
   gap: 20px;
   padding: 20px;
-  max-width: calc(1200px - 8px); /* Subtract scrollbar width */
+  max-width: calc(1200px - 8px);
+  /* Subtract scrollbar width */
   margin: 80px auto 20px auto;
   width: 95%;
 }
