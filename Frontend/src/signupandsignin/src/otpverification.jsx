@@ -65,7 +65,7 @@ export default function OTPVerification() {
       const res = await verifyOtp(enteredOtp);
       if (res.success) {
         setMessage("OTP Verified Successfully!");
-        setTimeout(() => navigate("/home"), 1000);
+        setTimeout(() => navigate("/auth/signin"), 1000);
       } else {
         setMessage(res.message || "OTP verification failed");
       }
