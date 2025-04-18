@@ -16,7 +16,7 @@ function AdminbookingList({ bookings }) {
           <br />
           <span className="user-email">Customer's email: {booking.email}</span>
           <br />
-            <span>Pickup Date and Time: {booking.pickupDate} </span>
+            <span>Pickup Date and Time: {new Date(booking.pickupDate).toLocaleString()} </span>
             <br />
             <span>Return Date and Time: {new Date(booking.returnDate).toLocaleString()}</span>
           </div>
